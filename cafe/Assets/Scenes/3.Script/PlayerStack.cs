@@ -39,4 +39,24 @@ public class PlayerStack : MonoBehaviour
         item.localPosition = target;
         item.localRotation = Quaternion.identity;
     }
+    // PlayerStack 스크립트의 OnTriggerStay에 추가
+    void OnTriggerStay(Collider other)
+    {
+        // 충돌한 물체에 Producer가 있는지 확인
+        if (other.CompareTag("Producer"))
+        {
+            if (other.TryGetComponent(out Producer producer))
+            {
+                // 내가 더 담을 수 있고, 생산기에 물건이 있다면
+                if (collectedItems.Count < maxCapacity)
+                {
+                    GameObject item = producer.GiveItem();
+                    if (item != null)
+                    {
+                        AddItem(item); // 지난번에 짠 AddItem 함수 호출
+                    }
+                }
+            }
+        }
+    }
 }
