@@ -9,6 +9,16 @@
     "C:\\Program Files\\Unity\\Hub\\Editor\\6000.2.8f1\\Editor\\Data\\Resources\\PackageManager\\BuiltInPackages\\BuiltInPackagesCombined.sha1"
   ],
   "outputs": {
+    "com.unity.cinemachine@3.1.5": {
+      "name": "com.unity.cinemachine",
+      "displayName": "Cinemachine",
+      "resolvedPath": "C:\\Users\\user\\Desktop\\unity\\Arcade_Idle_Cafe\\cafe\\Library\\PackageCache\\com.unity.cinemachine@5342685532bb",
+      "fingerprint": "5342685532bbf7fa5b3a314c0b7ddba04ff17eff",
+      "editorCompatibility": "2022.3.0a1",
+      "version": "3.1.5",
+      "source": "registry",
+      "testable": false
+    },
     "com.unity.collab-proxy@2.9.3": {
       "name": "com.unity.collab-proxy",
       "displayName": "Unity Version Control",
@@ -447,6 +457,16 @@
       "fingerprint": "205a02cbcb39584f20b51c49b853047aceb3a3a7",
       "editorCompatibility": "2019.3.0a1",
       "version": "1.2.6",
+      "source": "registry",
+      "testable": false
+    },
+    "com.unity.splines@2.8.2": {
+      "name": "com.unity.splines",
+      "displayName": "Splines",
+      "resolvedPath": "C:\\Users\\user\\Desktop\\unity\\Arcade_Idle_Cafe\\cafe\\Library\\PackageCache\\com.unity.splines@1cb7d86fc7ff",
+      "fingerprint": "1cb7d86fc7ffee63824ca302b2b8982178eeea83",
+      "editorCompatibility": "2022.3.0a1",
+      "version": "2.8.2",
       "source": "registry",
       "testable": false
     },
