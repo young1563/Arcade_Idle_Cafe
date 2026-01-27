@@ -58,6 +58,16 @@
       "source": "builtin",
       "testable": false
     },
+    "com.unity.postprocessing@3.5.0": {
+      "name": "com.unity.postprocessing",
+      "displayName": "Post Processing",
+      "resolvedPath": "C:\\Users\\user\\Desktop\\unity\\Arcade_Idle_Cafe\\cafe\\Library\\PackageCache\\com.unity.postprocessing@94edadb6c5ab",
+      "fingerprint": "94edadb6c5ab827a382b0d6f5f550866ffcfc586",
+      "editorCompatibility": "2019.4.19f1",
+      "version": "3.5.0",
+      "source": "registry",
+      "testable": false
+    },
     "com.unity.render-pipelines.universal@17.2.0": {
       "name": "com.unity.render-pipelines.universal",
       "displayName": "Universal Render Pipeline",
