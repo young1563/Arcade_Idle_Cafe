@@ -1,62 +1,37 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 public class PlayerStack : MonoBehaviour
 {
-    public Transform stackParent; // 아이템이 쌓일 위치 (플레이어 등 쪽)
+    public Transform stackParent;
     public List<GameObject> collectedItems = new List<GameObject>();
-    public int maxCapacity = 10; // 초기 수용량 (업그레이드 요소)
-    public float yOffset = 0.4f; // 아이템 간 높이 간격
+    public int maxCapacity = 15;
+    public float yOffset = 0.3f;
 
-    public void AddItem(GameObject item)
-    {
-        if (collectedItems.Count >= maxCapacity) return;
-
-        // 1. 물리 비활성화 (최적화의 핵심)
-        if (item.TryGetComponent(out Rigidbody rb)) rb.isKinematic = true;
-        if (item.TryGetComponent(out Collider col)) col.enabled = false;
-
-        // 2. 리스트 등록 및 부모 설정
-        collectedItems.Add(item);
-        item.transform.SetParent(stackParent);
-
-        // 3. 애니메이션 연출 (촥촥 쌓이는 느낌)
-        Vector3 targetPos = new Vector3(0, (collectedItems.Count - 1) * yOffset, 0);
-        StartCoroutine(MoveToStack(item.transform, targetPos));
-    }
-
-    IEnumerator MoveToStack(Transform item, Vector3 target)
-    {
-        float elapsed = 0;
-        Vector3 startPos = item.localPosition;
-        while (elapsed < 0.15f) // 0.15초 내에 빠르게 이동
-        {
-            item.localPosition = Vector3.Lerp(startPos, target, elapsed / 0.15f);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        item.localPosition = target;
-        item.localRotation = Quaternion.identity;
-    }
-    // PlayerStack 스크립트의 OnTriggerStay에 추가
     void OnTriggerStay(Collider other)
     {
-        // 충돌한 물체에 Producer가 있는지 확인
-        if (other.CompareTag("Producer"))
+        if (other.CompareTag("Producer") && collectedItems.Count < maxCapacity)
         {
             if (other.TryGetComponent(out Producer producer))
             {
-                // 내가 더 담을 수 있고, 생산기에 물건이 있다면
-                if (collectedItems.Count < maxCapacity)
-                {
-                    GameObject item = producer.GiveItem();
-                    if (item != null)
-                    {
-                        AddItem(item); // 지난번에 짠 AddItem 함수 호출
-                    }
-                }
+                GameObject item = producer.GiveItem();
+                if (item != null) AddToStack(item);
             }
         }
+    }
+
+    void AddToStack(GameObject item)
+    {
+        collectedItems.Add(item);
+        item.transform.SetParent(stackParent);
+
+        // 등에 쌓이는 위치 계산
+        Vector3 targetLocalPos = new Vector3(0, (collectedItems.Count - 1) * yOffset, 0);
+
+        // 이동 연출 (부드럽게 촥!)
+        item.transform.localPosition = targetLocalPos;
+        item.transform.localRotation = Quaternion.identity;
+
+        // 햅틱 효과 대신 작게 점프하는 연출 추가 가능
     }
 }
