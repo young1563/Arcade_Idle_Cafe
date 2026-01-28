@@ -209,7 +209,7 @@ Transform:
   m_GameObject: {fileID: 403329027}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.734, z: 0}
+  m_LocalPosition: {x: -0.398, y: 0.734, z: -0.203}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -489,7 +489,7 @@ Transform:
   m_GameObject: {fileID: 1039877535}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.734, z: 0}
+  m_LocalPosition: {x: -0.428, y: 0.734, z: -0.20299995}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -509,7 +509,7 @@ GameObject:
   - component: {fileID: 1085483967}
   - component: {fileID: 1085483966}
   m_Layer: 0
-  m_Name: Producer (1)
+  m_Name: Waffle_Producer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3524,7 +3524,7 @@ GameObject:
   - component: {fileID: 2160566049522612602}
   - component: {fileID: 8884492159868570767}
   m_Layer: 0
-  m_Name: Producer
+  m_Name: Duzzonku_Producer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
