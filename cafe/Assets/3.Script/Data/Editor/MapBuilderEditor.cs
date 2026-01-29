@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class MapBuilderEditor : EditorWindow
-{
-    private MasterDataWrapper shopData;
+{    
     private Vector2 scrollPos;
     private string selectedFolder = "All";
     private string searchString = "";
@@ -19,6 +18,7 @@ public class MapBuilderEditor : EditorWindow
 
     private MasterDataWrapper libraryData; // 전체 가구 도감 (읽기 전용)
     private MasterDataWrapper mapSaveData; // 실제 배치 데이터 (읽기/쓰기)
+    private const string PARENT_NAME = "Cafe"; // 부모가 될 오브젝트 이름
 
     [MenuItem("Tools/Duzzonku Map Builder Pro")]
     public static void ShowWindow() => GetWindow<MapBuilderEditor>("Duzzonku Builder Pro");
@@ -94,6 +94,17 @@ public class MapBuilderEditor : EditorWindow
             Debug.Log("데이터 및 캐시가 초기화되었습니다.");
         }
     }
+    // 부모 오브젝트를 찾거나 없으면 생성하는 헬퍼 함수
+    private Transform GetParentGroup()
+    {
+        GameObject parent = GameObject.Find(PARENT_NAME);
+        if (parent == null)
+        {
+            parent = new GameObject(PARENT_NAME);
+            Undo.RegisterCreatedObjectUndo(parent, "Create Cafe Parent");
+        }
+        return parent.transform;
+    }
 
     private void DrawFilterUI()
     {
@@ -103,7 +114,7 @@ public class MapBuilderEditor : EditorWindow
         var folders = libraryData.furnitureData
             .Select(e => e.folderPath.Split('/').Last())
             .Distinct().ToList();
-        //folders.Insert(0, "All");
+        folders.Insert(0, "All");
 
         int currentIndex = folders.IndexOf(selectedFolder);
         if (currentIndex == -1) currentIndex = 0;
@@ -188,6 +199,8 @@ public class MapBuilderEditor : EditorWindow
             return;
         }
 
+        Transform parentTransform = GetParentGroup(); // 부모 가져오기
+
         foreach (var entity in mapSaveData.furnitureData)
         {
             // 3. 리소스 로드
@@ -198,6 +211,7 @@ public class MapBuilderEditor : EditorWindow
                 // 4. 에디터 씬에 프리팹 소환
                 GameObject go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
 
+                go.transform.SetParent(parentTransform);
                 // 5. 위치, 회전, 스케일 복구
                 go.transform.position = entity.position.ToVector3();
                 go.transform.eulerAngles = new Vector3(0, entity.rotation, 0);
@@ -212,8 +226,9 @@ public class MapBuilderEditor : EditorWindow
             {
                 Debug.LogError($"프리팹을 찾을 수 없습니다: {entity.folderPath}/{entity.prefabName}");
             }
-        }
+        }        
         Debug.Log("<color=cyan>MapData_Stage1.json으로부터 배치를 성공적으로 로드했습니다!</color>");
+        Debug.Log($"<color=cyan>{PARENT_NAME} 오브젝트 하위로 배치를 완료했습니다.</color>");
     }
 
     // --- 핵심 기능: 에디터 맵 비우기 (Off) ---
@@ -269,6 +284,10 @@ public class MapBuilderEditor : EditorWindow
     {
         GameObject prefab = Resources.Load<GameObject>($"{currentEntity.folderPath}/{currentEntity.prefabName}");
         GameObject go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+
+        // 부모 설정
+        go.transform.SetParent(GetParentGroup());
+
         go.transform.position = pos;
         go.name = currentEntity.id;
 
