@@ -9,43 +9,64 @@ public class MapLoader : MonoBehaviour
 
     void Start()
     {
-        LoadAndSpawnMap();
+        LoadAndSpawnMasterData();
     }
 
-    public void LoadAndSpawnMap()
+    public void LoadAndSpawnMasterData()
     {
         string filePath = Path.Combine(Application.streamingAssetsPath, jsonFileName);
 
         if (File.Exists(filePath))
         {
             string jsonText = File.ReadAllText(filePath);
-            ShopDataWrapper data = JsonUtility.FromJson<ShopDataWrapper>(jsonText);
+            // 기존 ShopDataWrapper가 아닌 MasterDataWrapper로 파싱합니다.
+            MasterDataWrapper masterData = JsonUtility.FromJson<MasterDataWrapper>(jsonText);
 
-            if (data == null || data.furnitureData == null) return;
+            if (masterData == null) return;
 
-            int spawnCount = 0;
-            foreach (var entity in data.furnitureData)
+            // 1. 플레이어 위치 복구
+            RestorePlayerPosition(masterData);
+
+            // 2. 가구 배치
+            if (masterData.furnitureData != null)
             {
-                // 좌표가 (0,0,0)인 항목은 배치되지 않은 것으로 간주하여 스킵
-                if (entity.position.x == 0 && entity.position.y == 0 && entity.position.z == 0)
-                    continue;
+                foreach (var entity in masterData.furnitureData)
+                {
+                    // 좌표가 (0,0,0)인 데이터는 배치되지 않은 것이므로 스킵합니다.
+                    if (entity.position.x == 0 && entity.position.y == 0 && entity.position.z == 0)
+                        continue;
 
-                SpawnFurniture(entity);
-                spawnCount++;
+                    SpawnFurniture(entity);
+                }
             }
-
-            Debug.Log($"<color=green>맵 로딩 완료: {spawnCount}개의 가구 배치됨</color>");
+            Debug.Log("<color=green>통합 데이터 로드 완료!</color>");
         }
     }
 
-    void SpawnFurniture(FurnitureEntity entity)
+    private void RestorePlayerPosition(MasterDataWrapper data)
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null && data.playerPosition != null)
+        {
+            // CharacterController가 있다면 일시적으로 끄고 이동해야 씹히지 않습니다.
+            CharacterController cc = player.GetComponent<CharacterController>();
+            if (cc != null) cc.enabled = false;
+
+            player.transform.position = data.playerPosition.ToVector3();
+            player.transform.eulerAngles = new Vector3(0, data.playerRotation, 0);
+
+            if (cc != null) cc.enabled = true;
+            Debug.Log("플레이어 위치 복구 완료.");
+        }
+    }
+
+    private void SpawnFurniture(FurnitureEntity entity)
     {
         string fullPath = $"{entity.folderPath}/{entity.prefabName}";
         GameObject prefab = Resources.Load<GameObject>(fullPath);
 
         if (prefab != null)
         {
-            // [통일] 모든 프리팹은 저장된 위치, 회전, 스케일 값으로 생성됩니다.
             GameObject instance = Instantiate(prefab,
                 entity.position.ToVector3(),
                 Quaternion.Euler(0, entity.rotation, 0));
@@ -53,13 +74,9 @@ public class MapLoader : MonoBehaviour
             instance.transform.localScale = entity.scale.ToVector3();
             instance.name = entity.id;
 
-            // 데이터 관리용 홀더만 부착 (컴포넌트 자동 추가 로직 삭제)
+            // 데이터 보관을 위해 홀더 부착
             var holder = instance.AddComponent<FurnitureDataHolder>();
             holder.data = entity;
-        }
-        else
-        {
-            Debug.LogWarning($"프리팹 로드 실패: {fullPath}");
         }
     }
 }

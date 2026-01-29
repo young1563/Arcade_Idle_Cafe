@@ -37,7 +37,7 @@ public class JsonDataExporter : EditorWindow
             return;
         }
 
-        ShopDataWrapper wrapper = new ShopDataWrapper();
+        MasterDataWrapper wrapper = new MasterDataWrapper();
         wrapper.furnitureData = new List<FurnitureEntity>(); // 이름 일치 확인
 
         // 2. 모든 프리팹 검색
@@ -63,7 +63,9 @@ public class JsonDataExporter : EditorWindow
                        fileName.Contains("Counter") ? "SellPoint" : "Decoration",
                 position = new Vector3Data { x = 0, y = 0, z = 0 },
                 rotation = 0,
-                price = 100
+                price = 100,
+                unlockOrder = 0, // 기본값 설정
+                isUnlocked = false // 기본값 설정
             };
 
             wrapper.furnitureData.Add(entity);
