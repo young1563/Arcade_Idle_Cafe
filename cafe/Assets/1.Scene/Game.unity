@@ -2208,6 +2208,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2541663481844538939, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: unlockRange
+      value: 1.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 2541663481844538939, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
       propertyPath: targetFurniture
       value: 
       objectReference: {fileID: 1805914207}
