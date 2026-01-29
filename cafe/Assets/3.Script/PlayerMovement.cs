@@ -13,9 +13,10 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        anim = GetComponent<Animator>(); // 컴포넌트 가져오기
+        anim = GetComponent<Animator>();
 
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        // X, Y, Z 모든 회전을 물리 엔진으로부터 고정합니다.
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
     void Update()
