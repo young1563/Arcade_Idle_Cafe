@@ -9,17 +9,19 @@ public class MapBuilderEditor : EditorWindow
     private MasterDataWrapper shopData;
     private Vector2 scrollPos;
     private string selectedFolder = "All";
-    private Dictionary<string, Texture2D> previewCache = new Dictionary<string, Texture2D>();
+    private string searchString = "";
+    private int tabIndex = 0; // 0: 전체 목록(추가), 1: 배치된 목록(관리)
 
-    // 배치 및 로드 상태 관리
+    private Dictionary<string, Texture2D> previewCache = new Dictionary<string, Texture2D>();
     private bool isPlacing = false;
     private FurnitureEntity currentEntity;
     private GameObject previewObject;
-    private bool isDataLoadedInEditor = false;
+
+    private MasterDataWrapper libraryData; // 전체 가구 도감 (읽기 전용)
+    private MasterDataWrapper mapSaveData; // 실제 배치 데이터 (읽기/쓰기)
 
     [MenuItem("Tools/Duzzonku Map Builder Pro")]
     public static void ShowWindow() => GetWindow<MapBuilderEditor>("Duzzonku Builder Pro");
-
     private void OnEnable()
     {
         LoadJson();
@@ -37,106 +39,181 @@ public class MapBuilderEditor : EditorWindow
         GUILayout.Label("두쫀쿠 매장 빌더 Pro", EditorStyles.boldLabel);
         EditorGUILayout.Space();
 
-        // --- 에디터 로드 제어 섹션 ---
+        // --- 1. 상단 제어 바 (핵심 액션) ---
         EditorGUILayout.BeginVertical("helpbox");
-        GUILayout.Label("에디터 뷰어 제어", EditorStyles.miniBoldLabel);
         EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("데이터 로드 (On)", GUILayout.Height(30))) LoadDataToEditor();
-        if (GUILayout.Button("전체 삭제 (Off)", GUILayout.Height(30))) ClearEditorMap();
+        if (GUILayout.Button("데이터 로드 (On)")) LoadDataToEditor();
+        if (GUILayout.Button("전체 삭제 (Off)")) ClearEditorMap();
+        if (GUILayout.Button("JSON 저장 (Save)", GUILayout.Height(20))) SaveSceneData();
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.EndVertical();
 
         EditorGUILayout.Space();
 
-        // --- 데이터 관리 섹션 ---
-        if (GUILayout.Button("JSON 데이터 및 프리뷰 새로고침")) { LoadJson(); previewCache.Clear(); }
+        // --- 2. 검색 및 탭 메뉴 ---
+        searchString = EditorGUILayout.TextField("이름 검색", searchString);
+        tabIndex = GUILayout.Toolbar(tabIndex, new string[] { "가구 도감 (추가)", "배치된 목록 (관리)" });
 
-        // --- OnGUI 내부의 카테고리 필터링 부분 ---
-        if (shopData != null && shopData.furnitureData != null && shopData.furnitureData.Count > 0)
+        EditorGUILayout.Space();
+
+        // --- 3. 필터링 및 새로고침 ---
+        // 기존에 중복되던 필터 UI 로직을 DrawFilterUI 하나로 통합했습니다.
+        DrawFilterUI();
+
+        EditorGUILayout.Space();
+
+        // --- 4. 리스트 영역 ---
+        scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+
+        // shopData 대신 현재 탭에 맞는 데이터를 체크합니다.
+        MasterDataWrapper currentData = (tabIndex == 0) ? libraryData : mapSaveData;
+
+        if (currentData != null && currentData.furnitureData != null && currentData.furnitureData.Count > 0)
         {
-            // 1. 모든 가구의 폴더 경로에서 마지막 이름만 추출하여 리스트화
-            var folders = shopData.furnitureData
-                .Select(e => e.folderPath.Split('/').Last())
-                .Distinct()
-                .ToList();
-
-            folders.Insert(0, "All"); // 맨 앞에 'All' 추가
-
-            // 2. 현재 선택된 폴더가 리스트에 있는지 확인 (없으면 "All"로 초기화)
-            int currentIndex = folders.IndexOf(selectedFolder);
-            if (currentIndex == -1) currentIndex = 0;
-
-            // 3. 팝업 메뉴 출력 (안전하게 index 관리)
-            int newIndex = EditorGUILayout.Popup("카테고리(폴더)", currentIndex, folders.ToArray());
-            selectedFolder = folders[newIndex];
+            if (tabIndex == 0)
+                DrawFullAssetList(); // libraryData를 사용함
+            else
+                DrawPlacedObjectList(); // 씬의 하이어라키를 직접 스캔함
         }
         else
         {
-            GUILayout.Label("표시할 가구 데이터가 없습니다. JSON을 확인하세요.");
+            EditorGUILayout.HelpBox(tabIndex == 0 ?
+                "도감 데이터(FurnitureLibrary.json)가 없습니다." :
+                "배치 데이터(MapData_Stage1.json)가 없거나 씬이 비어있습니다.", MessageType.Warning);
         }
 
-        scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
-        DrawFurnitureList();
         EditorGUILayout.EndScrollView();
 
         EditorGUILayout.Space();
-        if (GUILayout.Button("현재 씬 배치 정보 JSON 저장", GUILayout.Height(40))) SaveSceneData();
+
+        // --- 5. 하단 데이터 관리 ---
+        if (GUILayout.Button("JSON 데이터 및 프리뷰 전체 새로고침", GUILayout.Height(30)))
+        {
+            LoadJson();
+            previewCache.Clear();
+            Debug.Log("데이터 및 캐시가 초기화되었습니다.");
+        }
     }
 
-    private void DrawFurnitureList()
+    private void DrawFilterUI()
     {
-        if (shopData == null || shopData.furnitureData == null) return;
+        // 도감 데이터를 기준으로 필터 목록을 생성합니다.
+        if (libraryData == null || libraryData.furnitureData == null) return;
 
-        foreach (var entity in shopData.furnitureData)
+        var folders = libraryData.furnitureData
+            .Select(e => e.folderPath.Split('/').Last())
+            .Distinct().ToList();
+        folders.Insert(0, "All");
+
+        int currentIndex = folders.IndexOf(selectedFolder);
+        if (currentIndex == -1) currentIndex = 0;
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("카테고리 필터:", GUILayout.Width(80));
+        int newIndex = EditorGUILayout.Popup(currentIndex, folders.ToArray());
+        selectedFolder = folders[newIndex];
+
+        if (GUILayout.Button("새로고침", GUILayout.Width(60))) { LoadJson(); previewCache.Clear(); }
+        EditorGUILayout.EndHorizontal();
+    }
+
+    // [탭 0] 전체 가구 도감 (libraryData)
+    private void DrawFullAssetList()
+    {
+        if (libraryData == null) return;        
+
+        foreach (var entity in libraryData.furnitureData)
         {
-            string lastFolder = entity.folderPath.Split('/').Last();
-            if (selectedFolder != "All" && lastFolder != selectedFolder) continue;
+            if (!FilterMatch(entity)) continue;
 
-            EditorGUILayout.BeginVertical("box");
-            EditorGUILayout.BeginHorizontal();
-
-            // 프리뷰 이미지
+            EditorGUILayout.BeginHorizontal("box");
             Texture2D preview = GetAssetPreview(entity);
-            GUILayout.Label(preview, GUILayout.Width(50), GUILayout.Height(50));
+            GUILayout.Label(preview, GUILayout.Width(40), GUILayout.Height(40));
 
             EditorGUILayout.BeginVertical();
-            EditorGUILayout.LabelField($"이름: {entity.prefabName}", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField($"가격: {entity.price} | 순서: {entity.unlockOrder}");
+            EditorGUILayout.LabelField(entity.prefabName, EditorStyles.miniBoldLabel);
+            EditorGUILayout.LabelField($"{entity.type} | {entity.price}G", EditorStyles.miniLabel);
             EditorGUILayout.EndVertical();
 
-            if (GUILayout.Button("배치 시작", GUILayout.Width(70), GUILayout.Height(50))) StartPlacing(entity);
-
+            if (GUILayout.Button("배치", GUILayout.Width(50), GUILayout.Height(35))) StartPlacing(entity);
             EditorGUILayout.EndHorizontal();
-            EditorGUILayout.EndVertical();
         }
+    }
+
+    // [탭 1] 현재 씬에 배치된 목록 (관리용)
+    private void DrawPlacedObjectList()
+    {
+        var holders = FindObjectsByType<FurnitureDataHolder>(FindObjectsSortMode.None);
+        if (holders.Length == 0) { GUILayout.Label("배치된 가구가 없습니다."); return; }
+
+        foreach (var holder in holders)
+        {
+            if (holder.data == null) continue;
+            if (!FilterMatch(holder.data)) continue;
+
+            EditorGUILayout.BeginHorizontal("box");
+            EditorGUILayout.BeginVertical();
+            EditorGUILayout.LabelField(holder.gameObject.name, EditorStyles.boldLabel);
+            EditorGUILayout.LabelField($"위치: {holder.transform.position.ToString("F1")}", EditorStyles.miniLabel);
+            EditorGUILayout.EndVertical();
+
+            if (GUILayout.Button("선택", GUILayout.Width(45))) Selection.activeGameObject = holder.gameObject;
+            if (GUILayout.Button("삭제", GUILayout.Width(45))) DestroyImmediate(holder.gameObject);
+            EditorGUILayout.EndHorizontal();
+        }
+    }
+
+    private bool FilterMatch(FurnitureEntity entity)
+    {
+        // 폴더 필터
+        string lastFolder = entity.folderPath.Split('/').Last();
+        if (selectedFolder != "All" && lastFolder != selectedFolder) return false;
+
+        // 검색 필터
+        if (!string.IsNullOrEmpty(searchString) && !entity.prefabName.ToLower().Contains(searchString.ToLower())) return false;
+
+        return true;
     }
 
     // --- 핵심 기능: 에디터에서 데이터 로드 (On) ---
     private void LoadDataToEditor()
     {
-        ClearEditorMap(); // 중복 생성 방지
-        LoadJson();
+        ClearEditorMap(); // 1. 기존 씬의 가구들 청소
+        LoadJson();       // 2. 파일에서 최신 데이터(mapSaveData) 읽어오기
 
-        if (shopData == null) return;
-
-        foreach (var entity in shopData.furnitureData)
+        // [중요] shopData가 아니라 mapSaveData를 참조해야 합니다.
+        if (mapSaveData == null || mapSaveData.furnitureData == null)
         {
-            if (entity.position.x == 0 && entity.position.y == 0 && entity.position.z == 0) continue;
+            Debug.LogWarning("불러올 배치 데이터(MapData_Stage1.json)가 없습니다.");
+            return;
+        }
 
+        foreach (var entity in mapSaveData.furnitureData)
+        {
+            // 3. 리소스 로드
             GameObject prefab = Resources.Load<GameObject>($"{entity.folderPath}/{entity.prefabName}");
+
             if (prefab != null)
             {
+                // 4. 에디터 씬에 프리팹 소환
                 GameObject go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+
+                // 5. 위치, 회전, 스케일 복구
                 go.transform.position = entity.position.ToVector3();
                 go.transform.eulerAngles = new Vector3(0, entity.rotation, 0);
                 go.transform.localScale = entity.scale.ToVector3();
                 go.name = entity.id;
 
+                // 6. 데이터 홀더 연결 및 데이터 주입
                 var holder = go.AddComponent<FurnitureDataHolder>();
                 holder.data = entity;
             }
+            else
+            {
+                Debug.LogError($"프리팹을 찾을 수 없습니다: {entity.folderPath}/{entity.prefabName}");
+            }
         }
-        Debug.Log("<color=cyan>에디터에 배치 데이터를 불러왔습니다.</color>");
+        Debug.Log("<color=cyan>MapData_Stage1.json으로부터 배치를 성공적으로 로드했습니다!</color>");
     }
 
     // --- 핵심 기능: 에디터 맵 비우기 (Off) ---
@@ -221,27 +298,36 @@ public class MapBuilderEditor : EditorWindow
 
     private void LoadJson()
     {
-        string path = Path.Combine(Application.streamingAssetsPath, "ShopData_AutoGenerated.json");
-        if (File.Exists(path))
-            shopData = JsonUtility.FromJson<MasterDataWrapper>(File.ReadAllText(path));
+        // 1. 가구 도감 로드
+        string libPath = Path.Combine(Application.streamingAssetsPath, "FurnitureLibrary.json");
+        if (File.Exists(libPath))
+            libraryData = JsonUtility.FromJson<MasterDataWrapper>(File.ReadAllText(libPath));
+
+        // 2. 맵 배치 데이터 로드
+        string mapPath = Path.Combine(Application.streamingAssetsPath, "MapData_Stage1.json");
+        if (File.Exists(mapPath))
+            mapSaveData = JsonUtility.FromJson<MasterDataWrapper>(File.ReadAllText(mapPath));
+        else
+            mapSaveData = new MasterDataWrapper { furnitureData = new List<FurnitureEntity>() };
     }
 
+    // [저장 기능] 이제 MapData_Stage1.json에만 저장함
     private void SaveSceneData()
     {
-        MasterDataWrapper masterData = new MasterDataWrapper();
-        masterData.furnitureData = new List<FurnitureEntity>();
+        MasterDataWrapper newMapData = new MasterDataWrapper();
+        newMapData.furnitureData = new List<FurnitureEntity>();
 
         // 1. 플레이어 정보 저장
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
-            masterData.playerPosition = new Vector3Data
+            newMapData.playerPosition = new Vector3Data
             {
                 x = player.transform.position.x,
                 y = player.transform.position.y,
                 z = player.transform.position.z
             };
-            masterData.playerRotation = player.transform.eulerAngles.y;
+            newMapData.playerRotation = player.transform.eulerAngles.y;
         }
 
         // 2. 씬의 모든 가구 정보 저장
@@ -264,13 +350,18 @@ public class MapBuilderEditor : EditorWindow
                 unlockOrder = holder.data.unlockOrder,
                 isUnlocked = holder.data.isUnlocked // 이제 에러가 나지 않습니다!
             };
-            masterData.furnitureData.Add(entity);
+            newMapData.furnitureData.Add(entity);
         }
 
-        string finalJson = JsonUtility.ToJson(masterData, true);
-        File.WriteAllText(Path.Combine(Application.streamingAssetsPath, "ShopData_AutoGenerated.json"), finalJson);
-
+        string json = JsonUtility.ToJson(newMapData, true);
+        File.WriteAllText(Path.Combine(Application.streamingAssetsPath, "MapData_Stage1.json"), json);
         AssetDatabase.Refresh();
-        Debug.Log($"<color=cyan>통합 저장 성공! 플레이어 위치와 가구 {masterData.furnitureData.Count}개가 저장되었습니다.</color>");
+        Debug.Log("<color=cyan>배치 데이터가 MapData_Stage1.json에 저장되었습니다.</color>");
+
+        /*        string finalJson = JsonUtility.ToJson(masterData, true);
+                File.WriteAllText(Path.Combine(Application.streamingAssetsPath, "ShopData_AutoGenerated.json"), finalJson);
+
+                AssetDatabase.Refresh();
+                Debug.Log($"<color=cyan>통합 저장 성공! 플레이어 위치와 가구 {masterData.furnitureData.Count}개가 저장되었습니다.</color>");*/
     }
 }
