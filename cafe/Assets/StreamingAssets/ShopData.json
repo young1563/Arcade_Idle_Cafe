@@ -1,28 +1,30 @@
 {
   "funitureData": [
     {
-      "id": "PROD_01",
-      "prefabName": "Chair_01",
-      "type": "Producer",
+      "id": "FRAME",
+      "prefabName": "Frame",
+      "folderPath": "ithappy/Furniture_Cute/Prefabs",
+      "type": "Decoration",
       "position": {
-        "x": -2.0,
-        "y": 0,
-        "z": 3.0
-      },
-      "rotation": 0.0,
-      "price": 0
-    },
-    {
-      "id": "SELL_01",
-      "prefabName": "Coffee_Table_01",
-      "type": "SellPoint",
-      "position": {
-        "x": 2.0,
-        "y": 0,
+        "x": 0.0,
+        "y": 0.0,
         "z": 0.0
       },
-      "rotation": 180.0,
-      "price": 500
+      "rotation": 0.0,
+      "price": 100
+    },
+    {
+      "id": "BATH_01",
+      "prefabName": "Bath_01",
+      "folderPath": "ithappy/Furniture_Cute/Prefabs/Bathroom",
+      "type": "Decoration",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotation": 0.0,
+      "price": 100
     }
   ]
 }
