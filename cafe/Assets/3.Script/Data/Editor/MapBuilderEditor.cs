@@ -103,7 +103,7 @@ public class MapBuilderEditor : EditorWindow
         var folders = libraryData.furnitureData
             .Select(e => e.folderPath.Split('/').Last())
             .Distinct().ToList();
-        folders.Insert(0, "All");
+        //folders.Insert(0, "All");
 
         int currentIndex = folders.IndexOf(selectedFolder);
         if (currentIndex == -1) currentIndex = 0;
