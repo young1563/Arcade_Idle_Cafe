@@ -963,6 +963,11 @@ MonoBehaviour:
     price: 100
     unlockOrder: 0
     isUnlocked: 0
+--- !u!1 &816986013 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6282068262803058513, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+  m_PrefabInstance: {fileID: 3304244726360310374}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &831119698
 GameObject:
   m_ObjectHideFlags: 0
@@ -1042,6 +1047,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &949955743 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5499434370606702092, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+  m_PrefabInstance: {fileID: 3304244726360310374}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &1039877535
 GameObject:
   m_ObjectHideFlags: 0
@@ -1457,6 +1473,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42844a4fccbd54746b90cade4ff70f73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1686963636 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6129021235023105035, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+  m_PrefabInstance: {fileID: 3304244726360310374}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &1691852518
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2149,9 +2176,37 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 77656197942541238, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2541663481844538939, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: canvasObj
+      value: 
+      objectReference: {fileID: 816986013}
+    - target: {fileID: 2541663481844538939, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: priceText
+      value: 
+      objectReference: {fileID: 1686963636}
+    - target: {fileID: 2541663481844538939, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: progressFill
+      value: 
+      objectReference: {fileID: 949955743}
+    - target: {fileID: 2923559321488199664, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3.51
+      objectReference: {fileID: 0}
+    - target: {fileID: 2923559321488199664, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: m_LocalScale.y
+      value: -0.0070512393
+      objectReference: {fileID: 0}
+    - target: {fileID: 2923559321488199664, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3.51
+      objectReference: {fileID: 0}
     - target: {fileID: 2923559321488199664, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.31
+      value: -15.91
       objectReference: {fileID: 0}
     - target: {fileID: 2923559321488199664, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2159,7 +2214,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2923559321488199664, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.7
+      value: 18.16
       objectReference: {fileID: 0}
     - target: {fileID: 2923559321488199664, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2188,6 +2243,42 @@ PrefabInstance:
     - target: {fileID: 2923559321488199664, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2923559321488199664, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5499434370606702092, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: m_FillAmount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6129021235023105035, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: m_text
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6129021235023105035, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: m_fontColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6129021235023105035, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: m_fontColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6129021235023105035, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: m_fontColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6129021235023105035, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278190080
+      objectReference: {fileID: 0}
+    - target: {fileID: 6129021235023105035, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: m_VerticalAlignment
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 6129021235023105035, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8530753019434012803, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
       propertyPath: m_Name
@@ -2344,6 +2435,7 @@ GameObject:
   - component: {fileID: 6939188290689576283}
   - component: {fileID: 2160566049522612602}
   - component: {fileID: 8884492159868570767}
+  - component: {fileID: 8884492159868570768}
   m_Layer: 0
   m_Name: Duzzonku_Producer
   m_TagString: Untagged
@@ -2397,6 +2489,35 @@ MonoBehaviour:
   zSpacing: 0.1
   yOffset: 0.1
   spawnedItems: []
+--- !u!114 &8884492159868570768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8884492159868570766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae63fa55d3c404648bba685b405ce0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnitureDataHolder
+  data:
+    id: 
+    prefabName: 
+    folderPath: 
+    type: 
+    position:
+      x: 0
+      y: 0
+      z: 0
+    scale:
+      x: 1
+      y: 1
+      z: 1
+    rotation: 0
+    price: 0
+    unlockOrder: 0
+    isUnlocked: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
