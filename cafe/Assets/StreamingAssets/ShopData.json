@@ -1,0 +1,20 @@
+{
+  "funitureData": [
+    {
+      "id": "PROD_01",
+      "prefabName": "Table_Producer",
+      "type": "Producer",
+      "position": { "x": -2.0, "y": 0, "z": 3.0 },
+      "rotation": 0.0,
+      "price": 0
+    },
+    {
+      "id": "SELL_01",
+      "prefabName": "Counter_SellPoint",
+      "type": "SellPoint",
+      "position": { "x": 2.0, "y": 0, "z": 0.0 },
+      "rotation": 180.0,
+      "price": 500
+    }
+  ]
+}
