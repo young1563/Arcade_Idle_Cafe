@@ -7,12 +7,14 @@ public class PlayerMovement : MonoBehaviour
     public float rotationSpeed = 720f;
 
     private Rigidbody rb;
+    private Animator anim;
     private Vector3 moveDirection;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        // 하이퍼캐주얼은 물리 충돌로 캐릭터가 넘어지면 안되므로 회전 고정
+        anim = GetComponent<Animator>(); // 컴포넌트 가져오기
+
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
     }
 
@@ -23,6 +25,14 @@ public class PlayerMovement : MonoBehaviour
         float z = joystick.Vertical;
 
         moveDirection = new Vector3(x, 0, z).normalized;
+
+        // 조이스틱의 입력 세기(0~1)를 애니메이터의 Speed 파라미터에 전달
+        // 0.1보다 커지면 스크린샷의 조건에 의해 Walk 애니메이션이 재생됩니다.
+        if (anim != null)
+        {
+            float inputMagnitude = new Vector2(x, z).magnitude;
+            anim.SetFloat("Speed", inputMagnitude);
+        }
     }
 
     void FixedUpdate()
