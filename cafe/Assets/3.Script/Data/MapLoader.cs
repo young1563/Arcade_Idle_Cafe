@@ -7,6 +7,9 @@ public class MapLoader : MonoBehaviour
     [Header("Data Settings")]
     public string jsonFileName = "MapData_Stage1.json";
 
+    [Header("Unlock Settings")]
+    public GameObject unlockZonePrefab; // 에디터에서 원형 결제구역 프리팹을 할당하세요.
+
     void Start()
     {
         LoadAndSpawnMasterData();
@@ -18,21 +21,17 @@ public class MapLoader : MonoBehaviour
 
         if (File.Exists(filePath))
         {
-            string jsonText = File.ReadAllText(filePath);
-            // 기존 ShopDataWrapper가 아닌 MasterDataWrapper로 파싱합니다.
+            string jsonText = File.ReadAllText(filePath);            
             MasterDataWrapper masterData = JsonUtility.FromJson<MasterDataWrapper>(jsonText);
 
             if (masterData == null) return;
-
-            // 1. 플레이어 위치 복구
+                        
             RestorePlayerPosition(masterData);
-
-            // 2. 가구 배치
+                        
             if (masterData.furnitureData != null)
             {
                 foreach (var entity in masterData.furnitureData)
-                {
-                    // 좌표가 (0,0,0)인 데이터는 배치되지 않은 것이므로 스킵합니다.
+                {                    
                     if (entity.position.x == 0 && entity.position.y == 0 && entity.position.z == 0)
                         continue;
 
@@ -77,6 +76,27 @@ public class MapLoader : MonoBehaviour
             // 데이터 보관을 위해 홀더 부착
             var holder = instance.AddComponent<FurnitureDataHolder>();
             holder.data = entity;
+
+            // 1. 해금 상태에 따라 가구의 활성화 여부 결정
+            instance.SetActive(entity.isUnlocked);
+
+            // 2. 해금되지 않은 가구라면 UnlockZone(결제 구역) 생성
+            if (!entity.isUnlocked && unlockZonePrefab != null)
+            {
+                CreateUnlockZone(instance, holder);
+            }
+        }
+    }
+    private void CreateUnlockZone(GameObject targetFurniture, FurnitureDataHolder holder)
+    {
+        // 가구의 위치와 동일한 곳(또는 약간 앞)에 결제 구역 생성
+        GameObject zoneObj = Instantiate(unlockZonePrefab, targetFurniture.transform.position, Quaternion.identity);
+
+        UnlockZone zone = zoneObj.GetComponent<UnlockZone>();
+        if (zone != null)
+        {
+            // 결제 구역이 어떤 가구를 담당하는지 연결
+            zone.targetFurniture = holder;
         }
     }
 }
