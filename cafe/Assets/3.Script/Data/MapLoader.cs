@@ -39,6 +39,7 @@ public class MapLoader : MonoBehaviour
                 }
             }
             Debug.Log("<color=green>통합 데이터 로드 완료!</color>");
+            UnlockManager.Instance.InitUnlockSystem();
         }
     }
 

@@ -374,6 +374,8 @@ MonoBehaviour:
   priceText: {fileID: 6129021235023105035}
   progressFill: {fileID: 5499434370606702092}
   canvasObj: {fileID: 6282068262803058513}
+  animationDuration: 0.6
+  bounceEaseType: 27
 --- !u!1 &8597405391569039828
 GameObject:
   m_ObjectHideFlags: 0
