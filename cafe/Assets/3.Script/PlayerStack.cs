@@ -8,6 +8,7 @@ public class PlayerStack : MonoBehaviour
     public List<GameObject> stackedItems = new List<GameObject>();
     public float itemHeight = 0.3f;
     public int maxCapacity = 10; // 최대 소지 개수
+    public Animator animator; // 플레이어의 Animator 컴포넌트 연결
 
     [Header("수집 설정")]
     public float collectInterval = 0.1f; // 아이템 간 수집 간격
@@ -54,6 +55,8 @@ public class PlayerStack : MonoBehaviour
                 item.transform.localRotation = Quaternion.identity;
                 item.transform.localPosition = new Vector3(0, targetY, 0);
             });
+
+        UpdateAnimator(); // 애니메이션 상태 갱신
     }
 
     public GameObject RemoveStack()
@@ -65,6 +68,18 @@ public class PlayerStack : MonoBehaviour
 
         // 제거할 때도 트윈을 꺼주는 것이 안전합니다.
         lastItem.transform.DOKill();
+
+        UpdateAnimator(); // 애니메이션 상태 갱신
         return lastItem;
+    }
+
+    private void UpdateAnimator()
+    {
+        if (animator == null) return;
+
+        // 아이템이 하나라도 있으면 true, 없으면 false
+        bool isCarrying = stackedItems.Count > 0;
+        Debug.Log($"애니메이터 갱신 중: {isCarrying}"); // 이 로그가 찍히는지 확인
+        animator.SetBool("IsCarrying", isCarrying);
     }
 }

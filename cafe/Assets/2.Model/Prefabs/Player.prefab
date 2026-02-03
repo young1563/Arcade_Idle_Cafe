@@ -1548,9 +1548,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStack
   stackParent: {fileID: 6280708867835623427}
-  collectedItems: []
-  maxCapacity: 15
-  yOffset: 0.3
+  stackedItems: []
+  itemHeight: 0.3
+  maxCapacity: 4
+  animator: {fileID: 4434343663716319017}
+  collectInterval: 0.1
 --- !u!1 &6314734736525342179
 GameObject:
   m_ObjectHideFlags: 0
