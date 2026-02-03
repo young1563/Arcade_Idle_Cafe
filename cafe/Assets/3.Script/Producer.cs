@@ -81,8 +81,14 @@ public class Producer : MonoBehaviour
     public GameObject GiveItem()
     {
         if (spawnedItems.Count == 0) return null;
-        GameObject item = spawnedItems[spawnedItems.Count - 1];
-        spawnedItems.RemoveAt(spawnedItems.Count - 1);
+
+        // 가장 마지막에 생성된(가장 위에 있는) 아이템 선택
+        int lastIndex = spawnedItems.Count - 1;
+        GameObject item = spawnedItems[lastIndex];
+        spawnedItems.RemoveAt(lastIndex);
+
+        // 생산기와의 부모 관계를 끊어야 플레이어에게 붙을 수 있음
+        item.transform.SetParent(null);
         return item;
     }
 }

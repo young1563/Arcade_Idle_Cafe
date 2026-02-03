@@ -1,37 +1,70 @@
 using UnityEngine;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class PlayerStack : MonoBehaviour
 {
     public Transform stackParent;
-    public List<GameObject> collectedItems = new List<GameObject>();
-    public int maxCapacity = 15;
-    public float yOffset = 0.3f;
+    public List<GameObject> stackedItems = new List<GameObject>();
+    public float itemHeight = 0.3f;
+    public int maxCapacity = 10; // 최대 소지 개수
+
+    [Header("수집 설정")]
+    public float collectInterval = 0.1f; // 아이템 간 수집 간격
+    private float lastCollectTime;
 
     void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Producer") && collectedItems.Count < maxCapacity)
+        // 1. 수집 간격 체크 및 용량 체크
+        if (Time.time - lastCollectTime < collectInterval) return;
+        if (stackedItems.Count >= maxCapacity) return;
+
+        if (other.CompareTag("Producer"))
         {
             if (other.TryGetComponent(out Producer producer))
             {
                 GameObject item = producer.GiveItem();
-                if (item != null) AddToStack(item);
+                if (item != null)
+                {
+                    AddStack(item);
+                    lastCollectTime = Time.time; // 시간 갱신
+                }
             }
         }
     }
 
-    void AddToStack(GameObject item)
+    public void AddStack(GameObject item)
     {
-        collectedItems.Add(item);
+        stackedItems.Add(item);
+
+        // 2. 물리 컴포넌트 비활성화 (필수)
+        if (item.TryGetComponent(out Rigidbody rb)) rb.isKinematic = true;
+        if (item.TryGetComponent(out Collider col)) col.enabled = false;
+
         item.transform.SetParent(stackParent);
 
-        // 등에 쌓이는 위치 계산
-        Vector3 targetLocalPos = new Vector3(0, (collectedItems.Count - 1) * yOffset, 0);
+        float targetY = (stackedItems.Count - 1) * itemHeight;
 
-        // 이동 연출 (부드럽게 촥!)
-        item.transform.localPosition = targetLocalPos;
-        item.transform.localRotation = Quaternion.identity;
+        // 3. 기존 트윈이 있다면 제거 (안정성)
+        item.transform.DOKill();
 
-        // 햅틱 효과 대신 작게 점프하는 연출 추가 가능
+        item.transform.DOLocalJump(new Vector3(0, targetY, 0), 2f, 1, 0.2f)
+            .SetEase(Ease.OutQuad)
+            .OnComplete(() => {
+                item.transform.localRotation = Quaternion.identity;
+                item.transform.localPosition = new Vector3(0, targetY, 0);
+            });
+    }
+
+    public GameObject RemoveStack()
+    {
+        if (stackedItems.Count == 0) return null;
+
+        GameObject lastItem = stackedItems[stackedItems.Count - 1];
+        stackedItems.RemoveAt(stackedItems.Count - 1);
+
+        // 제거할 때도 트윈을 꺼주는 것이 안전합니다.
+        lastItem.transform.DOKill();
+        return lastItem;
     }
 }
