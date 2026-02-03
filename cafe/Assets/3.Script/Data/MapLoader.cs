@@ -12,6 +12,9 @@ public class MapLoader : MonoBehaviour
 
     void Start()
     {
+        Debug.Log($"파일명: {jsonFileName}");
+        Debug.Log($"StreamingAssets 경로: {Application.streamingAssetsPath}");
+
         LoadAndSpawnMasterData();
     }
 
@@ -54,7 +57,8 @@ public class MapLoader : MonoBehaviour
 
             player.transform.position = data.playerPosition.ToVector3();
             player.transform.eulerAngles = new Vector3(0, data.playerRotation, 0);
-
+                        
+            Debug.Log(data.playerPosition.ToVector3());
             if (cc != null) cc.enabled = true;
             Debug.Log("플레이어 위치 복구 완료.");
         }
