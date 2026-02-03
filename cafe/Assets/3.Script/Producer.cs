@@ -1,22 +1,22 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening; // DOTween 필수
 
 public class Producer : MonoBehaviour
 {
     [Header("Item Settings")]
     public GameObject itemPrefab;
     public Transform stackPoint;
-    public AnimationCurve produceCurve;
+    public AnimationCurve produceCurve; // 0에서 1로 가는 커브 추천
     public float produceSpeed = 0.5f;
-    public int maxCapacity = 36; // 예: 4x3x3층 = 36개
+    public int maxCapacity = 24;
 
     [Header("Grid Settings")]
-    public int columns = 4;      // 가로(X) 개수
-    public int rows = 3;         // 세로(Z) 개수
-    public float xSpacing = 0.6f; // 가로 간격
-    public float zSpacing = 0.6f; // 세로 간격
-    public float yOffset = 0.5f;  // 층간 높이 간격
+    public int columns = 4;
+    public int rows = 3;
+    public float xSpacing = 0.6f;
+    public float zSpacing = 0.6f;
+    public float yOffset = 0.5f;
 
     public List<GameObject> spawnedItems = new List<GameObject>();
     private float _timer;
@@ -36,58 +36,54 @@ public class Producer : MonoBehaviour
 
     void ProduceItem()
     {
-        // 핵심 로직: 현재 아이템 인덱스로 그리드 위치 계산
         int index = spawnedItems.Count;
 
-        // 1. 몇 번째 층인지 계산 (Y)
+        // 그리드 위치 계산
         int layer = index / (columns * rows);
-        // 2. 해당 층 내에서 몇 번째 칸인지 계산
         int remaining = index % (columns * rows);
-        // 3. 해당 칸의 행(Z)과 열(X) 계산
         int row = remaining / columns;
         int col = remaining % columns;
 
-        // 최종 좌표값 계산 (StackPoint 기준 Local 좌표)
         Vector3 localPos = new Vector3(
             col * xSpacing,
             layer * yOffset,
             row * zSpacing
         );
 
-        // 생성 (StackPoint를 부모로 하여 좌표 적용)
+        // 생성
         GameObject item = Instantiate(itemPrefab, stackPoint);
+        // 1. 프리팹이 가진 원래 스케일(25, 25, 25)을 변수에 담습니다.
+        Vector3 originalScale = item.transform.localScale;
+
         item.transform.localPosition = localPos;
         item.transform.localRotation = Quaternion.identity;
 
+        // 2. 시작은 0으로
+        item.transform.localScale = Vector3.zero;
+
+        // 3. Vector3.one 대신 저장해둔 originalScale로 키웁니다.
+        item.transform.DOScale(originalScale, 0.3f).SetEase(produceCurve);
+
         spawnedItems.Add(item);
-        StartCoroutine(ProduceAnimation(item.transform));
-    }
-
-    IEnumerator ProduceAnimation(Transform t)
-    {
-        float elapsed = 0;
-        float duration = 0.3f;
-        Vector3 originalScale = new Vector3(10, 10, 10); // 설정하신 스케일
-
-        while (elapsed < duration)
-        {
-            t.localScale = originalScale * produceCurve.Evaluate(elapsed / duration);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        t.localScale = originalScale;
     }
 
     public GameObject GiveItem()
     {
         if (spawnedItems.Count == 0) return null;
 
-        // 가장 마지막에 생성된(가장 위에 있는) 아이템 선택
         int lastIndex = spawnedItems.Count - 1;
         GameObject item = spawnedItems[lastIndex];
         spawnedItems.RemoveAt(lastIndex);
 
-        // 생산기와의 부모 관계를 끊어야 플레이어에게 붙을 수 있음
+        // [핵심] 가져가는 순간 애니메이션 강제 종료 및 크기 고정
+        // DOKill()을 해주면 더 이상 스케일이 변하지 않습니다.
+        item.transform.DOKill();
+        // 여기서도 Vector3.one 대신 실제 프리팹의 스케일로 고정해야 합니다.
+        // 만약 모든 디저트가 똑같이 25라면 직접 넣어도 되지만, 
+        // 프리팹마다 다를 수 있으니 아래처럼 처리하는게 가장 안전합니다.
+        item.transform.localScale = itemPrefab.transform.localScale;
+
+        // 부모 해제
         item.transform.SetParent(null);
         return item;
     }
