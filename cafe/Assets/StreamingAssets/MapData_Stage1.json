@@ -1,131 +1,11 @@
 {
     "playerPosition": {
-        "x": -14.672558784484864,
-        "y": -0.03999984264373779,
-        "z": 3.1131768226623537
+        "x": -16.440000534057618,
+        "y": 0.0,
+        "z": 4.340000152587891
     },
-    "playerRotation": 142.56143188476563,
+    "playerRotation": 0.0,
     "furnitureData": [
-        {
-            "id": "KITCHEN_A_06",
-            "prefabName": "Kitchen_A_06",
-            "folderPath": "ithappy/Furniture_Cute/Prefabs/Kitchen",
-            "type": "Decoration",
-            "position": {
-                "x": -16.982379913330079,
-                "y": -2.1941642050837883e-16,
-                "z": 0.0
-            },
-            "scale": {
-                "x": 8.849410057067871,
-                "y": 3.1477999687194826,
-                "z": 3.1477999687194826
-            },
-            "rotation": 0.0,
-            "price": 100,
-            "unlockOrder": 0,
-            "isUnlocked": false
-        },
-        {
-            "id": "PANEL_WHITE_01",
-            "prefabName": "Panel_White_01",
-            "folderPath": "ithappy/Furniture_Cute/Prefabs/Wall Panels",
-            "type": "Decoration",
-            "position": {
-                "x": 30.700000762939454,
-                "y": 0.0,
-                "z": 29.969999313354493
-            },
-            "scale": {
-                "x": 16.06999969482422,
-                "y": 8.813109397888184,
-                "z": 16.06999969482422
-            },
-            "rotation": 0.0,
-            "price": 100,
-            "unlockOrder": 0,
-            "isUnlocked": false
-        },
-        {
-            "id": "KITCHEN_A_05",
-            "prefabName": "Kitchen_A_05",
-            "folderPath": "ithappy/Furniture_Cute/Prefabs/Kitchen",
-            "type": "Decoration",
-            "position": {
-                "x": -10.992380142211914,
-                "y": -7.756814328764398e-16,
-                "z": 22.456871032714845
-            },
-            "scale": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
-            },
-            "rotation": 0.0,
-            "price": 100,
-            "unlockOrder": 0,
-            "isUnlocked": true
-        },
-        {
-            "id": "KITCHEN_B_05",
-            "prefabName": "Kitchen_B_05",
-            "folderPath": "ithappy/Furniture_Cute/Prefabs/Kitchen",
-            "type": "Decoration",
-            "position": {
-                "x": -31.852378845214845,
-                "y": -8.370606166080386e-16,
-                "z": 23.796871185302736
-            },
-            "scale": {
-                "x": 5.101200103759766,
-                "y": 5.101200103759766,
-                "z": 5.101200103759766
-            },
-            "rotation": 90.0,
-            "price": 100,
-            "unlockOrder": 0,
-            "isUnlocked": false
-        },
-        {
-            "id": "FLOOR_01",
-            "prefabName": "Floor_01",
-            "folderPath": "ithappy/Furniture_Cute/Prefabs/Floor",
-            "type": "Decoration",
-            "position": {
-                "x": -2.5,
-                "y": 0.0,
-                "z": -3.5999999046325685
-            },
-            "scale": {
-                "x": 16.972000122070314,
-                "y": 16.972000122070314,
-                "z": 16.972000122070314
-            },
-            "rotation": 0.0,
-            "price": 100,
-            "unlockOrder": 0,
-            "isUnlocked": false
-        },
-        {
-            "id": "PANEL_WHITE_02",
-            "prefabName": "Panel_White_02",
-            "folderPath": "ithappy/Furniture_Cute/Prefabs/Wall Panels",
-            "type": "Decoration",
-            "position": {
-                "x": 31.0,
-                "y": 0.0,
-                "z": -3.700000286102295
-            },
-            "scale": {
-                "x": 33.85321044921875,
-                "y": 8.619099617004395,
-                "z": 8.619099617004395
-            },
-            "rotation": 90.0,
-            "price": 100,
-            "unlockOrder": 0,
-            "isUnlocked": false
-        },
         {
             "id": "PANEL_WHITE_02 (4)",
             "prefabName": "Panel_White_02",
@@ -133,26 +13,6 @@
             "type": "Decoration",
             "position": {
                 "x": 18.5,
-                "y": 0.0,
-                "z": -37.400001525878909
-            },
-            "scale": {
-                "x": 12.6973237991333,
-                "y": 8.619099617004395,
-                "z": 8.619099617004395
-            },
-            "rotation": 0.0,
-            "price": 100,
-            "unlockOrder": 0,
-            "isUnlocked": false
-        },
-        {
-            "id": "PANEL_WHITE_02 (3)",
-            "prefabName": "Panel_White_02",
-            "folderPath": "ithappy/Furniture_Cute/Prefabs/Wall Panels",
-            "type": "Decoration",
-            "position": {
-                "x": -23.5,
                 "y": 0.0,
                 "z": -37.400001525878909
             },
@@ -187,21 +47,81 @@
             "isUnlocked": false
         },
         {
-            "id": "COFFEE_TABLE_04",
-            "prefabName": "Coffee_Table_04",
-            "folderPath": "ithappy/Furniture_Cute/Prefabs/Table",
-            "type": "Producer",
+            "id": "KITCHEN_B_05",
+            "prefabName": "Kitchen_B_05",
+            "folderPath": "ithappy/Furniture_Cute/Prefabs/Kitchen",
+            "type": "Decoration",
             "position": {
-                "x": -27.312379837036134,
-                "y": 2.754383061370514e-16,
-                "z": -14.193129539489746
+                "x": -31.852378845214845,
+                "y": -8.370606166080386e-16,
+                "z": 23.796871185302736
             },
             "scale": {
-                "x": 6.034705638885498,
-                "y": 6.034705638885498,
-                "z": 6.034705638885498
+                "x": 5.101200103759766,
+                "y": 5.101200103759766,
+                "z": 5.101200103759766
+            },
+            "rotation": 90.0,
+            "price": 100,
+            "unlockOrder": 0,
+            "isUnlocked": false
+        },
+        {
+            "id": "PANEL_WHITE_02",
+            "prefabName": "Panel_White_02",
+            "folderPath": "ithappy/Furniture_Cute/Prefabs/Wall Panels",
+            "type": "Decoration",
+            "position": {
+                "x": 31.0,
+                "y": 0.0,
+                "z": -3.700000286102295
+            },
+            "scale": {
+                "x": 33.85321044921875,
+                "y": 8.619099617004395,
+                "z": 8.619099617004395
+            },
+            "rotation": 90.0,
+            "price": 100,
+            "unlockOrder": 0,
+            "isUnlocked": false
+        },
+        {
+            "id": "PANEL_WHITE_01",
+            "prefabName": "Panel_White_01",
+            "folderPath": "ithappy/Furniture_Cute/Prefabs/Wall Panels",
+            "type": "Decoration",
+            "position": {
+                "x": 30.700000762939454,
+                "y": 0.0,
+                "z": 29.969999313354493
+            },
+            "scale": {
+                "x": 16.06999969482422,
+                "y": 8.813109397888184,
+                "z": 16.06999969482422
             },
             "rotation": 0.0,
+            "price": 100,
+            "unlockOrder": 0,
+            "isUnlocked": false
+        },
+        {
+            "id": "FRIDGE_01",
+            "prefabName": "Fridge_01",
+            "folderPath": "ithappy/Furniture_Cute/Prefabs/Kitchen",
+            "type": "Decoration",
+            "position": {
+                "x": -15.892379760742188,
+                "y": -1.1348352609735248e-15,
+                "z": 22.926870346069337
+            },
+            "scale": {
+                "x": 6.912496566772461,
+                "y": 6.912496566772461,
+                "z": 6.912496566772461
+            },
+            "rotation": 180.1918487548828,
             "price": 100,
             "unlockOrder": 0,
             "isUnlocked": false
@@ -227,6 +147,106 @@
             "isUnlocked": false
         },
         {
+            "id": "KITCHEN_A_05",
+            "prefabName": "Kitchen_A_05",
+            "folderPath": "ithappy/Furniture_Cute/Prefabs/Kitchen",
+            "type": "Decoration",
+            "position": {
+                "x": -10.992380142211914,
+                "y": -7.756814328764398e-16,
+                "z": 22.456871032714845
+            },
+            "scale": {
+                "x": 4.093599796295166,
+                "y": 4.093599796295166,
+                "z": 4.093599796295166
+            },
+            "rotation": 0.0,
+            "price": 100,
+            "unlockOrder": 0,
+            "isUnlocked": false
+        },
+        {
+            "id": "KITCHEN_A_06",
+            "prefabName": "Kitchen_A_06",
+            "folderPath": "ithappy/Furniture_Cute/Prefabs/Kitchen",
+            "type": "Decoration",
+            "position": {
+                "x": -16.982379913330079,
+                "y": -2.1941642050837883e-16,
+                "z": 0.29686999320983889
+            },
+            "scale": {
+                "x": 8.849410057067871,
+                "y": 3.1477999687194826,
+                "z": 3.1477999687194826
+            },
+            "rotation": 0.0,
+            "price": 100,
+            "unlockOrder": 0,
+            "isUnlocked": false
+        },
+        {
+            "id": "PANEL_WHITE_02 (3)",
+            "prefabName": "Panel_White_02",
+            "folderPath": "ithappy/Furniture_Cute/Prefabs/Wall Panels",
+            "type": "Decoration",
+            "position": {
+                "x": -23.5,
+                "y": 0.0,
+                "z": -37.400001525878909
+            },
+            "scale": {
+                "x": 12.6973237991333,
+                "y": 8.619099617004395,
+                "z": 8.619099617004395
+            },
+            "rotation": 0.0,
+            "price": 100,
+            "unlockOrder": 0,
+            "isUnlocked": false
+        },
+        {
+            "id": "COFFEE_TABLE_04",
+            "prefabName": "Coffee_Table_04",
+            "folderPath": "ithappy/Furniture_Cute/Prefabs/Table",
+            "type": "Producer",
+            "position": {
+                "x": -27.312379837036134,
+                "y": 2.754383061370514e-16,
+                "z": -14.193129539489746
+            },
+            "scale": {
+                "x": 6.034705638885498,
+                "y": 6.034705638885498,
+                "z": 6.034705638885498
+            },
+            "rotation": 0.0,
+            "price": 100,
+            "unlockOrder": 0,
+            "isUnlocked": false
+        },
+        {
+            "id": "FLOOR_01",
+            "prefabName": "Floor_01",
+            "folderPath": "ithappy/Furniture_Cute/Prefabs/Floor",
+            "type": "Decoration",
+            "position": {
+                "x": -2.5,
+                "y": 0.0,
+                "z": -3.5999999046325685
+            },
+            "scale": {
+                "x": 16.972000122070314,
+                "y": 16.972000122070314,
+                "z": 16.972000122070314
+            },
+            "rotation": 0.0,
+            "price": 100,
+            "unlockOrder": 0,
+            "isUnlocked": false
+        },
+        {
             "id": "PANEL_WHITE_02 (2)",
             "prefabName": "Panel_White_02",
             "folderPath": "ithappy/Furniture_Cute/Prefabs/Wall Panels",
@@ -242,26 +262,6 @@
                 "z": 8.619099617004395
             },
             "rotation": 0.0,
-            "price": 100,
-            "unlockOrder": 0,
-            "isUnlocked": false
-        },
-        {
-            "id": "FRIDGE_01",
-            "prefabName": "Fridge_01",
-            "folderPath": "ithappy/Furniture_Cute/Prefabs/Kitchen",
-            "type": "Decoration",
-            "position": {
-                "x": -15.892379760742188,
-                "y": -1.1348352609735248e-15,
-                "z": 22.926870346069337
-            },
-            "scale": {
-                "x": 6.912496566772461,
-                "y": 6.912496566772461,
-                "z": 6.912496566772461
-            },
-            "rotation": 180.1918487548828,
             "price": 100,
             "unlockOrder": 0,
             "isUnlocked": false

@@ -70,21 +70,18 @@ public class UnlockZone : MonoBehaviour
 
     void TryUnlock()
     {
-        // 1. 플레이어에게 돈이 있는지 확인
         if (MoneyManager.Instance.currentMoney <= 0) return;
 
-        // 2. 결제량 계산 (초당 결제 속도 조절)
-        // 예: 1초에 전체 가격의 50%만큼 결제 (2초면 해금 완료)
-        float payRate = 0.5f;
-        int amountToPay = Mathf.CeilToInt(totalPrice * Time.deltaTime * payRate);
+        // 초당 50원이 빠져나가게 설정 (예시)
+        float paySpeed = 50f;
+        int amountToPay = Mathf.Max(1, Mathf.FloorToInt(paySpeed * Time.deltaTime));
 
-        // 3. 실제 돈이 충분할 때만 진행
+        // 실제 결제 시도
         if (MoneyManager.Instance.TrySpendMoney(amountToPay))
         {
             currentPaid += amountToPay;
             UpdateUI();
 
-            // 4. 결제 완료 체크
             if (currentPaid >= totalPrice)
             {
                 DoUnlock();

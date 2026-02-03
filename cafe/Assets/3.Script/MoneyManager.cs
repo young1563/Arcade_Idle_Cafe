@@ -1,34 +1,67 @@
 ﻿using UnityEngine;
+using TMPro;
+using DG.Tweening;
 
 public class MoneyManager : MonoBehaviour
 {
-    public static MoneyManager Instance; // 싱글톤 인스턴스
+    public static MoneyManager Instance;
 
-    [Header("Player Data")]
-    public int currentMoney = 5000; // 초기 자금 (테스트용)
+    [Header("UI Reference")]
+    public TextMeshProUGUI moneyText;
+
+    [Header("Settings")]
+    [SerializeField] private int _currentMoney = 0;
+
+    // 언락존에서 'currentMoney'로 접근하고 있으므로 프로퍼티 제공
+    public int currentMoney => _currentMoney;
 
     void Awake()
     {
-        // 싱글톤 초기화
         if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        UpdateUI();
     }
 
-    // 돈을 사용할 수 있는지 확인하고 차감하는 함수
+    /// <summary>
+    /// 돈을 추가할 때 호출 (판매 완료 시)
+    /// </summary>
+    public void AddMoney(int amount)
+    {
+        _currentMoney += amount;
+        UpdateUI();
+        PlayMoneyEffect();
+    }
+
+    /// <summary>
+    /// 언락존에서 결제를 시도할 때 호출
+    /// </summary>
+    /// <param name="amount">차감할 금액</param>
+    /// <returns>차감 성공 여부</returns>
     public bool TrySpendMoney(int amount)
     {
-        if (currentMoney >= amount)
+        if (_currentMoney >= amount)
         {
-            currentMoney -= amount;
-            // TODO: 여기서 UIManager.Instance.UpdateGold(currentMoney)를 호출하여 UI 갱신
+            _currentMoney -= amount;
+            UpdateUI();
             return true;
         }
+
+        // 돈이 부족하면 실패 반환
         return false;
     }
 
-    // 돈을 추가하는 함수 (나중에 수익 발생 시 사용)
-    public void AddMoney(int amount)
+    private void UpdateUI()
     {
-        currentMoney += amount;
+        if (moneyText != null)
+            moneyText.text = _currentMoney.ToString("N0");
+    }
+
+    private void PlayMoneyEffect()
+    {
+        if (moneyText == null) return;
+
+        moneyText.transform.DOKill();
+        moneyText.transform.localScale = Vector3.one;
+        // 텍스트가 톡톡 튀는 효과
+        moneyText.transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.15f);
     }
 }
