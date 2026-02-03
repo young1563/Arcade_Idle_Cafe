@@ -1,44 +1,78 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 
 public class Counter : MonoBehaviour
 {
-    public Transform sellPoint; // 아이템이 날아와서 사라질 지점
-    public float sellInterval = 0.1f; // 판매 속도
-    public int pricePerItem = 10;
+    [Header("Display Settings")]
+    public Transform counterStackPoint; // 카운터 위 아이템이 쌓일 시작점
+    public int columns = 3;
+    public int rows = 2;
+    public float xSpacing = 0.5f;
+    public float zSpacing = 0.5f;
+    public float yOffset = 0.3f;
+    public int maxCounterCapacity = 24;
 
-    private bool _isSelling = false;
+    [Header("Logic Settings")]
+    public float transferSpeed = 0.1f; // 아이템이 옮겨지는 간격
+    public List<GameObject> counterItems = new List<GameObject>();
+
+    private float _timer;
 
     void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Player") && !_isSelling)
+        // 플레이어가 카운터에 있고, 카운터에 공간이 있을 때
+        if (other.CompareTag("Player") && counterItems.Count < maxCounterCapacity)
         {
-            PlayerStack stack = other.GetComponent<PlayerStack>();
-            if (stack != null && stack.stackedItems.Count > 0)
+            _timer += Time.deltaTime;
+            if (_timer >= transferSpeed)
             {
-                StartCoroutine(SellRoutine(stack));
+                PlayerStack playerStack = other.GetComponent<PlayerStack>();
+                if (playerStack != null && playerStack.stackedItems.Count > 0)
+                {
+                    // 플레이어 스택에서 하나 꺼내기
+                    GameObject item = playerStack.RemoveStack();
+                    if (item != null)
+                    {
+                        PlaceOnCounter(item);
+                    }
+                }
+                _timer = 0;
             }
         }
     }
 
-    IEnumerator SellRoutine(PlayerStack stack)
+    void PlaceOnCounter(GameObject item)
     {
-        _isSelling = true;
+        int index = counterItems.Count;
+        counterItems.Add(item);
 
-        GameObject item = stack.RemoveStack();
-        if (item != null)
-        {
-            // 판매 연출: 판매대로 날아감
-            item.transform.SetParent(null);
-            item.transform.DOJump(sellPoint.position, 2f, 1, 0.2f).OnComplete(() => {
-                Destroy(item);
-                // MoneyManager.Instance.AddMoney(pricePerItem); // 돈 매니저 연결 시 사용
-                Debug.Log($"아이템 판매! +{pricePerItem}");
-            });
-        }
+        // 카운터 그리드 좌표 계산
+        int layer = index / (columns * rows);
+        int remaining = index % (columns * rows);
+        int row = remaining / columns;
+        int col = remaining % columns;
 
-        yield return new WaitForSeconds(sellInterval);
-        _isSelling = false;
+        Vector3 targetLocalPos = new Vector3(col * xSpacing, layer * yOffset, row * zSpacing);
+
+        // 부모 설정 및 이동 연출
+        item.transform.SetParent(counterStackPoint);
+        item.transform.DOLocalJump(targetLocalPos, 2f, 1, 0.2f).OnComplete(() => {
+            item.transform.localRotation = Quaternion.identity;
+        });
+    }
+
+    // 손님이 가져갈 때 호출할 함수
+    public GameObject GiveToCustomer()
+    {
+        if (counterItems.Count == 0) return null;
+
+        int lastIndex = counterItems.Count - 1;
+        GameObject item = counterItems[lastIndex];
+        counterItems.RemoveAt(lastIndex);
+
+        item.transform.SetParent(null);
+        return item;
     }
 }

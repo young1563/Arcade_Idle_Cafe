@@ -3840,21 +3840,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 321981076}
     m_Modifications:
+    - target: {fileID: 315098322503108069, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
+      propertyPath: data.id
+      value: KITCHEN_A_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 3474028647114711275, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
+      propertyPath: m_Size.z
+      value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4606295752047895166, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
+      propertyPath: rows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4606295752047895166, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
+      propertyPath: columns
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4606295752047895166, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
+      propertyPath: counterStackPoint
+      value: 
+      objectReference: {fileID: 1942229346}
+    - target: {fileID: 4606295752047895166, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
+      propertyPath: maxCounterCapacity
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8282467569475671150, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
       propertyPath: m_Name
       value: KITCHEN_A_06
-      objectReference: {fileID: 0}
-    - target: {fileID: 8771583755446521556, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 8.84941
-      objectReference: {fileID: 0}
-    - target: {fileID: 8771583755446521556, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 3.1478
-      objectReference: {fileID: 0}
-    - target: {fileID: 8771583755446521556, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 3.1478
       objectReference: {fileID: 0}
     - target: {fileID: 8771583755446521556, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3866,7 +3878,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8771583755446521556, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.67687
+      value: -0.38
       objectReference: {fileID: 0}
     - target: {fileID: 8771583755446521556, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3899,50 +3911,18 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8282467569475671150, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1942229347}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
 --- !u!4 &1942229345 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8771583755446521556, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
   m_PrefabInstance: {fileID: 1942229344}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1942229346 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8282467569475671150, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
+--- !u!4 &1942229346 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5231898047256351885, guid: 4a63eee0651ba22448a4bcf13a334c96, type: 3}
   m_PrefabInstance: {fileID: 1942229344}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1942229347
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1942229346}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae63fa55d3c404648bba685b405ce0ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FurnitureDataHolder
-  data:
-    id: KITCHEN_A_06
-    prefabName: Kitchen_A_06
-    folderPath: ithappy/Furniture_Cute/Prefabs/Kitchen
-    type: Decoration
-    position:
-      x: -16.98238
-      y: -2.1941642e-16
-      z: 0
-    scale:
-      x: 8.84941
-      y: 3.1478
-      z: 3.1478
-    rotation: 0
-    price: 100
-    unlockOrder: 0
-    isUnlocked: 0
 --- !u!1 &1980638154
 GameObject:
   m_ObjectHideFlags: 0
@@ -4410,6 +4390,21 @@ PrefabInstance:
       propertyPath: joystick
       value: 
       objectReference: {fileID: 1579979862}
+    - target: {fileID: 4434343663716319017, guid: 8b0b2b0558037f642b55923e0eb29266, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: 5558dc79d0852db43b267dac26e05346, type: 3}
+    - target: {fileID: 4434343663716319017, guid: 8b0b2b0558037f642b55923e0eb29266, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'arm_stretch.l'\n\tTransform 'spine_02.x'\n\tTransform
+        'spine_01.x'\n\tTransform 'toes_01.r'\n\tTransform 'thigh_stretch.r'\n\tTransform
+        'c_index2.r'\n\tTransform 'c_middle2.r'\n\tTransform 'root.x'\n\tTransform
+        'c_pinky2.l'\n\tTransform 'c_middle3.r'\n\tand more ...\n\tFrom animation
+        clip 'root_idle_bot_remap'\n\tFrom animation clip 'root_walk_bot_remap'\n\tFrom
+        animation clip 'root_drip'"
+      objectReference: {fileID: 0}
     - target: {fileID: 5242935293053478208, guid: 8b0b2b0558037f642b55923e0eb29266, type: 3}
       propertyPath: m_LocalPosition.x
       value: -16.44
