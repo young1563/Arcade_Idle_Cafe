@@ -36,7 +36,13 @@ public class UnlockZone : MonoBehaviour
         // 이미 해금된 상태라면 이 구역은 파괴
         if (targetFurniture.data.isUnlocked)
         {
-            gameObject.SetActive(false);
+            targetFurniture.gameObject.SetActive(true); // 가구는 보이고
+            gameObject.SetActive(false); // 언락존은 파괴(비활성화)
+        }
+        // 2. 아직 해금되지 않은 상태라면 (추가된 부분)
+        else
+        {
+            targetFurniture.gameObject.SetActive(false); // 가구를 숨깁니다.
         }
     }
 

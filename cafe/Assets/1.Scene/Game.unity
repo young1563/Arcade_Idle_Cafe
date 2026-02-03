@@ -3917,7 +3917,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7838482250644203254, guid: 2e7553a418ee64449994ece4ffc6211a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -24.6
+      value: -10.63
       objectReference: {fileID: 0}
     - target: {fileID: 7838482250644203254, guid: 2e7553a418ee64449994ece4ffc6211a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3925,7 +3925,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7838482250644203254, guid: 2e7553a418ee64449994ece4ffc6211a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -19.1
+      value: 17.39
       objectReference: {fileID: 0}
     - target: {fileID: 7838482250644203254, guid: 2e7553a418ee64449994ece4ffc6211a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3979,7 +3979,7 @@ PrefabInstance:
     - target: {fileID: 2541663481844538939, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
       propertyPath: targetFurniture
       value: 
-      objectReference: {fileID: 783330410}
+      objectReference: {fileID: 1640296121}
     - target: {fileID: 2923559321488199664, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
       propertyPath: m_LocalPosition.x
       value: -15.91
@@ -4020,6 +4020,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4370180907603784074, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 94096d3e629e4af4d8dd51a75b69bbc1, type: 2}
     - target: {fileID: 8530753019434012803, guid: cbf21ddca7943a049a28fe032ea69b03, type: 3}
       propertyPath: m_Name
       value: UnlockZone
