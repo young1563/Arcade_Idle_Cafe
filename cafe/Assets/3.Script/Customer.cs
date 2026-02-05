@@ -1,104 +1,140 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 
 public class Customer : MonoBehaviour
 {
-    [Header("Movement & Detection")]
+    [Header("Model Settings")]
+    // 프로젝트 창의 모델 프리팹들을 여기에 드래그해서 넣으세요
+    public List<GameObject> characterPrefabs = new List<GameObject>();
+    public Transform itemHoldPoint; // 아이템이 붙을 위치 (머리 위 등)
+
+    [Header("Movement Settings")]
     public float moveSpeed = 3f;
-    public float buyInterval = 0.5f; // 카운터에서 아이템을 체크하는 간격
+    public float buyInterval = 0.5f;
 
-    [Header("Money Settings")]
-    public GameObject moneyPrefab;   // 생성할 돈 프리팹
-    public int rewardAmount = 50;    // 아이템 하나당 가격
+    [Header("Reward Settings")]
+    public GameObject moneyPrefab;
+    public int rewardAmount = 50;
 
-    private Counter _targetCounter;  // 감지된 카운터
-    private bool _hasPurchased = false; // 구매 완료 여부
-    private Transform _itemHoldPoint; // 손님이 아이템을 들 위치 (머리 위 등)
+    private Transform _targetCounter;
+    private GameObject _currentModel;
+    private bool _isWaiting = false;
 
-    void Awake()
+    /// <summary>
+    /// Spawner에서 생성 직후 호출하여 목적지와 모델을 설정합니다.
+    /// </summary>
+    public void Init(Transform counterPos)
     {
-        // 아이템을 들 위치가 없다면 자식으로 생성
-        GameObject holdPoint = new GameObject("ItemHoldPoint");
-        holdPoint.transform.SetParent(this.transform);
-        holdPoint.transform.localPosition = new Vector3(0, 2f, 0);
-        _itemHoldPoint = holdPoint.transform;
+        _targetCounter = counterPos;
+
+        // 1. 프로젝트 에셋 중 하나를 복제 생성하여 자식으로 붙임
+        SpawnRandomModel();
+
+        // 2. 카운터로 이동 시작
+        MoveToCounter();
     }
 
-    private void OnTriggerEnter(Collider other)
+    void SpawnRandomModel()
     {
-        // 카운터 영역에 진입했을 때
-        if (other.CompareTag("Counter") && !_hasPurchased)
+        if (characterPrefabs.Count == 0)
         {
-            _targetCounter = other.GetComponent<Counter>();
-            if (_targetCounter != null)
-            {
-                StartCoroutine(BuyRoutine());
-            }
+            Debug.LogWarning("Customer: characterPrefabs 리스트가 비어있습니다!");
+            return;
+        }
+
+        // 랜덤 프리팹 선택
+        int randomIndex = Random.Range(0, characterPrefabs.Count);
+        GameObject prefab = characterPrefabs[randomIndex];
+
+        if (prefab != null)
+        {
+            // 프리팹을 내 자식으로 생성
+            _currentModel = Instantiate(prefab, transform);
+
+            // 좌표 및 스케일 초기화
+            _currentModel.transform.localPosition = Vector3.zero;
+            _currentModel.transform.localRotation = Quaternion.identity;
+            _currentModel.transform.localScale = Vector3.one;
         }
     }
 
-    IEnumerator BuyRoutine()
+    void MoveToCounter()
     {
-        // 카운터에 아이템이 생길 때까지 대기하며 체크
-        while (!_hasPurchased)
+        if (_targetCounter == null) return;
+
+        float distance = Vector3.Distance(transform.position, _targetCounter.position);
+        float duration = distance / moveSpeed;
+
+        // 목적지 바라보기
+        transform.LookAt(_targetCounter.position);
+
+        // DOTween을 이용한 직선 이동
+        transform.DOMove(_targetCounter.position, duration)
+            .SetEase(Ease.Linear)
+            .OnComplete(() => {
+                _isWaiting = true;
+                StartCoroutine(CheckCounterRoutine());
+            });
+    }
+
+    IEnumerator CheckCounterRoutine()
+    {
+        while (_isWaiting)
         {
-            if (_targetCounter != null && _targetCounter.counterItems.Count > 0)
+            // 카운터 스크립트 참조
+            if (_targetCounter.TryGetComponent(out Counter counter))
             {
-                // 카운터에서 아이템 하나 가져오기
-                GameObject item = _targetCounter.GiveToCustomer();
-                if (item != null)
+                if (counter.counterItems.Count > 0)
                 {
-                    _hasPurchased = true;
-                    HandlePurchase(item);
+                    GameObject item = counter.GiveToCustomer();
+                    if (item != null)
+                    {
+                        _isWaiting = false;
+                        BuyItem(item);
+                    }
                 }
             }
-            // 너무 자주 체크하지 않도록 대기
             yield return new WaitForSeconds(buyInterval);
         }
     }
 
-    void HandlePurchase(GameObject item)
+    void BuyItem(GameObject item)
     {
-        // 1. 아이템을 손님에게 귀속시키고 점프 연출
-        item.transform.SetParent(_itemHoldPoint);
+        // 아이템을 손님 머리 위 지점으로 이동
+        item.transform.SetParent(itemHoldPoint);
         item.transform.DOLocalJump(Vector3.zero, 2f, 1, 0.3f).OnComplete(() => {
             item.transform.localRotation = Quaternion.identity;
 
-            // 2. 돈 생성 및 날리기 연출
+            // 돈 생성 및 보상 처리
             SpawnMoneyEffect(item.transform.position);
 
-            // 3. 아이템 파괴 및 퇴장
-            Destroy(item, 0.2f);
+            // 아이템 제거 및 퇴장
+            Destroy(item);
             LeaveShop();
         });
     }
 
-    void SpawnMoneyEffect(Vector3 spawnPos)
+    void SpawnMoneyEffect(Vector3 pos)
     {
         if (moneyPrefab == null) return;
 
-        // 아이템이 있던 자리에서 돈 생성
-        GameObject money = Instantiate(moneyPrefab, spawnPos, Quaternion.identity);
-
-        // 플레이어 태그를 가진 오브젝트 찾기
+        GameObject money = Instantiate(moneyPrefab, pos, Quaternion.identity);
         GameObject player = GameObject.FindGameObjectWithTag("Player");
 
         if (player != null && money.TryGetComponent(out MoneyItem moneyItem))
         {
-            // MoneyItem 스크립트의 비행 로직 실행
             moneyItem.FlyToPlayer(player.transform, rewardAmount);
         }
     }
 
     void LeaveShop()
     {
-        Debug.Log("구매 완료! 손님이 매장을 떠납니다.");
-
-        // 간단한 퇴장 로직 (예: 뒤로 돌아서 직진 후 파괴)
+        // 180도 회전 후 앞으로 직진하여 퇴장 연출
         transform.DORotate(new Vector3(0, 180, 0), 0.5f);
         transform.DOMove(transform.position + transform.forward * -10f, 5f)
-                 .SetEase(Ease.Linear)
-                 .OnComplete(() => Destroy(gameObject));
+            .SetEase(Ease.Linear)
+            .OnComplete(() => Destroy(gameObject));
     }
 }
