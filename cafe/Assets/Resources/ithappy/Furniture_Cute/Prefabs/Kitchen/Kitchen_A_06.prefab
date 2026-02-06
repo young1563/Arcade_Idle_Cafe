@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 2572934586220250885}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.434, y: 1.016, z: -0.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -159,6 +159,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 13eb2ef95335e38468131715e2ddd7e7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7152821375098263607}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 13eb2ef95335e38468131715e2ddd7e7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1760597901635314487}
   m_SourcePrefab: {fileID: 100100000, guid: 13eb2ef95335e38468131715e2ddd7e7, type: 3}
 --- !u!1 &8282467569475671150 stripped
 GameObject:
@@ -228,13 +231,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8cfb854020aee443976cdd73c6c926e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Counter
-  counterStackPoint: {fileID: 0}
-  columns: 3
+  counterStackPoint: {fileID: 5231898047256351885}
+  columns: 1
   rows: 2
   xSpacing: 0.5
   zSpacing: 0.5
   yOffset: 0.3
-  maxCounterCapacity: 24
+  maxCounterCapacity: 10
   transferSpeed: 0.1
   counterItems: []
 --- !u!65 &3474028647114711275
@@ -259,6 +262,35 @@ BoxCollider:
   m_Size: {x: 1.0628301, y: 0.97, z: 1.46}
   m_Center: {x: -0.00000014901161, y: 0.42513198, z: 0.02}
 --- !u!114 &7152821375098263607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8282467569475671150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae63fa55d3c404648bba685b405ce0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnitureDataHolder
+  data:
+    id: Kitchen_A_06
+    prefabName: Kitchen_A_06
+    folderPath: ithappy/Furniture_Cute/Prefabs/Kitchen
+    type: Decoration
+    position:
+      x: -16.98238
+      y: -2.1941642e-16
+      z: 0.29687
+    scale:
+      x: 8.84941
+      y: 3.1478
+      z: 3.1478
+    rotation: 0
+    price: 100
+    unlockOrder: 0
+    isUnlocked: 0
+--- !u!114 &1760597901635314487
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -6,13 +6,13 @@ using DG.Tweening;
 public class Counter : MonoBehaviour
 {
     [Header("Display Settings")]
-    public Transform counterStackPoint; // 카운터 위 아이템이 쌓일 시작점
-    public int columns = 3;
-    public int rows = 2;
-    public float xSpacing = 0.5f;
-    public float zSpacing = 0.5f;
-    public float yOffset = 0.3f;
-    public int maxCounterCapacity = 24;
+    public Transform counterStackPoint;
+    public int columns = 2;      // 한 줄에 들어가는 개수
+    public int rows = 2;         // 줄의 개수 (두 줄)
+    public float xSpacing = 0.4f;
+    public float zSpacing = 0.4f;
+    public float yOffset = 0.2f; // 층간 높이
+    public int maxCounterCapacity = 10; // 2줄 * 5층 = 총 10개
 
     [Header("Logic Settings")]
     public float transferSpeed = 0.1f; // 아이템이 옮겨지는 간격
