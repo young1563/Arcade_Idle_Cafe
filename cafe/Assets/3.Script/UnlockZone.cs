@@ -10,17 +10,19 @@ public class UnlockZone : MonoBehaviour
     public float unlockRange = 2.0f; // 감지 범위
     public LayerMask playerLayer;
 
+    [Header("충전 설정 (추가)")]
+    [Tooltip("해금을 시작하기 위해 머물러야 하는 시간")]
+    public float requiredHoldTime = 1.0f;
+    private float stayTimer = 0f; // 현재 머문 시간 계산용
+
     [Header("UI 연결")]
     public TextMeshProUGUI priceText;
     public Image progressFill;
     public GameObject canvasObj;
 
-    [Header("애니메이션 설정 (DOTween)")]
-    // AnimationCurve는 삭제하고, DOTween의 Ease 타입을 사용합니다.
-    [Tooltip("애니메이션 재생 시간")]
-    public float animationDuration = 0.6f;
-    [Tooltip("탄성 효과 종류 (OutBack 추천)")]
-    public Ease bounceEaseType = Ease.OutBack; // '통!' 튀는 효과의 핵심
+    [Header("애니메이션 설정 (DOTween)")]        
+    public float animationDuration = 0.6f;    
+    public Ease bounceEaseType = Ease.OutBack;
 
     private float currentPaid = 0;
     private float totalPrice;
@@ -54,7 +56,15 @@ public class UnlockZone : MonoBehaviour
         Collider[] hit = Physics.OverlapSphere(transform.position, unlockRange, playerLayer);
         if (hit.Length > 0)
         {
-            TryUnlock();
+            stayTimer += Time.deltaTime;
+            if(stayTimer >= requiredHoldTime)
+            {
+                TryUnlock();
+            }            
+        }
+        else
+        {
+            stayTimer = 0f;
         }
     }
 
