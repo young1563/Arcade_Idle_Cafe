@@ -829,6 +829,121 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 235579850}
   m_CullTransparentMesh: 1
+--- !u!1001 &236058575
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 321981076}
+    m_Modifications:
+    - target: {fileID: 1658314735552482802, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1658314735552482802, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1658314735552482802, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1658314735552482802, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1658314735552482802, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.4739423e-16
+      objectReference: {fileID: 0}
+    - target: {fileID: 1658314735552482802, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -11.67687
+      objectReference: {fileID: 0}
+    - target: {fileID: 1658314735552482802, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1658314735552482802, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1658314735552482802, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1658314735552482802, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1658314735552482802, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1658314735552482802, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1658314735552482802, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1658314735552482802, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2037972134597662536, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      propertyPath: m_Name
+      value: KITCHEN_TABLE_02
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2037972134597662536, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 236058578}
+  m_SourcePrefab: {fileID: 100100000, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+--- !u!4 &236058576 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1658314735552482802, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+  m_PrefabInstance: {fileID: 236058575}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &236058577 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2037972134597662536, guid: 68706a9c5d3357d4191f0f1526955f84, type: 3}
+  m_PrefabInstance: {fileID: 236058575}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &236058578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 236058577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae63fa55d3c404648bba685b405ce0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnitureDataHolder
+  data:
+    id: KITCHEN_TABLE_02
+    prefabName: Kitchen_Table_02
+    folderPath: ithappy/Furniture_Cute/Prefabs/Table
+    type: Producer
+    position:
+      x: 2.63762
+      y: 4.4739423e-16
+      z: -11
+    scale:
+      x: 2.5
+      y: 2.5
+      z: 2.5
+    rotation: 0
+    price: 100
+    unlockOrder: 0
+    isUnlocked: 0
 --- !u!1 &309898594 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 93461565108671720, guid: c5f8a08a70facbe44943dd5d7dfc2c40, type: 3}
@@ -962,6 +1077,7 @@ Transform:
   - {fileID: 673817699}
   - {fileID: 740863306}
   - {fileID: 1810701249}
+  - {fileID: 236058576}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &335302597 stripped
