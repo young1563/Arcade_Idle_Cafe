@@ -15,7 +15,7 @@ public class UnlockManager : MonoBehaviour
     public void InitUnlockSystem()
     {
         // 씬에 있는 모든 가구 데이터를 가져와서 순서대로 정렬
-        allFurniture = FindObjectsOfType<FurnitureDataHolder>()
+        allFurniture = FindObjectsByType<FurnitureDataHolder>(FindObjectsSortMode.None)
                         .OrderBy(f => f.data.unlockOrder)
                         .ToList();
 
@@ -23,26 +23,29 @@ public class UnlockManager : MonoBehaviour
     }
 
     public void RefreshUnlockZones()
+{
+    // 1. 아직 해금 안 된 가구 중 가장 낮은 순서 찾기
+    var nextToUnlock = allFurniture.FirstOrDefault(f => !f.data.isUnlocked);
+
+    if (nextToUnlock != null)
     {
-        // 아직 해금되지 않은 가구 중 가장 낮은 unlockOrder를 찾음
-        var nextToUnlock = allFurniture.FirstOrDefault(f => !f.data.isUnlocked);
-
-        if (nextToUnlock != null)
+        currentOrder = nextToUnlock.data.unlockOrder;
+        
+        // 2. 씬의 모든 언락존을 찾지 말고, 필요한 조건만 체크
+        UnlockZone[] allZones = Resources.FindObjectsOfTypeAll<UnlockZone>(); 
+        foreach (var zone in allZones)
         {
-            currentOrder = nextToUnlock.data.unlockOrder;
-            Debug.Log($"다음 해금 목표: {nextToUnlock.data.prefabName} (순서: {currentOrder})");
-
-            // 모든 언락존을 돌면서 현재 순서인 것만 켜줌
-            foreach (var zone in FindObjectsOfType<UnlockZone>(true))
+            // 이미 해금된 가구의 언락존은 절대 켜지지 않게 방어 로직 추가
+            if (zone.targetFurniture.data.isUnlocked)
             {
-                // 언락존이 담당하는 가구의 order가 현재 순서와 같으면 활성화
-                bool isNext = zone.targetFurniture.data.unlockOrder == currentOrder;
-                zone.gameObject.SetActive(isNext);
+                zone.gameObject.SetActive(false);
+                continue;
             }
-        }
-        else
-        {
-            Debug.Log("축하합니다! 모든 가구를 해금했습니다.");
+
+            // 현재 순서와 일치하는 언락존만 활성화
+            bool isNext = zone.targetFurniture.data.unlockOrder == currentOrder;
+            zone.gameObject.SetActive(isNext);
         }
     }
+}
 }

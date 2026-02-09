@@ -102,18 +102,53 @@ public class Customer : MonoBehaviour
 
     void BuyItem(GameObject item)
     {
-        // 아이템을 손님 머리 위 지점으로 이동
         item.transform.SetParent(itemHoldPoint);
         item.transform.DOLocalJump(Vector3.zero, 2f, 1, 0.3f).OnComplete(() => {
             item.transform.localRotation = Quaternion.identity;
-
-            // 돈 생성 및 보상 처리
             SpawnMoneyEffect(item.transform.position);
 
-            // 아이템 제거 및 퇴장
-            Destroy(item);
-            LeaveShop();
+            // 70% 확률로 앉아서 먹기, 자리가 없으면 그냥 나감
+            if (Random.value < 0.7f)
+                StartCoroutine(EatAtTable(item));
+            else
+                FinishAndLeave(item);
         });
+    }
+
+    IEnumerator EatAtTable(GameObject item)
+    {
+        // 1. 빈 테이블 찾기        
+        Table[] tables = FindObjectsByType<Table>(FindObjectsSortMode.None);
+        Table targetTable = System.Array.Find(tables, t => t.CanSit());
+
+        if (targetTable != null)
+        {
+            targetTable.isOccupied = true;
+
+            // 2. 테이블로 이동
+            float duration = Vector3.Distance(transform.position, targetTable.sitPoint.position) / moveSpeed;
+            transform.LookAt(targetTable.sitPoint.position);
+            yield return transform.DOMove(targetTable.sitPoint.position, duration).SetEase(Ease.Linear).WaitForCompletion();
+
+            // 3. 취식 (3초 대기)
+            item.transform.SetParent(targetTable.transform);
+            item.transform.DOLocalMove(new Vector3(0, 1.2f, 0), 0.3f); // 테이블 위에 놓기
+            yield return new WaitForSeconds(3.0f);
+
+            // 4. 퇴장
+            targetTable.isOccupied = false;
+            FinishAndLeave(item);
+        }
+        else
+        {
+            FinishAndLeave(item);
+        }
+    }
+
+    void FinishAndLeave(GameObject item)
+    {
+        if (item != null) Destroy(item);
+        LeaveShop();
     }
 
     void SpawnMoneyEffect(Vector3 pos)
