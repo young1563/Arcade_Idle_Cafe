@@ -12,19 +12,11 @@ public class Vector3Data
 [Serializable]
 public class FurnitureEntity
 {
-    public string id;
-    public string prefabName;
-    public string folderPath;
-    public string type;
-    public Vector3Data position;
-    // 기본 스케일을 1,1,1로 보장
-    public Vector3Data scale = new Vector3Data { x = 1, y = 1, z = 1 };
-    public float rotation;
-    public int price;
-    public int unlockOrder;
-    public bool isUnlocked; // bool 타입으로 통일
+    public string id;          // 가구 식별자 (오브젝트 이름과 자동 동기화)
+    public int price;         // 해금 가격
+    public int unlockOrder;   // 해금 순서 (UnlockManager에서 사용)
+    public bool isUnlocked;   // 현재 해금 여부
 }
-
 [Serializable]
 public class MasterDataWrapper
 {

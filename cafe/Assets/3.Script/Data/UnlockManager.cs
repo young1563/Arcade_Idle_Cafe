@@ -1,56 +1,39 @@
 using UnityEngine;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 public class UnlockManager : MonoBehaviour
 {
     public static UnlockManager Instance;
 
-    private List<FurnitureDataHolder> allFurniture;
-    private int currentOrder = 0; // 현재 해금해야 할 순서
+    [Header("해금 순서대로 가구를 넣어주세요")]
+    public List<FurnitureDataHolder> allFurniture = new List<FurnitureDataHolder>();
 
     void Awake() => Instance = this;
 
-    // MapLoader가 가구 소환을 마친 후 호출할 함수
-    public void InitUnlockSystem()
+    void Start()
     {
-        // 씬에 있는 모든 가구 데이터를 가져와서 순서대로 정렬
-        allFurniture = FindObjectsByType<FurnitureDataHolder>(FindObjectsSortMode.None)
-                        .OrderBy(f => f.data.unlockOrder)
-                        .ToList();
-
+        // 시작 시 해금 안 된 가구는 끄고, 첫 번째 언락존만 활성화
         RefreshUnlockZones();
     }
 
     public void RefreshUnlockZones()
     {
-        // 리스트가 비어있는지 확인
-        if (allFurniture == null || allFurniture.Count == 0) return;
-
+        // 아직 해금되지 않은 첫 번째 가구 찾기
         var nextToUnlock = allFurniture.FirstOrDefault(f => !f.data.isUnlocked);
-        if (nextToUnlock != null)
+
+        // 모든 언락존을 찾아서 상태 업데이트
+        UnlockZone[] allZones = Object.FindObjectsByType<UnlockZone>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+
+        foreach (var zone in allZones)
         {
-            currentOrder = nextToUnlock.data.unlockOrder;
-
-            // Inactive 상태인 것까지 포함해서 모두 찾기
-            var allZones = Object.FindObjectsByType<UnlockZone>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-
-            foreach (var zone in allZones)
+            if (nextToUnlock != null && zone.targetFurniture == nextToUnlock)
             {
-                // [에러 방지] targetFurniture가 연결되어 있는지 반드시 확인
-                if (zone == null || zone.targetFurniture == null || zone.targetFurniture.data == null)
-                {
-                    continue;
-                }
-
-                if (zone.targetFurniture.data.isUnlocked)
-                {
-                    zone.gameObject.SetActive(false);
-                    continue;
-                }
-
-                bool isNext = zone.targetFurniture.data.unlockOrder == currentOrder;
-                zone.gameObject.SetActive(isNext);
+                zone.gameObject.SetActive(true);
+            }
+            else
+            {
+                zone.gameObject.SetActive(false);
             }
         }
     }

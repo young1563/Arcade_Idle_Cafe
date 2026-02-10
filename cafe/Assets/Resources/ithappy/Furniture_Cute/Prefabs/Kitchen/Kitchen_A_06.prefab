@@ -149,19 +149,10 @@ PrefabInstance:
       addedObject: {fileID: 4223379991235114976}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 13eb2ef95335e38468131715e2ddd7e7, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 315098322503108069}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 13eb2ef95335e38468131715e2ddd7e7, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 4606295752047895166}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 13eb2ef95335e38468131715e2ddd7e7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3474028647114711275}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 13eb2ef95335e38468131715e2ddd7e7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7152821375098263607}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 13eb2ef95335e38468131715e2ddd7e7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1760597901635314487}
   m_SourcePrefab: {fileID: 100100000, guid: 13eb2ef95335e38468131715e2ddd7e7, type: 3}
 --- !u!1 &8282467569475671150 stripped
 GameObject:
@@ -190,35 +181,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1370025946081233305, guid: 13eb2ef95335e38468131715e2ddd7e7, type: 3}
---- !u!114 &315098322503108069
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8282467569475671150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae63fa55d3c404648bba685b405ce0ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FurnitureDataHolder
-  data:
-    id: Kitchen_A_06
-    prefabName: Kitchen_A_06
-    folderPath: ithappy/Furniture_Cute/Prefabs/Kitchen
-    type: Decoration
-    position:
-      x: -16.98238
-      y: -2.1941642e-16
-      z: 0
-    scale:
-      x: 8.84941
-      y: 3.1478
-      z: 3.1478
-    rotation: 0
-    price: 100
-    unlockOrder: 0
-    isUnlocked: 0
 --- !u!114 &4606295752047895166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,64 +223,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0628301, y: 0.97, z: 1.46}
   m_Center: {x: -0.00000014901161, y: 0.42513198, z: 0.02}
---- !u!114 &7152821375098263607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8282467569475671150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae63fa55d3c404648bba685b405ce0ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FurnitureDataHolder
-  data:
-    id: Kitchen_A_06
-    prefabName: Kitchen_A_06
-    folderPath: ithappy/Furniture_Cute/Prefabs/Kitchen
-    type: Decoration
-    position:
-      x: -16.98238
-      y: -2.1941642e-16
-      z: 0.29687
-    scale:
-      x: 8.84941
-      y: 3.1478
-      z: 3.1478
-    rotation: 0
-    price: 100
-    unlockOrder: 0
-    isUnlocked: 0
---- !u!114 &1760597901635314487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8282467569475671150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae63fa55d3c404648bba685b405ce0ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FurnitureDataHolder
-  data:
-    id: Kitchen_A_06
-    prefabName: Kitchen_A_06
-    folderPath: ithappy/Furniture_Cute/Prefabs/Kitchen
-    type: Decoration
-    position:
-      x: -16.98238
-      y: -2.1941642e-16
-      z: 0.29687
-    scale:
-      x: 8.84941
-      y: 3.1478
-      z: 3.1478
-    rotation: 0
-    price: 100
-    unlockOrder: 0
-    isUnlocked: 0
 --- !u!4 &8771583755446521556 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 13eb2ef95335e38468131715e2ddd7e7, type: 3}

@@ -1,77 +1,89 @@
 using UnityEngine;
-using TMPro; // 가격 표시용
-using UnityEngine.UI; // 게이지 표시용
+using TMPro;
+using UnityEngine.UI;
 using DG.Tweening;
 
 public class UnlockZone : MonoBehaviour
 {
-    [Header("설정")]
-    public FurnitureDataHolder targetFurniture; // 이 구역이 해금할 가구
-    public float unlockRange = 2.0f; // 감지 범위
-    public LayerMask playerLayer;
+    [Header("핵심 설정")]
+    public FurnitureDataHolder targetFurniture; // 이 구역이 해금할 가구 (직접 드래그)
+    public float unlockRange = 2.0f;           // 플레이어 감지 범위
+    public LayerMask playerLayer;             // 플레이어 레이어 (Player로 설정 권장)
 
-    [Header("충전 설정 (추가)")]
-    [Tooltip("해금을 시작하기 위해 머물러야 하는 시간")]
+    [Header("충전(Hold) 설정")]
+    [Tooltip("결제를 시작하기 위해 구역 내에서 머물러야 하는 시간")]
     public float requiredHoldTime = 1.0f;
-    private float stayTimer = 0f; // 현재 머문 시간 계산용
+    private float _stayTimer = 0f;            // 머문 시간 측정용
 
     [Header("UI 연결")]
-    public TextMeshProUGUI priceText;
-    public Image progressFill;
-    public GameObject canvasObj;
+    public TextMeshProUGUI priceText;         // 남은 가격 텍스트
+    public Image progressFill;                // 결제 진행 게이지 (Image Type: Filled)
+    public GameObject canvasObj;              // UI 캔버스 오브젝트
 
-    [Header("애니메이션 설정 (DOTween)")]        
-    public float animationDuration = 0.6f;    
-    public Ease bounceEaseType = Ease.OutBack;
+    [Header("애니메이션 설정 (DOTween)")]
+    public float animationDuration = 0.6f;    // 가구 생성 애니메이션 시간
+    public Ease bounceEaseType = Ease.OutBack; // 생성 시 튕기는 효과
 
-    private float currentPaid = 0;
-    private float totalPrice;
-    private bool isUnlocked = false;
+    private float _currentPaid = 0;           // 현재 지불된 금액
+    private float _totalPrice;                // 가구의 총 가격
+    private bool _isUnlocked = false;         // 중복 해금 방지 플래그
 
     void Start()
     {
-        if (targetFurniture == null) return;
+        if (targetFurniture == null)
+        {
+            Debug.LogError($"{gameObject.name}에 Target Furniture가 연결되지 않았습니다!");
+            return;
+        }
 
-        totalPrice = targetFurniture.data.price;
+        // 가구 데이터에서 총 가격 가져오기
+        _totalPrice = targetFurniture.data.price;
         UpdateUI();
 
-        // 이미 해금된 상태라면 이 구역은 파괴
+        // [중요] 이미 해금된 가구라면 언락존은 즉시 사라짐
         if (targetFurniture.data.isUnlocked)
         {
-            targetFurniture.gameObject.SetActive(true); // 가구는 보이고
-            gameObject.SetActive(false); // 언락존은 파괴(비활성화)
+            targetFurniture.gameObject.SetActive(true);
+            gameObject.SetActive(false);
         }
-        // 2. 아직 해금되지 않은 상태라면 (추가된 부분)
         else
         {
-            targetFurniture.gameObject.SetActive(false); // 가구를 숨깁니다.
+            // 아직 해금 전이라면 가구는 숨겨진 상태로 시작
+            targetFurniture.gameObject.SetActive(false);
         }
     }
 
     void Update()
     {
-        if (isUnlocked) return;
+        if (_isUnlocked) return;
 
-        // 플레이어 감지 (단순 거리 체크 또는 Collider)
+        // 플레이어 감지
         Collider[] hit = Physics.OverlapSphere(transform.position, unlockRange, playerLayer);
+
         if (hit.Length > 0)
         {
-            stayTimer += Time.deltaTime;
-            if(stayTimer >= requiredHoldTime)
+            _stayTimer += Time.deltaTime;
+
+            // 설정한 Hold 시간을 넘었을 때만 결제 진행
+            if (_stayTimer >= requiredHoldTime)
             {
                 TryUnlock();
-            }            
+            }
+
+            // (선택) 1초 대기 중에도 게이지가 차오르는 연출을 원한다면 아래 로직 활용
+            // if (_currentPaid <= 0) progressFill.fillAmount = _stayTimer / requiredHoldTime;
         }
         else
         {
-            stayTimer = 0f;
+            // 구역을 벗어나면 대기 시간 초기화
+            _stayTimer = 0f;
+            if (_currentPaid <= 0) progressFill.fillAmount = 0;
         }
     }
 
-    // 안전장치: 오브젝트가 꺼지거나 파괴될 때 실행 중인 트윈을 정리합니다.
     void OnDisable()
     {
-        // 혹시 애니메이션 중에 언락존이 꺼지더라도 타겟의 트윈을 멈춰서 에러 방지
+        // 오브젝트가 꺼질 때 실행 중인 트윈 중단 (메모리 누수 방지)
         if (targetFurniture != null)
         {
             targetFurniture.transform.DOKill();
@@ -80,19 +92,21 @@ public class UnlockZone : MonoBehaviour
 
     void TryUnlock()
     {
+        // 플레이어의 현재 돈이 0 이하이거나 가구가 이미 해금 중이면 리턴
         if (MoneyManager.Instance.currentMoney <= 0) return;
 
-        // 초당 50원이 빠져나가게 설정 (예시)
-        float paySpeed = 50f;
+        // 초당 100원 속도로 차감 (조절 가능)
+        float paySpeed = 100f;
         int amountToPay = Mathf.Max(1, Mathf.FloorToInt(paySpeed * Time.deltaTime));
 
-        // 실제 결제 시도
+        // 돈 지불 시도
         if (MoneyManager.Instance.TrySpendMoney(amountToPay))
         {
-            currentPaid += amountToPay;
+            _currentPaid += amountToPay;
             UpdateUI();
 
-            if (currentPaid >= totalPrice)
+            // 가격을 모두 지불했다면 해금 실행
+            if (_currentPaid >= _totalPrice)
             {
                 DoUnlock();
             }
@@ -101,61 +115,60 @@ public class UnlockZone : MonoBehaviour
 
     void DoUnlock()
     {
-        if (isUnlocked) return; // 중복 실행 방지
+        if (_isUnlocked) return;
+        _isUnlocked = true;
 
-        isUnlocked = true;
+        // 데이터 상태 변경 (저장용)
         targetFurniture.data.isUnlocked = true;
 
-        // DOTween 애니메이션 시작 함수 호출
-        AnimateSpawnDOTween();        
+        // 가구 등장 애니메이션 실행
+        AnimateSpawnDOTween();
     }
-    // 코루틴 대신 DOTween을 사용한 애니메이션 함수
+
     void AnimateSpawnDOTween()
     {
         Transform targetTransform = targetFurniture.transform;
 
-        // 1. 가구를 활성화하되, 크기를 0으로 시작해서 안 보이게 함
+        // 0에서 원래 크기로 커지는 애니메이션
         targetFurniture.gameObject.SetActive(true);
+        Vector3 originalScale = targetTransform.localScale; // 현재 씬에 설정된 스케일 저장
         targetTransform.localScale = Vector3.zero;
 
-        // 2. 목표 스케일 (원래 저장된 크기) 가져오기
-        Vector3 finalScale = targetFurniture.data.scale.ToVector3();
-
-        // 3. DOTween 스케일 애니메이션 실행
-        // "0에서 finalScale까지 animationDuration 동안 커져라"
-        targetTransform.DOScale(finalScale, animationDuration)
-            .SetEase(bounceEaseType) // <-- 여기가 '통!' 튀는 마법의 한 줄!
-            .OnComplete(OnUnlockAnimationComplete); // 애니메이션 끝나면 이 함수 실행
-
-        // (선택사항) 효과음 재생 위치
-        // if (spawnSound != null) AudioSource.PlayClipAtPoint(spawnSound, transform.position);
+        targetTransform.DOScale(originalScale, animationDuration)
+            .SetEase(bounceEaseType)
+            .OnComplete(OnUnlockAnimationComplete);
     }
 
-    // 애니메이션이 끝났을 때 호출될 콜백 함수
     void OnUnlockAnimationComplete()
     {
-        Debug.Log($"{targetFurniture.data.prefabName} 해금 애니메이션 완료 (DOTween)!");
-
-        // 다음 구역 활성화 요청 (UnlockManager가 있다면)
+        // 다음 해금 목표를 갱신하도록 매니저에 알림
         if (UnlockManager.Instance != null)
         {
             UnlockManager.Instance.RefreshUnlockZones();
         }
 
-        // 임무를 다한 언락존 비활성화
+        // 임무 완료 후 언락존 비활성화
         gameObject.SetActive(false);
     }
 
     void UpdateUI()
     {
-        if (priceText) priceText.text = $"{(int)(totalPrice - currentPaid)}G";
-        if (progressFill) progressFill.fillAmount = currentPaid / totalPrice;
+        if (priceText)
+        {
+            float remaining = Mathf.Max(0, _totalPrice - _currentPaid);
+            priceText.text = $"{Mathf.CeilToInt(remaining)}G";
+        }
+
+        if (progressFill)
+        {
+            progressFill.fillAmount = _currentPaid / _totalPrice;
+        }
     }
 
-    // 에디터에서 범위를 보기 위함
+    // 씬 뷰에서 범위를 시각적으로 확인하기 위함
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.yellow;
+        Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, unlockRange);
     }
 }

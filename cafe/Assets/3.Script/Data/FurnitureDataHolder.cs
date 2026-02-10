@@ -1,28 +1,28 @@
 using UnityEngine;
 
+[ExecuteInEditMode] // 에디터 모드에서도 이름 동기화가 작동하도록 설정
 public class FurnitureDataHolder : MonoBehaviour
 {
-    [Header("Furniture Data")]
-    // [SerializeField]를 사용하여 인스펙터에서 수정 가능하게 합니다.
+    [Header("가구 정보 설정")]
     public FurnitureEntity data;
 
-    // 씬에서 수동으로 배치하거나 복사했을 때를 대비한 안전장치
     private void OnValidate()
     {
-        // 하이어라키의 이름을 ID와 일치시켜 관리를 편하게 합니다.
-        if (data != null && !string.IsNullOrEmpty(gameObject.name))
-        {
-            data.id = gameObject.name;
-        }
+        // 1. 데이터 객체가 비어있으면 새로 생성
+        if (data == null) data = new FurnitureEntity();
+
+        // 2. 하이어라키 상의 이름을 데이터 ID와 자동으로 일치시킴
+        // 이렇게 하면 나중에 특정 가구를 ID로 찾기 매우 편리합니다.
+        data.id = gameObject.name;
     }
 
-    // 현재 오브젝트의 물리적 수치(위치, 회전, 크기)를 데이터 객체에 동기화합니다.
-    public void SyncTransformToData()
+    private void Awake()
     {
-        if (data == null) return;
-
-        data.position = new Vector3Data { x = transform.position.x, y = transform.position.y, z = transform.position.z };
-        data.scale = new Vector3Data { x = transform.localScale.x, y = transform.localScale.y, z = transform.localScale.z };
-        data.rotation = transform.eulerAngles.y;
+        // 게임 시작 시, 이미 해금된 가구가 아니라면 꺼둡니다.
+        // 배경 소품이나 기본 가구는 인스펙터에서 isUnlocked를 체크해두면 됩니다.
+        if (Application.isPlaying)
+        {
+            gameObject.SetActive(data.isUnlocked);
+        }
     }
 }

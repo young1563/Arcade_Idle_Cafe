@@ -79,9 +79,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d3cacf326ee24f143bfd87a5cd09d628, type: 3}
       insertIndex: -1
       addedObject: {fileID: -2143258436533669293}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d3cacf326ee24f143bfd87a5cd09d628, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1368223899216266552}
   m_SourcePrefab: {fileID: 100100000, guid: d3cacf326ee24f143bfd87a5cd09d628, type: 3}
 --- !u!1 &93461565108671720 stripped
 GameObject:
@@ -110,32 +107,3 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4701409956663461990, guid: d3cacf326ee24f143bfd87a5cd09d628, type: 3}
---- !u!114 &1368223899216266552
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 93461565108671720}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae63fa55d3c404648bba685b405ce0ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FurnitureDataHolder
-  data:
-    id: Floor_01
-    prefabName: Floor_01
-    folderPath: ithappy/Furniture_Cute/Prefabs/Floor
-    type: Decoration
-    position:
-      x: -6.16238
-      y: -0.4
-      z: -12.12313
-    scale:
-      x: 50
-      y: 50
-      z: 50
-    rotation: 0
-    price: 100
-    unlockOrder: 0
-    isUnlocked: 0
