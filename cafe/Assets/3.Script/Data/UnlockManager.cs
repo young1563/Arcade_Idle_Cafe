@@ -23,29 +23,35 @@ public class UnlockManager : MonoBehaviour
     }
 
     public void RefreshUnlockZones()
-{
-    // 1. 아직 해금 안 된 가구 중 가장 낮은 순서 찾기
-    var nextToUnlock = allFurniture.FirstOrDefault(f => !f.data.isUnlocked);
-
-    if (nextToUnlock != null)
     {
-        currentOrder = nextToUnlock.data.unlockOrder;
-        
-        // 2. 씬의 모든 언락존을 찾지 말고, 필요한 조건만 체크
-        UnlockZone[] allZones = Resources.FindObjectsOfTypeAll<UnlockZone>(); 
-        foreach (var zone in allZones)
-        {
-            // 이미 해금된 가구의 언락존은 절대 켜지지 않게 방어 로직 추가
-            if (zone.targetFurniture.data.isUnlocked)
-            {
-                zone.gameObject.SetActive(false);
-                continue;
-            }
+        // 리스트가 비어있는지 확인
+        if (allFurniture == null || allFurniture.Count == 0) return;
 
-            // 현재 순서와 일치하는 언락존만 활성화
-            bool isNext = zone.targetFurniture.data.unlockOrder == currentOrder;
-            zone.gameObject.SetActive(isNext);
+        var nextToUnlock = allFurniture.FirstOrDefault(f => !f.data.isUnlocked);
+        if (nextToUnlock != null)
+        {
+            currentOrder = nextToUnlock.data.unlockOrder;
+
+            // Inactive 상태인 것까지 포함해서 모두 찾기
+            var allZones = Object.FindObjectsByType<UnlockZone>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+
+            foreach (var zone in allZones)
+            {
+                // [에러 방지] targetFurniture가 연결되어 있는지 반드시 확인
+                if (zone == null || zone.targetFurniture == null || zone.targetFurniture.data == null)
+                {
+                    continue;
+                }
+
+                if (zone.targetFurniture.data.isUnlocked)
+                {
+                    zone.gameObject.SetActive(false);
+                    continue;
+                }
+
+                bool isNext = zone.targetFurniture.data.unlockOrder == currentOrder;
+                zone.gameObject.SetActive(isNext);
+            }
         }
     }
-}
 }

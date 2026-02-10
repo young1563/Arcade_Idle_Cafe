@@ -94,13 +94,14 @@ public class MapLoader : MonoBehaviour
     }
     private void CreateUnlockZone(GameObject targetFurniture, FurnitureDataHolder holder)
     {
-        // 가구의 위치와 동일한 곳(또는 약간 앞)에 결제 구역 생성
         GameObject zoneObj = Instantiate(unlockZonePrefab, targetFurniture.transform.position, Quaternion.identity);
+
+        // 생성 직후 일단 끕니다. (UnlockManager가 켜줄 때까지 대기)
+        zoneObj.SetActive(false);
 
         UnlockZone zone = zoneObj.GetComponent<UnlockZone>();
         if (zone != null)
         {
-            // 결제 구역이 어떤 가구를 담당하는지 연결
             zone.targetFurniture = holder;
         }
     }
