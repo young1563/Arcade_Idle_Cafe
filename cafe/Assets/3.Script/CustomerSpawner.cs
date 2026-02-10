@@ -1,40 +1,29 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class CustomerSpawner : MonoBehaviour
 {
-    [Header("Prefabs")]
-    public GameObject customerPrefab; // 위에서 만든 Customer 프리팹
+    public GameObject customerPrefab; // 1번에서 만든 프리팹
+    public Transform spawnPoint;      // 생성 위치
+    public float spawnInterval = 3f;  // 생성 간격
 
-    [Header("Target")]
-    public Transform counterTransform; // 손님이 걸어갈 목적지 (카운터 앞)
-
-    [Header("Settings")]
-    public float spawnInterval = 5f; // 손님이 나오는 간격 (초)
-    private float _timer;
-
-    void Update()
+    void Start()
     {
-        _timer += Time.deltaTime;
-
-        if (_timer >= spawnInterval)
-        {
-            SpawnCustomer();
-            _timer = 0;
-        }
+        InvokeRepeating("Spawn", 0f, spawnInterval);
     }
 
-    void SpawnCustomer()
+    void Spawn()
     {
-        if (customerPrefab == null || counterTransform == null) return;
+        // 1. 손님 생성
+        GameObject obj = Instantiate(customerPrefab, spawnPoint.position, Quaternion.identity);
+        Customer customer = obj.GetComponent<Customer>();
 
-        // 입구 위치에서 손님 생성
-        GameObject customerObj = Instantiate(customerPrefab, transform.position, Quaternion.identity);
-
-        // Customer 스크립트를 가져와 초기화 (목적지 전달 및 모델 랜덤 설정)
-        Customer customer = customerObj.GetComponent<Customer>();
-        if (customer != null)
+        // 2. CustomerManager에 등록 (줄 서기 시작)
+        if (customer != null && CustomerManager.Instance != null)
         {
-            customer.Init(counterTransform);
+            // Init 함수로 탈출 지점과 목표 지점 전달
+            customer.Init(CustomerManager.Instance.queuePoints[0], CustomerManager.Instance.exitPoint);
+            // 매니저 리스트에 추가
+            CustomerManager.Instance.AddCustomer(customer);
         }
     }
 }
