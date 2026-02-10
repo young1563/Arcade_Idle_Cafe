@@ -3688,7 +3688,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnlockManager
   allFurniture:
-  - {fileID: 0}
+  - {fileID: 1984266023}
+  - {fileID: 8771583755035338108}
 --- !u!4 &1950942716
 Transform:
   m_ObjectHideFlags: 0
@@ -3752,18 +3753,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FurnitureDataHolder
   data:
     id: Producer1
-    prefabName: 
-    folderPath: 
-    type: 
-    position:
-      x: 0
-      y: 0
-      z: 0
-    scale:
-      x: 1
-      y: 1
-      z: 1
-    rotation: 0
     price: 50
     unlockOrder: 1
     isUnlocked: 1
@@ -5041,6 +5030,8 @@ GameObject:
   - component: {fileID: 2396654740971735161}
   - component: {fileID: 2468910091552521063}
   - component: {fileID: 4198019755561445805}
+  - component: {fileID: 4198019755561445806}
+  - component: {fileID: 4198019755561445807}
   m_Layer: 0
   m_Name: Duzzon_Producer
   m_TagString: Untagged
@@ -5094,6 +5085,44 @@ MonoBehaviour:
   zSpacing: 0.3
   yOffset: 0.15
   spawnedItems: []
+--- !u!114 &4198019755561445806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4198019755561445804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae63fa55d3c404648bba685b405ce0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnitureDataHolder
+  data:
+    id: Duzzon_Producer
+    price: 50
+    unlockOrder: 1
+    isUnlocked: 1
+--- !u!65 &4198019755561445807
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4198019755561445804}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.18, y: 0.84999996, z: 0.87}
+  m_Center: {x: -0.000000014901161, y: 0.45, z: 0.28499997}
 --- !u!64 &4223379991913716815
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6038,6 +6067,7 @@ GameObject:
   - component: {fileID: 4223379991913716815}
   - component: {fileID: 4606295752459241937}
   - component: {fileID: 3474028646434360132}
+  - component: {fileID: 8771583755035338108}
   m_Layer: 0
   m_Name: Counter
   m_TagString: Counter
@@ -6078,6 +6108,23 @@ Transform:
   - {fileID: 535502015585319787}
   m_Father: {fileID: 1898554117}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8771583755035338108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8282467568812801985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae63fa55d3c404648bba685b405ce0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnitureDataHolder
+  data:
+    id: Counter
+    price: 100
+    unlockOrder: 2
+    isUnlocked: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
