@@ -3824,7 +3824,12 @@ MonoBehaviour:
   moneyPrefab: {fileID: 7019651881707430488, guid: 047cca3efd5551940bf6bc22853723dd, type: 3}
   exitPoint: {fileID: 334501099}
   itemPrefab: {fileID: 0}
-  queuePoints: []
+  queuePoints:
+  - {fileID: 419830998}
+  - {fileID: 586957597}
+  - {fileID: 1296856780}
+  - {fileID: 927442809}
+  - {fileID: 814836253}
   waitingCustomers: []
   sellInterval: 0.5
 --- !u!4 &1705280946
@@ -3836,7 +3841,7 @@ Transform:
   m_GameObject: {fileID: 1705280943}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.78, y: 0.78, z: 4.66}
+  m_LocalPosition: {x: -16.33, y: 0.78, z: 5.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4330,6 +4335,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2061503811}
+  - component: {fileID: 2061503812}
   m_Layer: 0
   m_Name: CustomerSpawner
   m_TagString: Untagged
@@ -4346,12 +4352,33 @@ Transform:
   m_GameObject: {fileID: 2061503809}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.16861, y: 0, z: -4.0479}
+  m_LocalPosition: {x: 3.28, y: 0, z: -40.87}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2061503812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2061503809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 257880a08cce632488bead68ce131755, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CustomerSpawner
+  customerPrefabs:
+  - {fileID: 5227831390482902109, guid: 8959e44f362455944a5024e8eaf5b4e9, type: 3}
+  - {fileID: 6122980826077399046, guid: 6e5e1992a10601843b8360f440bd7d4f, type: 3}
+  - {fileID: 8798113314919531519, guid: 8223dee5e01fce34c9308cf606c523ea, type: 3}
+  - {fileID: 5624658543474617509, guid: 6828042931f8544419170dd178959f20, type: 3}
+  - {fileID: 6332122057602769420, guid: 78bf00897dc24574b95880f3386db44f, type: 3}
+  spawnPoint: {fileID: 2061503811}
+  spawnInterval: 3
+  maxCustomerCount: 5
 --- !u!64 &29081347350602739
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6932,7 +6959,6 @@ SceneRoots:
   - {fileID: 972194823}
   - {fileID: 683397268}
   - {fileID: 1950942716}
-  - {fileID: 2061503811}
   - {fileID: 1428947183}
   - {fileID: 413874487}
   - {fileID: 468987763}
@@ -6943,3 +6969,4 @@ SceneRoots:
   - {fileID: 1705280946}
   - {fileID: 334501099}
   - {fileID: 1929616270}
+  - {fileID: 2061503811}
