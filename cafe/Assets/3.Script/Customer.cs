@@ -32,7 +32,44 @@ public class Customer : MonoBehaviour
         GameObject item = Instantiate(itemPrefab, hand);
         item.transform.localPosition = Vector3.zero;
 
-        Invoke("Leave", 0.5f); // 1초는 길 수 있어 0.5초로 조정
+        // 즉시 코루틴 실행 (Invoke 대신 코루틴이 더 제어하기 쉽습니다)
+        StartCoroutine(ExitRoutine());
+    }
+
+    IEnumerator ExitRoutine()
+    {
+        // 1. 사전 설정
+        if (TryGetComponent(out Collider col)) col.enabled = false;
+        agent.avoidancePriority = 99;
+        agent.speed *= 1.3f;
+
+        yield return new WaitForSeconds(0.5f); // 물건 받고 잠시 대기
+
+        // 2. 경유지(ExitStartPoint)로 이동
+        if (_exitStartPoint != null)
+        {
+            Debug.Log($"{gameObject.name} : 경유지로 이동 시작 -> {_exitStartPoint.name}");
+            agent.SetDestination(_exitStartPoint.position);
+
+            // 목적지에 도착할 때까지 대기 (안전장치 포함)
+            float timeout = 5f; // 5초 안에 도착 못하면 강제 다음 단계
+            while (agent.pathPending || agent.remainingDistance > 0.5f)
+            {
+                timeout -= Time.deltaTime;
+                if (timeout <= 0) break;
+                yield return null;
+            }
+        }
+
+        // 3. 최종 출구로 이동
+        if (_exitPoint != null)
+        {
+            Debug.Log($"{gameObject.name} : 최종 출구로 이동 시작");
+            agent.SetDestination(_exitPoint.position);
+        }
+
+        // 4. 객체 파괴
+        Destroy(gameObject, 10f);
     }
 
     public void Leave()
@@ -45,28 +82,5 @@ public class Customer : MonoBehaviour
         // 2. 지정된 경유지를 향해 코루틴 시작
         StartCoroutine(ExitRoutine());
     }
-
-    IEnumerator ExitRoutine()
-    {
-        // [1단계] 설정된 경유지(exitStartPosition)로 이동
-        if (_exitStartPoint != null)
-        {
-            agent.SetDestination(_exitStartPoint.position);
-
-            // 경유지에 도착할 때까지 대기
-            while (agent.pathPending || agent.remainingDistance > 0.5f)
-            {
-                yield return null;
-            }
-        }
-
-        // [2단계] 최종 출구로 이동
-        if (_exitPoint != null)
-        {
-            agent.SetDestination(_exitPoint.position);
-        }
-
-        // 일정 시간 후 제거 (충분히 나갈 시간 부여)
-        Destroy(gameObject, 10f);
-    }
+        
 }
