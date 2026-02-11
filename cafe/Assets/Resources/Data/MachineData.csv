@@ -1,0 +1,4 @@
+ID,Name,Description,Price,PrefabPath,Type
+GEN_FLOUR,밀가루 생성기,기초 재료인 밀가루를 생산합니다.,1000,Prefabs/Machines/Gen_Flour,Generator
+PRO_OVEN,기본 오븐,밀가루를 넣어 식빵을 만듭니다.,2500,Prefabs/Machines/Pro_Oven,Processor
+BELT_BASIC,컨베이어 벨트,아이템을 정해진 방향으로 옮깁니다.,100,Prefabs/Machines/Belt_Basic,Conveyor
