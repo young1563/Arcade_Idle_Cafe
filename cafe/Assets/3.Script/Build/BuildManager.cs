@@ -1,11 +1,19 @@
 using UnityEngine;
 using UnityEngine.InputSystem; // 새 입력 시스템 네임스페이스 추가
+using UnityEngine.EventSystems;
+using DG.Tweening; // 연출을 위한 DOTween
 
 public enum BuildState { None, Placing, Removing }
 
 public class BuildManager : MonoBehaviour
 {
     public static BuildManager Instance;
+
+    [Header("UI 연출 설정")]
+    public RectTransform buildPanel; // 하단 패널 (RectTransform)
+    public float panelShowY = 50f;   // 패널이 보일 때의 Y 위치
+    public float panelHideY = -200f; // 패널이 숨겨질 때의 Y 위치 (화면 밖)
+    public float tweenDuration = 0.4f;
 
     [Header("설정")]
     public float gridSize = 1.0f;
@@ -20,11 +28,26 @@ public class BuildManager : MonoBehaviour
 
     void Awake() => Instance = this;
 
+    void Start()
+    {
+        // 시작 시 패널 숨기기
+        buildPanel.anchoredPosition = new Vector2(buildPanel.anchoredPosition.x, panelHideY);
+    }
+
     void Update()
     {
         // 키보드 인스턴스가 있는지 먼저 확인
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
+
+        // 'B' 키를 눌러 건설 모드(패널) 토글
+        if (keyboard.bKey.wasPressedThisFrame)
+        {
+            ToggleBuildPanel();
+        }
+
+        // 마우스가 UI 위에 있다면 설치/철거 로직 실행 안 함
+        if (EventSystem.current.IsPointerOverGameObject()) return;
 
         // 1. 모드 전환 및 취소 단축키
         if (keyboard.xKey.wasPressedThisFrame) StartRemoveMode();
@@ -39,6 +62,31 @@ public class BuildManager : MonoBehaviour
         {
             UpdateRemovingLogic(keyboard);
         }
+    }
+
+    public void ToggleBuildPanel()
+    {
+        bool isShowing = buildPanel.anchoredPosition.y > 0;
+
+        if (isShowing)
+        {
+            HidePanel();
+            CancelMode(); // 패널 닫을 때 현재 잡고 있는 건물도 취소
+        }
+        else
+        {
+            ShowPanel();
+        }
+
+    }
+    public void ShowPanel()
+    {
+        buildPanel.DOAnchorPosY(panelShowY, tweenDuration).SetEase(Ease.OutBack);
+    }
+
+    public void HidePanel()
+    {
+        buildPanel.DOAnchorPosY(panelHideY, tweenDuration).SetEase(Ease.InSine);
     }
 
     void UpdatePlacingLogic(Keyboard keyboard)
