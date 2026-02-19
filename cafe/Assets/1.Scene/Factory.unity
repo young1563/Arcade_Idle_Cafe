@@ -4583,6 +4583,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CompassNavigator
   mainCamera: {fileID: 119976277}
+  brain: {fileID: 119976280}
   player: {fileID: 618706880}
   viewDuration: 2
   moveSpeed: 1
