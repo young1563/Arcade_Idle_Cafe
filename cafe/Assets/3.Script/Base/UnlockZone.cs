@@ -79,6 +79,7 @@ public class UnlockZone : MonoBehaviour
 
         // 4. 언락존 제거
         gameObject.SetActive(false);
+
     }
 
     void UpdateUI()
