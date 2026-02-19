@@ -268,7 +268,7 @@ GameObject:
   - component: {fileID: 100174733}
   - component: {fileID: 100174732}
   - component: {fileID: 100174731}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3314,7 +3314,7 @@ MonoBehaviour:
   gridSize: 1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 128
   buildingLayer:
     serializedVersion: 2
     m_Bits: 256

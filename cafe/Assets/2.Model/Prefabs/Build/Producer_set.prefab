@@ -26164,7 +26164,7 @@ Transform:
   m_GameObject: {fileID: 8201524701053393838}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -12.71479, y: -3.07647, z: 39.543232}
+  m_LocalPosition: {x: -12.71479, y: 0.1, z: 39.543232}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -26191,7 +26191,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FurnitureDataHolder
   data:
-    id: Set1
+    id: Producer_set
     price: 0
     unlockOrder: 0
     isUnlocked: 0
