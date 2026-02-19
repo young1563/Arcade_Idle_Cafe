@@ -1,39 +1,43 @@
 using UnityEngine;
-using TMPro; // TextMeshPro 사용
-using DG.Tweening; // 숫자 올라가는 애니메이션용
+using TMPro;
+using DG.Tweening;
 
 public class MoneyUI : MonoBehaviour
 {
     public TextMeshProUGUI moneyText;
     private int _lastDisplayedMoney = -1;
+    private Tween _punchTween; // 트윈 참조 저장
 
     void Update()
     {
-        // MoneyManager의 현재 돈을 가져옴
         int currentMoney = MoneyManager.Instance.currentMoney;
 
-        // 값이 변했을 때만 텍스트 갱신
         if (_lastDisplayedMoney != currentMoney)
         {
-            UpdateMoneyText(currentMoney);
+            // 돈이 줄어들 때(해금 중)는 애니메이션 없이 숫자만 갱신하고,
+            // 돈이 늘어날 때(판매 등)만 펀치 효과를 주도록 분기 처리합니다.
+            bool isIncreasing = currentMoney > _lastDisplayedMoney;
+
+            UpdateMoneyText(currentMoney, isIncreasing);
             _lastDisplayedMoney = currentMoney;
         }
     }
 
-    void UpdateMoneyText(int targetMoney)
+    void UpdateMoneyText(int targetMoney, bool animate)
     {
-        // 1. 단순 텍스트 변경
-        // moneyText.text = string.Format("{0:#,###} G", targetMoney);
+        // 숫자 카운팅은 항상 부드럽게
+        DOTween.To(() => _lastDisplayedMoney < 0 ? 0 : _lastDisplayedMoney,
+            x => moneyText.text = string.Format("{0:#,###} G", x),
+            targetMoney, 0.2f);
 
-        // 2. DOTween을 사용한 숫자 카운팅 연출 (더 고급스러움)
-        // 기존 숫자에서 목표 숫자까지 0.5초 동안 부드럽게 올라감
-        int startValue = _lastDisplayedMoney < 0 ? 0 : _lastDisplayedMoney;
+        if (animate)
+        {
+            // 이전 애니메이션이 돌고 있다면 강제 종료 후 초기화
+            moneyText.transform.DOKill();
+            moneyText.transform.localScale = Vector3.one;
 
-        DOTween.To(() => startValue, x => {
-            moneyText.text = string.Format("{0:#,###} G", x);
-        }, targetMoney, 0.5f).SetEase(Ease.OutQuad);
-
-        // 돈이 늘어날 때 살짝 커졌다 작아지는 펀치 애니메이션
-        moneyText.transform.DOPunchScale(Vector3.one * 0.1f, 0.2f);
+            // 살짝 커지는 효과 실행
+            moneyText.transform.DOPunchScale(Vector3.one * 0.15f, 0.3f, 5, 1);
+        }
     }
 }
