@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 931484911556293415}
   - component: {fileID: 5899316303265627626}
   m_Layer: 0
-  m_Name: waffle
+  m_Name: duzzon_waffle
   m_TagString: FactoryItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
