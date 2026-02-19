@@ -1,74 +1,133 @@
 using UnityEngine;
+using UnityEngine.InputSystem; // 새 입력 시스템 네임스페이스 추가
+
+public enum BuildState { None, Placing, Removing }
 
 public class BuildManager : MonoBehaviour
 {
     public static BuildManager Instance;
 
-    [Header("설치 설정")]
-    public GameObject ghostPreview;   // 미리보기용 투명 프리팹
-    public float gridSize = 1.0f;     // 그리드 한 칸의 크기
-    public LayerMask groundLayer;     // 바닥 감지용 레이어
+    [Header("설정")]
+    public float gridSize = 1.0f;
+    public LayerMask groundLayer;
+    public LayerMask buildingLayer;
 
-    private GameObject _currentBuildingPrefab; // 현재 설치하려는 건물
+    public BuildState currentState = BuildState.None;
+
+    private GameObject _currentPrefab;
     private GameObject _previewInstance;
+    private int _currentPrice;
 
     void Awake() => Instance = this;
 
     void Update()
     {
-        if (_previewInstance == null) return;
+        // 키보드 인스턴스가 있는지 먼저 확인
+        var keyboard = Keyboard.current;
+        if (keyboard == null) return;
 
+        // 1. 모드 전환 및 취소 단축키
+        if (keyboard.xKey.wasPressedThisFrame) StartRemoveMode();
+        if (keyboard.escapeKey.wasPressedThisFrame) CancelMode();
+
+        // 2. 각 모드별 로직
+        if (currentState == BuildState.Placing)
+        {
+            UpdatePlacingLogic(keyboard);
+        }
+        else if (currentState == BuildState.Removing)
+        {
+            UpdateRemovingLogic(keyboard);
+        }
+    }
+
+    void UpdatePlacingLogic(Keyboard keyboard)
+    {
         UpdatePreviewPosition();
 
-        if (Input.GetMouseButtonDown(0)) // 클릭 시 설치
-        {
-            PlaceObject();
-        }
-
-        if (Input.GetKeyDown(KeyCode.R)) // R키로 회전
+        // R키: 회전
+        if (keyboard.rKey.wasPressedThisFrame)
         {
             _previewInstance.transform.Rotate(0, 90, 0);
         }
+
+        // Space키: 설치
+        if (keyboard.spaceKey.wasPressedThisFrame)
+        {
+            PlaceObject();
+        }
     }
 
-    // 건설 모드 시작 (버튼 등을 통해 호출)
-    public void StartBuildMode(GameObject prefab)
+    void UpdateRemovingLogic(Keyboard keyboard)
     {
-        _currentBuildingPrefab = prefab;
-        if (_previewInstance != null) Destroy(_previewInstance);
+        // 마우스 위치는 새로운 시스템에서도 Mouse.current로 가져올 수 있지만, 
+        // 카메라 레이캐스트는 기존 방식을 섞어 써도 무방합니다.
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
-        _previewInstance = Instantiate(prefab);
-        // 미리보기용이므로 충돌체나 스크립트는 끄고 반투명하게 처리하는 로직 필요
-        ApplyGhostMaterial(_previewInstance);
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, buildingLayer))
+        {
+            // Space키: 철거
+            if (keyboard.spaceKey.wasPressedThisFrame)
+            {
+                RemoveObject(hit.collider.gameObject);
+            }
+        }
     }
 
+    // --- 이하 기존 위치 계산 및 설치 로직 동일 ---
     void UpdatePreviewPosition()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Vector2 mousePos = Mouse.current.position.ReadValue();
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer))
         {
-            // 그리드 스냅 로직: 좌표를 gridSize 단위로 반올림
             float x = Mathf.Round(hit.point.x / gridSize) * gridSize;
             float z = Mathf.Round(hit.point.z / gridSize) * gridSize;
-
-            _previewInstance.transform.position = new Vector3(x, 0, z);
+            if (_previewInstance != null)
+                _previewInstance.transform.position = new Vector3(x, 0.1f, z);
         }
+    }
+
+    public void StartBuildMode(GameObject prefab, int price)
+    {
+        CancelMode();
+        _currentPrefab = prefab;
+        _currentPrice = price;
+        currentState = BuildState.Placing;
+        _previewInstance = Instantiate(prefab);
+        ApplyGhostEffect(_previewInstance);
+    }
+
+    public void StartRemoveMode()
+    {
+        if (currentState == BuildState.Removing) { CancelMode(); return; }
+        CancelMode();
+        currentState = BuildState.Removing;
     }
 
     void PlaceObject()
     {
-        if (MoneyManager.Instance.TrySpendMoney(100)) // 설치 비용
+        if (MoneyManager.Instance.TrySpendMoney(_currentPrice))
         {
-            Instantiate(_currentBuildingPrefab, _previewInstance.transform.position, _previewInstance.transform.rotation);
+            Instantiate(_currentPrefab, _previewInstance.transform.position, _previewInstance.transform.rotation);
         }
     }
 
-    void ApplyGhostMaterial(GameObject obj)
+    void RemoveObject(GameObject target)
     {
-        // 렌더러를 찾아 반투명하게 만드는 로직 (생략 가능, 단순 색상 변경 등)
-        foreach (var renderer in obj.GetComponentsInChildren<Renderer>())
-        {
-            renderer.material.color = new Color(0, 1, 0, 0.5f);
-        }
+        Destroy(target);
+    }
+
+    public void CancelMode()
+    {
+        currentState = BuildState.None;
+        if (_previewInstance != null) Destroy(_previewInstance);
+    }
+
+    void ApplyGhostEffect(GameObject obj)
+    {
+        foreach (var col in obj.GetComponentsInChildren<Collider>()) col.enabled = false;
+        // 프리벤터 스크립트 등 추가 컴포넌트 비활성화 로직 필요시 추가
     }
 }
