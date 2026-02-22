@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff2d0192950c2794d94044f6a63e2d94, type: 3}
+  m_Name: Facility_Belt
+  m_EditorClassIdentifier: Assembly-CSharp::FacilityData
+  facilityName: Facility_Belt
+  facilityDescription: Facility_Belt
+  price: 100
+  prefab: {fileID: 2648112952155263348, guid: 832fd93e09c394a4a9b0caf24668c94d, type: 3}
+  type: 3
+  recipe:
+    inputItems: []
+    outputItem: {fileID: 0}
+    processTime: 0
+  icon: {fileID: 0}
