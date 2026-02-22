@@ -1,7 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using TMPro;
 
 public enum BuildState { None, Placing, Removing }
 
@@ -9,8 +10,9 @@ public class BuildManager : MonoBehaviour
 {
     public static BuildManager Instance;
 
-    [Header("UI 연출 설정")]
+    [Header("UI 연출 및 안내")]
     public RectTransform buildPanel;
+    public TextMeshProUGUI guideText; // 단축키 안내 텍스트
     public float panelShowY = 50f;
     public float panelHideY = -200f;
     public float tweenDuration = 0.4f;
@@ -19,22 +21,25 @@ public class BuildManager : MonoBehaviour
     public float gridSize = 1.0f;
     public LayerMask groundLayer;
     public LayerMask buildingLayer;
+    public Color validColor = new Color(0, 1, 0, 0.5f);
+    public Color invalidColor = new Color(1, 0, 0, 0.5f);
 
     public BuildState currentState = BuildState.None;
 
     private FacilityData _currentData;
     private GameObject _previewInstance;
+    private MeshRenderer[] _previewRenderers;
+    private bool _canPlace;
 
     void Awake() => Instance = this;
 
     void Start()
     {
-        if (buildPanel == null)
+        if (buildPanel != null)
         {
-            Debug.LogError("[BuildManager] buildPanel이 연결되지 않았습니다!");
-            return;
+            buildPanel.anchoredPosition = new Vector2(buildPanel.anchoredPosition.x, panelHideY);
         }
-        buildPanel.anchoredPosition = new Vector2(buildPanel.anchoredPosition.x, panelHideY);
+        UpdateGuideText("");
     }
 
     void Update()
@@ -42,24 +47,14 @@ public class BuildManager : MonoBehaviour
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
 
-        if (keyboard.bKey.wasPressedThisFrame)
-        {
-            ToggleBuildPanel();
-        }
-
+        if (keyboard.bKey.wasPressedThisFrame) ToggleBuildPanel();
         if (keyboard.xKey.wasPressedThisFrame) StartRemoveMode();
         if (keyboard.escapeKey.wasPressedThisFrame) CancelMode();
 
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 
-        if (currentState == BuildState.Placing)
-        {
-            UpdatePlacingLogic(keyboard);
-        }
-        else if (currentState == BuildState.Removing)
-        {
-            UpdateRemovingLogic(keyboard);
-        }
+        if (currentState == BuildState.Placing) UpdatePlacingLogic(keyboard);
+        else if (currentState == BuildState.Removing) UpdateRemovingLogic(keyboard);
     }
 
     public void ToggleBuildPanel()
@@ -78,14 +73,12 @@ public class BuildManager : MonoBehaviour
 
         if (_previewInstance == null) return;
 
-        if (keyboard.rKey.wasPressedThisFrame)
-        {
-            _previewInstance.transform.Rotate(0, 90, 0);
-        }
+        if (keyboard.rKey.wasPressedThisFrame) _previewInstance.transform.Rotate(0, 90, 0);
 
         if (keyboard.spaceKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame)
         {
-            PlaceObject();
+            if (_canPlace) PlaceObject();
+            else Debug.LogWarning("여기에 설치할 수 없습니다!");
         }
     }
 
@@ -105,9 +98,7 @@ public class BuildManager : MonoBehaviour
     {
         if (Mouse.current == null) return;
 
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
-
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer))
         {
             float x = Mathf.Round(hit.point.x / gridSize) * gridSize;
@@ -117,11 +108,27 @@ public class BuildManager : MonoBehaviour
             {
                 if (!_previewInstance.activeSelf) _previewInstance.SetActive(true);
                 _previewInstance.transform.position = new Vector3(x, 0.1f, z);
+                
+                CheckPlacementValidity();
             }
         }
-        else
+        else if (_previewInstance != null)
         {
-            if (_previewInstance != null && _previewInstance.activeSelf) _previewInstance.SetActive(false);
+            _previewInstance.SetActive(false);
+        }
+    }
+
+    void CheckPlacementValidity()
+    {
+        _canPlace = !Physics.CheckBox(_previewInstance.transform.position, new Vector3(0.4f, 0.4f, 0.4f), _previewInstance.transform.rotation, buildingLayer);
+        
+        Color targetColor = _canPlace ? validColor : invalidColor;
+        foreach (var rend in _previewRenderers)
+        {
+            foreach (var mat in rend.materials)
+            {
+                mat.color = targetColor;
+            }
         }
     }
 
@@ -134,59 +141,59 @@ public class BuildManager : MonoBehaviour
         currentState = BuildState.Placing;
 
         _previewInstance = Instantiate(data.prefab);
-        _previewInstance.name = "Preview_" + data.facilityName;
+        _previewRenderers = _previewInstance.GetComponentsInChildren<MeshRenderer>();
         ApplyGhostEffect(_previewInstance);
+        
+        UpdateGuideText("<b>[ BUILD MODE ]</b>\n[Space/LMB] Place\n[R] Rotate \n [Esc] Cancel");
     }
 
     public void StartRemoveMode()
     {
-        if (currentState == BuildState.Removing)
-        {
-            CancelMode();
-            return;
-        }
         CancelMode();
         currentState = BuildState.Removing;
+        UpdateGuideText("<b><color=red>[ REMOVE MODE ]</color></b>\n[Space/LMB] Remove\n[Esc] Cancel");
     }
 
     void PlaceObject()
     {
-        if (_currentData == null) return;
-
-        if (Physics.CheckBox(_previewInstance.transform.position, new Vector3(0.4f, 0.4f, 0.4f), _previewInstance.transform.rotation, buildingLayer))
-        {
-            Debug.LogWarning("이미 설비가 존재합니다.");
-            return;
-        }
-
         if (MoneyManager.Instance.TrySpendMoney(_currentData.price))
         {
             GameObject newObj = Instantiate(_currentData.prefab, _previewInstance.transform.position, _previewInstance.transform.rotation);
-            
             var facility = newObj.GetComponent<BaseFacility>();
             if (facility != null) facility.facilityData = _currentData;
-            
-            Debug.Log($"{_currentData.facilityName} 설치 완료");
         }
     }
 
-    void RemoveObject(GameObject target)
-    {
-        Destroy(target);
-    }
+    void RemoveObject(GameObject target) => Destroy(target);
 
     public void CancelMode()
     {
         currentState = BuildState.None;
         if (_previewInstance != null) Destroy(_previewInstance);
         _currentData = null;
+        UpdateGuideText("");
+    }
+
+    void UpdateGuideText(string text)
+    {
+        if (guideText != null) guideText.text = text;
     }
 
     void ApplyGhostEffect(GameObject obj)
     {
-        foreach (var col in obj.GetComponentsInChildren<Collider>())
+        foreach (var col in obj.GetComponentsInChildren<Collider>()) col.enabled = false;
+        foreach (var rend in _previewRenderers)
         {
-            col.enabled = false;
+            foreach (var mat in rend.materials)
+            {
+                mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                mat.SetInt("_ZWrite", 0);
+                mat.DisableKeyword("_ALPHATEST_ON");
+                mat.EnableKeyword("_ALPHABLEND_ON");
+                mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                mat.renderQueue = 3000;
+            }
         }
     }
 }
