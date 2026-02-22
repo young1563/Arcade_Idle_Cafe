@@ -12,7 +12,7 @@ public class BuildManager : MonoBehaviour
 
     [Header("UI 연출 및 안내")]
     public RectTransform buildPanel;
-    public TextMeshProUGUI guideText; // 단축키 안내 텍스트
+    public TextMeshProUGUI guideText;
     public float panelShowY = 50f;
     public float panelHideY = -200f;
     public float tweenDuration = 0.4f;
@@ -21,8 +21,8 @@ public class BuildManager : MonoBehaviour
     public float gridSize = 1.0f;
     public LayerMask groundLayer;
     public LayerMask buildingLayer;
-    public Color validColor = new Color(0, 1, 0, 0.5f);
-    public Color invalidColor = new Color(1, 0, 0, 0.5f);
+    public Color validColor = new Color(0, 1, 0, 0.4f);
+    public Color invalidColor = new Color(1, 0, 0, 0.4f);
 
     public BuildState currentState = BuildState.None;
 
@@ -78,7 +78,7 @@ public class BuildManager : MonoBehaviour
         if (keyboard.spaceKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame)
         {
             if (_canPlace) PlaceObject();
-            else Debug.LogWarning("여기에 설치할 수 없습니다!");
+            else Debug.LogWarning("Cannot place here!");
         }
     }
 
@@ -120,14 +120,16 @@ public class BuildManager : MonoBehaviour
 
     void CheckPlacementValidity()
     {
-        _canPlace = !Physics.CheckBox(_previewInstance.transform.position, new Vector3(0.4f, 0.4f, 0.4f), _previewInstance.transform.rotation, buildingLayer);
+        // 설치 가능 여부 체크 (0.48f 반경으로 겹침 확인)
+        _canPlace = !Physics.CheckBox(_previewInstance.transform.position, new Vector3(0.48f, 0.48f, 0.48f), _previewInstance.transform.rotation, buildingLayer);
         
         Color targetColor = _canPlace ? validColor : invalidColor;
-        foreach (var rend in _previewRenderers)
+
+        if (_previewRenderers != null)
         {
-            foreach (var mat in rend.materials)
+            foreach (var rend in _previewRenderers)
             {
-                mat.color = targetColor;
+                foreach (var mat in rend.materials) mat.color = targetColor;
             }
         }
     }
@@ -182,6 +184,8 @@ public class BuildManager : MonoBehaviour
     void ApplyGhostEffect(GameObject obj)
     {
         foreach (var col in obj.GetComponentsInChildren<Collider>()) col.enabled = false;
+        if (_previewRenderers == null) return;
+
         foreach (var rend in _previewRenderers)
         {
             foreach (var mat in rend.materials)
