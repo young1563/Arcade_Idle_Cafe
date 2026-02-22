@@ -142,7 +142,7 @@ GameObject:
   - component: {fileID: 8744319332622706534}
   - component: {fileID: 5007825360887183882}
   - component: {fileID: 4408006213030856479}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Microwave_01_Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -251,7 +251,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4710385551572222520}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: outputpoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

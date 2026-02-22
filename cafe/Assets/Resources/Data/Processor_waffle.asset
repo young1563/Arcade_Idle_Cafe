@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff2d0192950c2794d94044f6a63e2d94, type: 3}
+  m_Name: Processor_waffle
+  m_EditorClassIdentifier: Assembly-CSharp::FacilityData
+  facilityName: Processor_waffle
+  facilityDescription: Processor_waffle
+  price: 300
+  prefab: {fileID: 8166574289669108210, guid: 97f1faa5d0813b4469ec834ecef2dd24, type: 3}
+  type: 1
+  recipe:
+    inputItems:
+    - {fileID: 11400000, guid: fbd38f62dcf6e25479faef8141881005, type: 2}
+    outputItem: {fileID: 11400000, guid: b3000aec3c14f5f47881d383a79d0952, type: 2}
+    processTime: 4
+  icon: {fileID: 0}
