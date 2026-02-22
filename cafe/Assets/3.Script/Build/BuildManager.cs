@@ -50,7 +50,7 @@ public class BuildManager : MonoBehaviour
         if (keyboard.xKey.wasPressedThisFrame) StartRemoveMode();
         if (keyboard.escapeKey.wasPressedThisFrame) CancelMode();
 
-        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 
         if (currentState == BuildState.Placing)
         {
