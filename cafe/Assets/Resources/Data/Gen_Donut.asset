@@ -15,10 +15,10 @@ MonoBehaviour:
   facilityName: Gen_Donut
   facilityDescription: Gen_Donut
   price: 100
-  prefab: {fileID: 0}
+  prefab: {fileID: 994643642567636260, guid: 20fb4f5bb1a38364bb0cac200f563b40, type: 3}
   type: 0
   recipe:
     inputItems: []
-    outputItem: {fileID: 0}
-    processTime: 0
+    outputItem: {fileID: 11400000, guid: fbd38f62dcf6e25479faef8141881005, type: 2}
+    processTime: 2
   icon: {fileID: 0}
