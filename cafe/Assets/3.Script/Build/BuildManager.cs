@@ -22,9 +22,8 @@ public class BuildManager : MonoBehaviour
 
     public BuildState currentState = BuildState.None;
 
-    private GameObject _currentPrefab;
+    private FacilityData _currentData;
     private GameObject _previewInstance;
-    private int _currentPrice;
 
     void Awake() => Instance = this;
 
@@ -43,21 +42,16 @@ public class BuildManager : MonoBehaviour
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
 
-        // 'B' 키 토글
         if (keyboard.bKey.wasPressedThisFrame)
         {
-            Debug.Log("[BuildManager] B 키 입력: 패널 토글");
             ToggleBuildPanel();
         }
 
-        // 1. 모드 전환 및 취소 단축키
         if (keyboard.xKey.wasPressedThisFrame) StartRemoveMode();
         if (keyboard.escapeKey.wasPressedThisFrame) CancelMode();
 
-        // 마우스가 UI 위에 있다면 설치/철거 로직 차단
         if (EventSystem.current.IsPointerOverGameObject()) return;
 
-        // 2. 각 모드별 로직
         if (currentState == BuildState.Placing)
         {
             UpdatePlacingLogic(keyboard);
@@ -70,8 +64,7 @@ public class BuildManager : MonoBehaviour
 
     public void ToggleBuildPanel()
     {
-        bool isShowing = buildPanel.anchoredPosition.y > (panelHideY + 10f); // 대략적인 판정
-
+        bool isShowing = buildPanel.anchoredPosition.y > (panelHideY + 10f);
         if (isShowing) HidePanel();
         else ShowPanel();
     }
@@ -88,12 +81,10 @@ public class BuildManager : MonoBehaviour
         if (keyboard.rKey.wasPressedThisFrame)
         {
             _previewInstance.transform.Rotate(0, 90, 0);
-            Debug.Log("[BuildManager] R 키 입력: 미리보기 회전");
         }
 
-        if (keyboard.spaceKey.wasPressedThisFrame)
+        if (keyboard.spaceKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame)
         {
-            Debug.Log("[BuildManager] Space 키 입력: 설치 시도");
             PlaceObject();
         }
     }
@@ -101,12 +92,10 @@ public class BuildManager : MonoBehaviour
     void UpdateRemovingLogic(Keyboard keyboard)
     {
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, buildingLayer))
         {
-            if (keyboard.spaceKey.wasPressedThisFrame)
+            if (keyboard.spaceKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame)
             {
-                Debug.Log($"[BuildManager] Space 키 입력: {hit.collider.gameObject.name} 철거");
                 RemoveObject(hit.collider.gameObject);
             }
         }
@@ -119,55 +108,33 @@ public class BuildManager : MonoBehaviour
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
 
-        // 1. 빨간 선이 씬 뷰에서 바닥을 향해 뻗어 나가는지 확인
-        Debug.DrawRay(ray.origin, ray.direction * 1000, Color.red);
-
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer))
         {
-            // 바닥을 찾았을 때만 로그를 찍어봅니다.
-            // Debug.Log($"[BuildManager] 바닥 감지됨: {hit.collider.name} / 위치: {hit.point}");
-
             float x = Mathf.Round(hit.point.x / gridSize) * gridSize;
             float z = Mathf.Round(hit.point.z / gridSize) * gridSize;
 
             if (_previewInstance != null)
             {
-                if (!_previewInstance.activeSelf)
-                {
-                    Debug.Log("[BuildManager] 프리뷰 활성화됨");
-                    _previewInstance.SetActive(true);
-                }
-                _previewInstance.transform.position = new Vector3(x, 0.5f, z); // Y값을 조금 더 높여서 테스트
+                if (!_previewInstance.activeSelf) _previewInstance.SetActive(true);
+                _previewInstance.transform.position = new Vector3(x, 0.1f, z);
             }
         }
         else
         {
-            // 바닥을 못 찾으면 프리뷰를 끕니다.
-            if (_previewInstance != null && _previewInstance.activeSelf)
-            {
-                Debug.LogWarning("[BuildManager] 바닥 레이어를 감지하지 못해 프리뷰를 숨깁니다.");
-                _previewInstance.SetActive(false);
-            }
+            if (_previewInstance != null && _previewInstance.activeSelf) _previewInstance.SetActive(false);
         }
     }
 
-    public void StartBuildMode(GameObject prefab, int price)
+    public void StartBuildMode(FacilityData data)
     {
-        if (prefab == null)
-        {
-            Debug.LogError("[BuildManager] 전달된 프리팹이 Null입니다!");
-            return;
-        }
+        if (data == null || data.prefab == null) return;
 
-        Debug.Log($"[BuildManager] 건설 모드 진입: {prefab.name} (가격: {price})");
         CancelMode();
-
-        _currentPrefab = prefab;
-        _currentPrice = price;
+        _currentData = data;
         currentState = BuildState.Placing;
 
-        _previewInstance = Instantiate(prefab);
-        _previewInstance.name = "BuildPreview_" + prefab.name;
+        _previewInstance = Instantiate(data.prefab);
+        _previewInstance.name = "Preview_" + data.facilityName;
         ApplyGhostEffect(_previewInstance);
     }
 
@@ -175,57 +142,51 @@ public class BuildManager : MonoBehaviour
     {
         if (currentState == BuildState.Removing)
         {
-            Debug.Log("[BuildManager] 철거 모드 종료");
             CancelMode();
             return;
         }
-
-        Debug.Log("[BuildManager] 철거 모드 진입 (X 키)");
         CancelMode();
         currentState = BuildState.Removing;
     }
 
     void PlaceObject()
     {
-        if (MoneyManager.Instance == null)
+        if (_currentData == null) return;
+
+        if (Physics.CheckBox(_previewInstance.transform.position, new Vector3(0.4f, 0.4f, 0.4f), _previewInstance.transform.rotation, buildingLayer))
         {
-            Debug.LogError("[BuildManager] MoneyManager 인스턴스를 찾을 수 없습니다!");
+            Debug.LogWarning("이미 설비가 존재합니다.");
             return;
         }
 
-        if (MoneyManager.Instance.TrySpendMoney(_currentPrice))
+        if (MoneyManager.Instance.TrySpendMoney(_currentData.price))
         {
-            GameObject NewObj = Instantiate(_currentPrefab, _previewInstance.transform.position, _previewInstance.transform.rotation);
-            Debug.Log($"[BuildManager] 설치 완료: {NewObj.name} (잔액: {MoneyManager.Instance.currentMoney})");
-        }
-        else
-        {
-            Debug.LogWarning($"[BuildManager] 설치 실패: 돈이 부족합니다! (필요: {_currentPrice}, 보유: {MoneyManager.Instance.currentMoney})");
+            GameObject newObj = Instantiate(_currentData.prefab, _previewInstance.transform.position, _previewInstance.transform.rotation);
+            
+            var facility = newObj.GetComponent<BaseFacility>();
+            if (facility != null) facility.facilityData = _currentData;
+            
+            Debug.Log($"{_currentData.facilityName} 설치 완료");
         }
     }
 
     void RemoveObject(GameObject target)
     {
-        Debug.Log($"[BuildManager] 오브젝트 삭제: {target.name}");
         Destroy(target);
     }
 
     public void CancelMode()
     {
-        if (currentState != BuildState.None) Debug.Log("[BuildManager] 모든 모드 취소 및 상태 초기화");
         currentState = BuildState.None;
         if (_previewInstance != null) Destroy(_previewInstance);
+        _currentData = null;
     }
 
     void ApplyGhostEffect(GameObject obj)
     {
-        // 콜라이더 비활성화 로그
-        int colCount = 0;
         foreach (var col in obj.GetComponentsInChildren<Collider>())
         {
             col.enabled = false;
-            colCount++;
         }
-        Debug.Log($"[BuildManager] 프리뷰 Ghost 효과 적용: {colCount}개의 콜라이더 비활성화");
     }
 }

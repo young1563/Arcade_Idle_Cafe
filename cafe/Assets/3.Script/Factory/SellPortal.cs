@@ -1,45 +1,106 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 
 public class SellPortal : MonoBehaviour
 {
-    [Header("경제 설정")]
-    public int pricePerItem = 10;
+    [Header("Pile Settings")]
+    public Transform pileCenter;
+    public Vector3 pileAreaSize = new Vector3(1.5f, 0.5f, 1.5f);
+    public int maxPileCount = 20;
+    public float sellInterval = 0.5f;
 
-    [Header("포탈 연출")]
-    public Transform portalCenter;    // 파티클의 중심점 (디저트가 사라질 지점)
-    public ParticleSystem portalEffect; // 상시 돌아가는 포탈 파티클
-    public ParticleSystem sellEffect;   // 아이템이 판매될 때 터지는 추가 효과 (선택)
+    [Header("Effects")]
+    public ParticleSystem sellEffect;
+
+    private List<GameObject> _piledItems = new List<GameObject>();
+    private bool _isSelling = false;
 
     private void OnTriggerEnter(Collider other)
     {
-        // "FactoryItem" 태그를 사용 중이라면 그대로 유지, 혹은 "Dessert"로 변경
         if (other.CompareTag("FactoryItem"))
         {
-            SellItem(other.gameObject);
+            if (_piledItems.Count < maxPileCount)
+            {
+                AddToPile(other.gameObject);
+            }
+            else
+            {
+                SellImmediate(other.gameObject);
+            }
         }
     }
 
-    void SellItem(GameObject item)
+    private void AddToPile(GameObject itemObj)
     {
-        // 1. 돈 지급
-        MoneyManager.Instance.AddMoney(pricePerItem);
+        FactoryItem item = itemObj.GetComponent<FactoryItem>();
+        if (item != null) item.SetTarget(null, 0);
 
-        // 2. 물리 및 충돌 비활성화
-        if (item.TryGetComponent<Rigidbody>(out var rb)) rb.isKinematic = true;
-        item.GetComponent<Collider>().enabled = false;
+        Vector3 randomPos = pileCenter.position + new Vector3(
+            Random.Range(-pileAreaSize.x * 0.5f, pileAreaSize.x * 0.5f),
+            Random.Range(0, pileAreaSize.y),
+            Random.Range(-pileAreaSize.z * 0.5f, pileAreaSize.z * 0.5f)
+        );
 
-        // 3. 포탈 중심으로 흡수되는 연출 (DOTween)
-        Vector3 targetPos = portalCenter != null ? portalCenter.position : transform.position;
+        itemObj.transform.position = randomPos;
+        itemObj.transform.rotation = Quaternion.Euler(Random.Range(0, 360f), Random.Range(0, 360f), Random.Range(0, 360f));
+        
+        Rigidbody rb = itemObj.GetComponent<Rigidbody>();
+        if (rb == null) rb = itemObj.AddComponent<Rigidbody>();
+        rb.isKinematic = false;
+        rb.useGravity = true;
 
-        // 아이템을 파티클 안쪽으로 살짝 이동시키며 크기를 줄임
-        item.transform.DOMove(targetPos, 0.4f).SetEase(Ease.InBack);
-        item.transform.DOScale(Vector3.zero, 4f).OnComplete(() => {
+        _piledItems.Add(itemObj);
 
-            // 4. 아이템이 완전히 사라지는 순간 "짠" 하는 파티클 (선택 사항)
-            if (sellEffect != null) sellEffect.Play();
+        if (!_isSelling)
+        {
+            StartCoroutine(SellRoutine());
+        }
+    }
 
-            Destroy(item);
+    private IEnumerator SellRoutine()
+    {
+        _isSelling = true;
+
+        while (_piledItems.Count > 0)
+        {
+            yield return new WaitForSeconds(sellInterval);
+
+            if (_piledItems.Count > 0)
+            {
+                GameObject itemToSell = _piledItems[0];
+                if (itemToSell != null)
+                {
+                    _piledItems.RemoveAt(0);
+                    SellImmediate(itemToSell);
+                }
+                else
+                {
+                    _piledItems.RemoveAt(0);
+                }
+            }
+        }
+
+        _isSelling = false;
+    }
+
+    private void SellImmediate(GameObject itemObj)
+    {
+        int price = 100;
+
+        if (MoneyManager.Instance != null)
+        {
+            MoneyManager.Instance.AddMoney(price);
+        }
+
+        if (sellEffect != null)
+        {
+            sellEffect.Play();
+        }
+
+        itemObj.transform.DOScale(Vector3.zero, 0.2f).OnComplete(() => {
+            if (itemObj != null) Destroy(itemObj);
         });
     }
 }
