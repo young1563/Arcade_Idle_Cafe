@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff2d0192950c2794d94044f6a63e2d94, type: 3}
+  m_Name: merger_duzzon
+  m_EditorClassIdentifier: Assembly-CSharp::FacilityData
+  facilityName: merger_duzzon
+  facilityDescription: merger_duzzon
+  price: 300
+  prefab: {fileID: 2509001917841401352, guid: fef0c15878a1b1741a36f78c3be4cb22, type: 3}
+  type: 2
+  recipe:
+    inputItems:
+    - {fileID: 11400000, guid: cf1a82df51446034ea222af7fcf96db3, type: 2}
+    - {fileID: 11400000, guid: fbd38f62dcf6e25479faef8141881005, type: 2}
+    outputItem: {fileID: 11400000, guid: 4484f2bd34ced6649aabf3f28062a68f, type: 2}
+    processTime: 5
+  icon: {fileID: 0}
