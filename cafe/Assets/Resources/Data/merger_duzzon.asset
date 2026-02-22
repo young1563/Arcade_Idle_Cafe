@@ -19,7 +19,7 @@ MonoBehaviour:
   type: 2
   recipe:
     inputItems:
-    - {fileID: 11400000, guid: cf1a82df51446034ea222af7fcf96db3, type: 2}
+    - {fileID: 11400000, guid: fbd38f62dcf6e25479faef8141881005, type: 2}
     - {fileID: 11400000, guid: fbd38f62dcf6e25479faef8141881005, type: 2}
     outputItem: {fileID: 11400000, guid: 4484f2bd34ced6649aabf3f28062a68f, type: 2}
     processTime: 5
