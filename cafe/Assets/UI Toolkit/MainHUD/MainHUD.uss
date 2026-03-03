@@ -1,0 +1,267 @@
+/* Main HUD Stylesheet */
+
+.full-screen {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0);
+    justify-content: space-between;
+}
+
+/* Layout Helpers */
+.row { flex-direction: row; }
+.column { flex-direction: column; }
+.grow-1 { flex-grow: 1; }
+.align-end { align-items: flex-end; }
+
+.hud-container-row {
+    flex-direction: row;
+    justify-content: space-between;
+    height: 120px;
+}
+
+.hud-container-column {
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Buttons */
+.btn-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    background-color: #ffffff;
+    border-width: 2px;
+    border-color: #cccccc;
+    transition: scale 0.1s;
+}
+
+.btn-circle:hover {
+    scale: 1.1;
+}
+
+.btn-circle:active {
+    scale: 0.9;
+    background-color: #eeeeee;
+}
+
+.btn-menu {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 30px;
+    border-radius: 15px;
+    background-color: #6c5ce7; /* Soft Purple */
+    border-width: 3px;
+    border-color: #ffffff;
+    align-items: center;
+    justify-content: center;
+}
+
+.lbl-btn-bottom {
+    position: absolute;
+    bottom: -20px;
+    font-size: 12px;
+    -unity-font-style: bold;
+    color: white;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: black;
+}
+
+/* Resource Panels */
+.resource-panel {
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 20px;
+    padding: 5px 15px;
+    margin-bottom: 8px;
+    min-width: 140px;
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.resource-panel Label {
+    color: white;
+    -unity-font-style: bold;
+    font-size: 18px;
+    margin-left: 10px;
+    flex-grow: 1;
+}
+
+.icon-resource {
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+}
+
+.icon-money { background-color: #f1c40f; }
+.icon-gem { background-color: #e74c3c; }
+.icon-token { background-color: #3498db; }
+
+.btn-plus {
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    background-color: #2ecc71;
+    color: white;
+    -unity-font-style: bold;
+    font-size: 16px;
+    padding: 0;
+    margin-left: 5px;
+}
+
+/* Level Bar */
+.level-container {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.badge-level {
+    width: 44px;
+    height: 44px;
+    border-radius: 22px;
+    background-color: #f1c40f;
+    border-width: 3px;
+    border-color: #ffffff;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.badge-level Label {
+    color: #2d3436;
+    -unity-font-style: bold;
+    font-size: 20px;
+}
+
+.progress-bg {
+    width: 200px;
+    height: 30px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    margin-left: -15px;
+    overflow: hidden;
+    border-width: 2px;
+    border-color: #ffffff;
+    justify-content: center;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #2ecc71;
+    border-radius: 10px;
+}
+
+.lbl-progress {
+    position: absolute;
+    width: 100%;
+    -unity-text-align: middle-center;
+    color: white;
+    -unity-font-style: bold;
+    font-size: 14px;
+}
+
+/* Sidebars */
+.sidebar-left {
+    padding-top: 50px;
+    width: 150px;
+}
+
+.sidebar-right {
+    padding-top: 50px;
+    align-items: flex-end;
+    width: 150px;
+}
+
+.challenge-container {
+    margin-top: 20px;
+}
+
+.challenge-item {
+    background-color: rgba(108, 92, 231, 0.8);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-width: 2px;
+    border-color: #ffffff;
+}
+
+.lbl-challenge {
+    font-size: 10px;
+    color: #dfe6e9;
+    -unity-font-style: bold;
+}
+
+.lbl-challenge-val {
+    font-size: 18px;
+    color: white;
+    -unity-font-style: bold;
+}
+
+/* Footer Items */
+.ad-banner {
+    width: 90%;
+    height: 60px;
+    background-color: #34495e;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    align-items: center;
+    justify-content: center;
+    border-width: 2px;
+    border-color: #ffffff;
+}
+
+.lbl-ad {
+    color: #f1c40f;
+    -unity-font-style: bold;
+    font-size: 16px;
+}
+
+.nav-guide-container {
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.icon-nav-target {
+    width: 50px;
+    height: 50px;
+    background-color: #e67e22;
+    border-radius: 25px;
+    border-width: 3px;
+    border-color: #ffffff;
+}
+
+.lbl-nav {
+    color: white;
+    -unity-font-style: bold;
+    font-size: 12px;
+    background-color: rgba(0,0,0,0.5);
+    padding: 2px 8px;
+    border-radius: 5px;
+}
+
+/* Specialty styles & Icons */
+.icon-settings { background-image: url("project:/Assets/4.Sprite/dollar.png"); -unity-background-image-tint-color: #95a5a6; } /* Example using dollar.png as placeholder */
+.icon-map { background-image: url("project:/Assets/4.Sprite/nav.png"); }
+.icon-skin { background-image: url("project:/Assets/4.Sprite/dollar.png"); -unity-background-image-tint-color: #e67e22; }
+.icon-bot { background-image: url("project:/Assets/4.Sprite/dollar.png"); -unity-background-image-tint-color: #3498db; }
+.icon-shop { background-image: url("project:/Assets/4.Sprite/dollar.png"); -unity-background-image-tint-color: #f1c40f; }
+.icon-delivery { background-image: url("project:/Assets/4.Sprite/nav.png"); -unity-background-image-tint-color: #e74c3c; }
+
+.icon-money { background-image: url("project:/Assets/4.Sprite/dollar.png"); background-color: rgba(0,0,0,0); }
+.icon-gem { background-image: url("project:/Assets/4.Sprite/dollar.png"); -unity-background-image-tint-color: #e74c3c; background-color: rgba(0,0,0,0); }
+.icon-token { background-image: url("project:/Assets/4.Sprite/dollar.png"); -unity-background-image-tint-color: #3498db; background-color: rgba(0,0,0,0); }
+
+.icon-nav-target { 
+    background-image: url("project:/Assets/4.Sprite/nav.png"); 
+    background-color: #e67e22;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+/* Icon scaling */
+.btn-menu, .btn-circle, .btn-circle-large, .icon-resource {
+    -unity-background-scale-mode: scale-to-fit;
+    padding: 10px;
+}

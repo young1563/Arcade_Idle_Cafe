@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ui="UnityEngine.UIElements"
+    xmlns:uie="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+>
+    <!-- Main Root Container -->
+    <ui:VisualElement name="root" class="full-screen">
+        <ui:Style src="MainHUD.uss" />
+        
+        <!-- TOP HUD -->
+        <ui:VisualElement name="top-hud" class="hud-container-row">
+            <!-- Left Group (Settings) -->
+            <ui:VisualElement name="top-left-group" class="group-row">
+                <ui:Button name="btn-settings" class="btn-circle icon-settings" />
+                <ui:VisualElement name="meta-info" class="meta-panel">
+                    <ui:Label text="Follow" class="btn-text-small" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- Center Group (Level Bar) -->
+            <ui:VisualElement name="top-center-group" class="level-container">
+                <ui:VisualElement name="level-badge" class="badge-level">
+                    <ui:Label text="11" name="lbl-level" />
+                </ui:VisualElement>
+                <ui:VisualElement name="progress-bar-bg" class="progress-bg">
+                    <ui:VisualElement name="progress-bar-fill" class="progress-fill" style="width: 70%;" />
+                    <ui:Label text="255/1270" name="lbl-progress" class="lbl-progress" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- Right Group (Resources) -->
+            <ui:VisualElement name="top-right-group" class="group-column align-end">
+                <ui:VisualElement class="resource-panel money">
+                    <ui:VisualElement class="icon-resource icon-money" />
+                    <ui:Label text="8.6K" name="lbl-money" />
+                    <ui:Button class="btn-plus" text="+" />
+                </ui:VisualElement>
+                <ui:VisualElement class="resource-panel gem">
+                    <ui:VisualElement class="icon-resource icon-gem" />
+                    <ui:Label text="4" name="lbl-gem" />
+                    <ui:Button class="btn-plus" text="+" />
+                </ui:VisualElement>
+                <ui:VisualElement class="resource-panel token">
+                    <ui:VisualElement class="icon-resource icon-token" />
+                    <ui:Label text="8" name="lbl-token" />
+                    <ui:Button class="btn-plus" text="+" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- MIDDLE HUD (Side Buttons) -->
+        <ui:VisualElement name="middle-hud" class="grow-1 row">
+            
+            <!-- Left Column -->
+            <ui:VisualElement name="left-sidebar" class="sidebar-left">
+                <ui:Button name="btn-map" class="btn-menu icon-map">
+                    <ui:Label text="MAP" class="lbl-btn-bottom" />
+                </ui:Button>
+                <ui:Button name="btn-skin" class="btn-menu icon-skin">
+                    <ui:Label text="SKIN" class="lbl-btn-bottom" />
+                </ui:Button>
+                <ui:Button name="btn-bot" class="btn-menu icon-bot">
+                    <ui:Label text="CLEAN BOT" class="lbl-btn-bottom" />
+                </ui:Button>
+                
+                <ui:VisualElement name="panel-challenges" class="challenge-container">
+                    <ui:VisualElement class="challenge-item pizza-challenge">
+                        <ui:Label text="PIZZA CHALLENGE" class="lbl-challenge" />
+                        <ui:Label text="0" class="lbl-challenge-val" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="challenge-item rank-panel">
+                        <ui:Label text="RANK 28" class="lbl-challenge" />
+                        <ui:Label text="78" class="lbl-challenge-val" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- Center Spacer (Game Content Area) -->
+            <ui:VisualElement class="grow-1" />
+
+            <!-- Right Column -->
+            <ui:VisualElement name="right-sidebar" class="sidebar-right">
+                <ui:Button name="btn-shop" class="btn-circle-large icon-shop">
+                    <ui:Label text="SHOP" class="lbl-btn-bottom" />
+                </ui:Button>
+                <ui:Button name="btn-delivery" class="btn-menu-special icon-delivery">
+                    <ui:Label text="DELIVERY" class="lbl-btn-top" />
+                    <ui:Label text="2d 1h 34m" class="lbl-timer" />
+                </ui:Button>
+                <ui:VisualElement name="panel-special-mission" class="mission-small">
+                    <ui:Label text="SPECIAL MISSION" />
+                    <ui:Label text="1/2" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- BOTTOM HUD -->
+        <ui:VisualElement name="bottom-hud" class="hud-container-column">
+            <ui:VisualElement name="navigation-guide" class="nav-guide-container">
+                <ui:VisualElement class="icon-nav-target" />
+                <ui:Label text="DESTINATION" class="lbl-nav" />
+            </ui:VisualElement>
+            
+            <ui:VisualElement name="ad-banner" class="ad-banner">
+                <ui:Label text="LUCKY SALE - DOWNLOAD NOW" class="lbl-ad" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>
