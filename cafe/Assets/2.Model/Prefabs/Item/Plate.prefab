@@ -170,7 +170,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SortingTube
   capacity: 4
-  slotAnchors: []
+  slotAnchors:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!65 &3326679569788831013
 BoxCollider:
   m_ObjectHideFlags: 0
