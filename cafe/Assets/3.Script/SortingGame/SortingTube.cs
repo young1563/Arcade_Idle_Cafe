@@ -4,10 +4,37 @@ using UnityEngine;
 public class SortingTube : MonoBehaviour
 {
     public int capacity = 4;
+    public List<Transform> slotAnchors = new List<Transform>();
     private Stack<SortingItem> _items = new Stack<SortingItem>();
-    public Transform[] slotAnchors; // Positions for items in the tube
 
-    public int ItemCount => _items.Count;
+    private void Awake()
+    {
+        InitializeSlots();
+    }
+
+    public void InitializeSlots()
+    {
+        // 1. null 항목 제거 (인스펙터에서 개수만 늘리고 비워둔 경우 대비)
+        slotAnchors.RemoveAll(item => item == null);
+
+        // 2. 리스트가 비어있다면 자식들을 검색
+        if (slotAnchors.Count == 0)
+        {
+            foreach (Transform child in transform)
+            {
+                if (child.name.ToLower().Contains("slot"))
+                {
+                    slotAnchors.Add(child);
+                }
+            }
+        }
+        
+        // 3. 여전히 비어있다면 경고
+        if (slotAnchors.Count == 0)
+        {
+            Debug.LogError($"{gameObject.name}: No slot anchors found! Items will stack at pivot.");
+        }
+    }
     public bool IsFull => _items.Count >= capacity;
     public bool IsEmpty => _items.Count == 0;
 
@@ -50,12 +77,15 @@ public class SortingTube : MonoBehaviour
 
     public Vector3 GetNextSlotPosition()
     {
-        if (slotAnchors != null && slotAnchors.Length > _items.Count)
+        if (slotAnchors != null && slotAnchors.Count > _items.Count)
         {
-            return slotAnchors[_items.Count].position;
+            Transform slot = slotAnchors[_items.Count];
+            if (slot != null) return slot.position;
         }
-        // Fallback: simple vertical offset
-        return transform.position + Vector3.up * (_items.Count * 0.8f);
+        
+        // Fallback: 인스펙터 설정이 잘못되었을 때를 대비한 자동 위치 계산
+        Debug.LogWarning($"{gameObject.name}: Slot anchor at index {_items.Count} is missing, using fallback position.");
+        return transform.position + Vector3.up * (_items.Count * 1.0f + 0.5f);
     }
     
     public Vector3 GetTopItemPosition()

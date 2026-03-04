@@ -279,7 +279,7 @@ GameObject:
   - component: {fileID: 1982464412733727643}
   - component: {fileID: -8919167160196928697}
   - component: {fileID: -3402960613536828787}
-  - component: {fileID: -1216597477274260143}
+  - component: {fileID: -3791487398718807468}
   m_Layer: 0
   m_Name: Baguette
   m_TagString: FactoryItem
@@ -372,7 +372,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &-1216597477274260143
+--- !u!65 &-3791487398718807468
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -387,7 +387,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

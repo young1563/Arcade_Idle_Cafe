@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2486099588611387282}
   - component: {fileID: 899559516276761617}
   - component: {fileID: 931484911556293415}
-  - component: {fileID: 5899316303265627626}
+  - component: {fileID: -7677306813438178622}
   m_Layer: 0
   m_Name: duzzon_waffle
   m_TagString: FactoryItem
@@ -132,7 +132,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &5899316303265627626
+--- !u!65 &-7677306813438178622
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -147,7 +147,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

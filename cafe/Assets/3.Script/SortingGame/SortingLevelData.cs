@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class TubeData
 {
-    public List<int> dessertIds;
+    public List<int> dessertIds = new List<int>();
 }
 
 [Serializable]
@@ -13,7 +13,7 @@ public class DessertLevelData
 {
     public int levelId;
     public int tubeCapacity = 4;
-    public List<TubeData> tubes; // Wrap the list for JsonUtility
+    public List<TubeData> tubes = new List<TubeData>(); // Wrap the list for JsonUtility
 }
 
 [Serializable]

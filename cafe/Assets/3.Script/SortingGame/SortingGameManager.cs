@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.InputSystem;
 
 public class SortingGameManager : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public class SortingGameManager : MonoBehaviour
     {
         if (_isBusy) return;
 
-        if (Input.GetMouseButtonDown(0))
+        if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
         {
             HandleInput();
         }
@@ -41,14 +42,29 @@ public class SortingGameManager : MonoBehaviour
 
     private void HandleInput()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Vector2 pointerPos = Pointer.current.position.ReadValue();
+        Ray ray = Camera.main.ScreenPointToRay(pointerPos);
+        
+        // Scene 뷰에서 레이저가 어디로 날아가는지 2초간 빨간 선으로 보여줍니다.
+        Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red, 2f);
+        Debug.Log($"Raycasting at {pointerPos}");
+
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
+            Debug.Log($"Hit object: {hit.collider.name}");
             SortingTube tube = hit.collider.GetComponentInParent<SortingTube>();
             if (tube != null)
             {
                 OnTubeClicked(tube);
             }
+            else
+            {
+                Debug.LogWarning($"Hit object {hit.collider.name} has no SortingTube in parent!");
+            }
+        }
+        else
+        {
+            Debug.Log("Raycast hit nothing.");
         }
     }
 
@@ -147,6 +163,18 @@ public class SortingGameManager : MonoBehaviour
 
     private void SpawnTubes(DessertLevelData data)
     {
+        if (data == null || data.tubes == null)
+        {
+            Debug.LogError("DessertLevelData or tubes list is null!");
+            return;
+        }
+
+        if (tubePrefab == null)
+        {
+            Debug.LogError("Tube Prefab is not assigned in SortingGameManager!");
+            return;
+        }
+
         float totalWidth = (data.tubes.Count - 1) * tubeSpacing;
         Vector3 startPos = new Vector3(-totalWidth / 2, 0, 0);
 
@@ -154,17 +182,35 @@ public class SortingGameManager : MonoBehaviour
         {
             GameObject tubeObj = Instantiate(tubePrefab, startPos + Vector3.right * (i * tubeSpacing), Quaternion.identity, tubeParent);
             SortingTube tube = tubeObj.GetComponent<SortingTube>();
+            
+            if (tube == null)
+            {
+                Debug.LogError($"Tube prefab at index {i} is missing the SortingTube component!");
+                continue;
+            }
+
+            tube.InitializeSlots(); // 명시적으로 초기화 호출
             tube.capacity = data.tubeCapacity;
             _tubes.Add(tube);
 
             // Spawn items
+            if (data.tubes[i].dessertIds == null) continue;
+
             foreach (int typeId in data.tubes[i].dessertIds)
             {
                 DessertType type = (DessertType)typeId;
                 if (type == DessertType.None) continue;
+
+                if (typeId - 1 >= dessertPrefabs.Length || dessertPrefabs[typeId - 1] == null)
+                {
+                    Debug.LogWarning($"Dessert prefab for type {type} (ID: {typeId}) is missing or index out of range!");
+                    continue;
+                }
                 
                 GameObject itemObj = Instantiate(dessertPrefabs[typeId - 1], tube.GetNextSlotPosition(), Quaternion.identity);
-                SortingItem item = itemObj.AddComponent<SortingItem>(); // or handle via prefab
+                SortingItem item = itemObj.GetComponent<SortingItem>();
+                if (item == null) item = itemObj.AddComponent<SortingItem>();
+                
                 item.dessertType = type;
                 tube.Push(item);
             }
