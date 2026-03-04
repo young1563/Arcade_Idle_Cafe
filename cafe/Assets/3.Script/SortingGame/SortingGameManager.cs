@@ -100,6 +100,8 @@ public class SortingGameManager : MonoBehaviour
         });
     }
 
+    public System.Action OnLevelComplete;
+
     private void CheckWinCondition()
     {
         foreach (var tube in _tubes)
@@ -108,8 +110,7 @@ public class SortingGameManager : MonoBehaviour
         }
         
         Debug.Log("Level Complete!");
-        // Load next level after delay
-        Invoke(nameof(NextLevel), 1.5f);
+        OnLevelComplete?.Invoke();
     }
 
     private void NextLevel()

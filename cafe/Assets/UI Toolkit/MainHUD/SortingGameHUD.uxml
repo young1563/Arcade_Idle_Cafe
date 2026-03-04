@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ui="UnityEngine.UIElements"
+    xmlns:uie="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+>
+    <ui:VisualElement name="root" class="full-screen">
+        <ui:Style src="MainHUD.uss" />
+        <ui:Style src="SortingGameHUD.uss" />
+        
+        <!-- TOP HUD (Repurposed from MainHUD) -->
+        <ui:VisualElement name="top-hud" class="hud-container-row">
+            <ui:VisualElement name="top-left-group" class="group-row">
+                <ui:Button name="btn-restart" class="btn-circle icon-restart" tooltip="Restart Level" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="top-center-group" class="level-container">
+                <ui:VisualElement name="level-badge" class="badge-level">
+                    <ui:Label text="1" name="lbl-level" />
+                </ui:VisualElement>
+                <ui:VisualElement name="progress-bar-bg" class="progress-bg">
+                    <ui:VisualElement name="progress-bar-fill" class="progress-fill" style="width: 0%;" />
+                    <ui:Label text="SORTING..." name="lbl-progress" class="lbl-progress" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="top-right-group" class="group-column align-end">
+                <ui:VisualElement class="resource-panel money">
+                    <ui:VisualElement class="icon-resource icon-money" />
+                    <ui:Label text="0" name="lbl-money" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- GAME CONTENT AREA (Empty for 3D objects) -->
+        <ui:VisualElement name="middle-hud" class="grow-1 row" style="pointer-events: none;" />
+
+        <!-- BOTTOM HUD -->
+        <ui:VisualElement name="bottom-hud" class="hud-container-column">
+             <ui:VisualElement class="row" style="margin-bottom: 20px;">
+                <ui:Button name="btn-hint" class="btn-menu icon-hint">
+                    <ui:Label text="HINT" class="lbl-btn-bottom" />
+                </ui:Button>
+                <ui:Button name="btn-undo" class="btn-menu icon-undo">
+                    <ui:Label text="UNDO" class="lbl-btn-bottom" />
+                </ui:Button>
+             </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- WIN POPUP (Initially Hidden) -->
+        <ui:VisualElement name="win-popup" class="popup-container" style="display: none;">
+            <ui:VisualElement class="popup-panel">
+                <ui:Label text="SWEET CLEAR!" class="popup-title" />
+                <ui:VisualElement class="popup-content">
+                    <ui:Label text="Level Complete" class="popup-msg" />
+                    <ui:VisualElement class="reward-row">
+                        <ui:VisualElement class="icon-resource icon-money" />
+                        <ui:Label text="+100" class="reward-text" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Button name="btn-next" text="NEXT LEVEL" class="btn-primary" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>
