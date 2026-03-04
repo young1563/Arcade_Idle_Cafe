@@ -65,10 +65,20 @@
     scale: 1.1;
 }
 
-.icon-restart {
-    background-image: url("project:/Assets/4.Sprite/nav.png"); /* Placeholder */
-    -unity-background-image-tint-color: #e67e22;
+.tutorial-text {
+    font-size: 24px;
+    -unity-font-style: bold;
+    color: white;
+    -unity-text-align: middle-center;
+    margin-bottom: 300px;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: black;
 }
 
-.icon-undo { -unity-background-image-tint-color: #bdc3c7; }
-.icon-hint { -unity-background-image-tint-color: #f1c40f; }
+.icon-hand {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    background-image: url("project:/Assets/4.Sprite/nav.png"); /* Placeholder */
+    -unity-background-image-tint-color: white;
+}

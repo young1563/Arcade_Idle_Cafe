@@ -46,5 +46,11 @@
                 <ui:Button name="btn-next" text="NEXT LEVEL" class="btn-primary" />
             </ui:VisualElement>
         </ui:VisualElement>
+        <!-- TUTORIAL OVERLAY (Initially Hidden) -->
+        <ui:VisualElement name="tutorial-overlay" class="popup-container" style="display: none; background-color: rgba(0, 0, 0, 0.4); pointer-events: none;">
+            <ui:Label text="모든 디저트를 종류별로 정리하세요!" class="tutorial-text" />
+            <ui:VisualElement name="tutorial-hand" class="icon-hand" />
+        </ui:VisualElement>
+
     </ui:VisualElement>
 </ui:UXML>
