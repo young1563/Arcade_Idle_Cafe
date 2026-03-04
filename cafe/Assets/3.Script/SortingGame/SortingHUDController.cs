@@ -7,13 +7,10 @@ public class SortingHUDController : MonoBehaviour
 {
     private VisualElement _root;
     private Label _levelLabel;
-    private Label _progressLabel;
-    private VisualElement _progressBarFill;
-
+    
     private VisualElement _winPopup;
     private VisualElement _tutorialOverlay;
     private VisualElement _tutorialHand;
-    private Label _moneyLabel;
 
     private void OnEnable()
     {
@@ -22,9 +19,6 @@ public class SortingHUDController : MonoBehaviour
         _root = uiDoc.rootVisualElement;
 
         _levelLabel = _root.Q<Label>("lbl-level");
-        _progressLabel = _root.Q<Label>("lbl-progress");
-        _progressBarFill = _root.Q<VisualElement>("progress-bar-fill");
-        _moneyLabel = _root.Q<Label>("lbl-money");
         _winPopup = _root.Q<VisualElement>("win-popup");
         _tutorialOverlay = _root.Q<VisualElement>("tutorial-overlay");
         _tutorialHand = _root.Q<VisualElement>("tutorial-hand");
@@ -110,9 +104,5 @@ public class SortingHUDController : MonoBehaviour
 
         if (_levelLabel != null)
             _levelLabel.text = SortingGameManager.Instance.currentLevel.ToString();
-        
-        // Sync money if MoneyManager exists
-        if (MoneyManager.Instance != null && _moneyLabel != null)
-            _moneyLabel.text = MoneyManager.Instance.currentMoney.ToString();
     }
 }

@@ -1,84 +1,109 @@
-/* Sorting Game Specific Styles */
+/* Portrait Mobile Adjustments (1080x1920 focus) */
 
+.full-screen {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+}
+
+.mobile-top {
+    height: 250px;
+    padding-top: 60px;
+}
+
+.badge-level-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 60px;
+    background-color: #f1c40f;
+    border-width: 6px;
+    border-color: #ffffff;
+    align-items: center;
+    justify-content: center;
+}
+
+.badge-level-large Label {
+    font-size: 50px;
+    color: #2d3436;
+    -unity-font-style: bold;
+}
+
+/* Premium Button Theme */
+.btn-menu {
+    width: 160px;
+    height: 160px;
+    border-radius: 40px;
+    background-color: #e67e22; 
+    border-width: 6px;
+    border-color: #ffffff;
+    margin: 0 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.lbl-btn-bottom {
+    font-size: 24px;
+    color: white;
+    -unity-font-style: bold;
+    margin-top: 80px; /* Push text below icon area */
+}
+
+/* Popup & Overlay */
 .popup-container {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.7);
     align-items: center;
     justify-content: center;
 }
 
 .popup-panel {
-    width: 300px;
-    padding: 30px;
-    background-color: #ffffff;
-    border-radius: 30px;
-    border-width: 5px;
-    border-color: #f1c40f;
+    width: 700px;
+    padding: 60px;
+    background-color: #fff9f0;
+    border-radius: 60px;
+    border-width: 10px;
+    border-color: #e67e22;
     align-items: center;
 }
 
 .popup-title {
-    font-size: 32px;
+    font-size: 56px;
+    color: #d35400;
     -unity-font-style: bold;
-    color: #2d3436;
-    margin-bottom: 20px;
-    -unity-text-align: middle-center;
-}
-
-.popup-content {
-    align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 }
 
 .popup-msg {
-    font-size: 18px;
-    color: #636e72;
-}
-
-.reward-row {
-    flex-direction: row;
-    align-items: center;
-    margin-top: 10px;
-}
-
-.reward-text {
-    font-size: 24px;
-    -unity-font-style: bold;
-    color: #2ecc71;
+    font-size: 32px;
+    color: #7f8c8d;
+    margin-bottom: 20px;
 }
 
 .btn-primary {
-    width: 200px;
-    height: 60px;
-    background-color: #6c5ce7;
+    width: 400px;
+    height: 100px;
+    background-color: #e67e22;
     color: white;
-    font-size: 22px;
+    font-size: 36px;
     -unity-font-style: bold;
-    border-radius: 30px;
+    border-radius: 50px;
     border-width: 0;
-    transition: scale 0.1s;
-}
-
-.btn-primary:hover {
-    scale: 1.1;
+    margin-top: 40px;
 }
 
 .tutorial-text {
-    font-size: 24px;
-    -unity-font-style: bold;
+    font-size: 40px;
     color: white;
+    -unity-font-style: bold;
     -unity-text-align: middle-center;
-    margin-bottom: 300px;
-    -unity-text-outline-width: 1px;
-    -unity-text-outline-color: black;
+    background-color: rgba(0,0,0,0.6);
+    padding: 20px 40px;
+    border-radius: 30px;
+    margin-bottom: 600px;
 }
 
-.icon-hand {
-    position: absolute;
-    width: 64px;
-    height: 64px;
-    background-image: url("project:/Assets/4.Sprite/nav.png"); /* Placeholder */
-    -unity-background-image-tint-color: white;
-}
+.icon-restart { -unity-background-image-tint-color: white; }
+.icon-undo { -unity-background-image-tint-color: white; background-color: #a0a0a0; }
+.icon-hint { -unity-background-image-tint-color: white; background-color: #f1c40f; }
