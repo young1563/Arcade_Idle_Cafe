@@ -1,0 +1,24 @@
+{
+  "levels": [
+    {
+      "levelId": 1,
+      "tubeCapacity": 4,
+      "tubes": [
+        { "dessertIds": [1, 2, 1, 2] },
+        { "dessertIds": [2, 1, 2, 1] },
+        { "dessertIds": [] }
+      ]
+    },
+    {
+      "levelId": 2,
+      "tubeCapacity": 4,
+      "tubes": [
+        { "dessertIds": [1, 1, 2, 2] },
+        { "dessertIds": [3, 3, 1, 2] },
+        { "dessertIds": [3, 2, 3, 1] },
+        { "dessertIds": [] },
+        { "dessertIds": [] }
+      ]
+    }
+  ]
+}
