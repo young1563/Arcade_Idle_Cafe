@@ -42,25 +42,44 @@ public class SortingItem : MonoBehaviour
 
     public void InitializeScale(float targetUnitSize)
     {
-        // 모든 디저트를 동일한 스케일로 통일 (프리팹의 기본 비율 유지하면서 정규화)
+        // 1. 스케일을 1로 리셋하여 순수 월드 경계 측정 준비
         transform.localScale = Vector3.one;
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
         
-        if (renderers.Length > 0)
-        {
-            Bounds combinedBounds = renderers[0].bounds;
-            foreach (var r in renderers) combinedBounds.Encapsulate(r.bounds);
+        // 2. 프리팹 내부의 가시적인 렌더러들만 추출하여 정확한 Bounds 계산
+        Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+        bool foundValidBounds = false;
+        Bounds combinedBounds = new Bounds();
 
-            // 가장 큰 축을 기준으로 타겟 사이즈에 맞춤 (편차 제거를 위해 소수점 보정)
-            float maxDim = Mathf.Max(combinedBounds.size.x, combinedBounds.size.z); // 평면 크기 기준
-            if (maxDim > 0.01f)
+        foreach (var r in renderers)
+        {
+            // 파티클, 빈 렌더러, 트레일 등 시각적 크기와 무관한 것들은 제외
+            if (r is ParticleSystemRenderer || r is TrailRenderer || !r.enabled) continue;
+            
+            if (!foundValidBounds)
             {
-                float factor = targetUnitSize / maxDim;
+                combinedBounds = r.bounds;
+                foundValidBounds = true;
+            }
+            else
+            {
+                combinedBounds.Encapsulate(r.bounds);
+            }
+        }
+
+        if (foundValidBounds)
+        {
+            // 3. 평면 크기(X, Z) 중 큰 쪽을 기준으로 맞춤
+            float currentSize = Mathf.Max(combinedBounds.size.x, combinedBounds.size.z);
+            
+            if (currentSize > 0.001f)
+            {
+                // 타겟 크기에 맞추기 위한 배율 계산
+                float factor = targetUnitSize / currentSize;
                 _baseScale = Vector3.one * factor;
             }
         }
         
-        // 최종 스케일 적용
+        // 4. 최종 스케일 적용
         transform.localScale = _baseScale;
     }
 

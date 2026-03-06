@@ -13,7 +13,7 @@ public class SortingGameManager : MonoBehaviour
     public GameObject[] dessertPrefabs; // Index matches DessertType enum
     public Transform tubeParent;
     public float tubeSpacing = 2.2f;   // 세로 화면에 맞춰 간격 축소
-    public float itemTargetSize = 1.0f; 
+    public float itemTargetSize = 1.4f; 
     public float tubeScale = 0.85f;    // 세로 화면에 맞춰 튜브 크기 약간 축소
 
     [Header("Runtime")]
