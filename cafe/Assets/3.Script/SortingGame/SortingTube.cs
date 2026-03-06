@@ -33,7 +33,10 @@ public class SortingTube : MonoBehaviour
         // 3. 외곽 경계선 생성
         CreateBoundaryVisuals();
 
-        // 4. 여전히 비어있다면 경고
+        // 4. 클릭 감지를 위한 콜라이더 업데이트
+        UpdateCollider();
+
+        // 5. 여전히 비어있다면 경고
         if (slotAnchors.Count == 0)
         {
             Debug.LogError($"{gameObject.name}: No slot anchors found! Items will stack at pivot.");
@@ -63,6 +66,24 @@ public class SortingTube : MonoBehaviour
         lr.SetPosition(1, new Vector3(-w, bottomY, 0));
         lr.SetPosition(2, new Vector3(w, bottomY, 0));
         lr.SetPosition(3, new Vector3(w, topY, 0));
+    }
+
+    private void UpdateCollider()
+    {
+        BoxCollider bc = GetComponent<BoxCollider>();
+        if (bc == null) bc = gameObject.AddComponent<BoxCollider>();
+
+        // 튜브 너비와 높이에 맞춰 콜라이더 크기 조정 (z축은 0.2로 얇게 설정)
+        float w = 1.4f; // 클릭 가능 너비
+        float bottomY = slotAnchors.Count > 0 ? slotAnchors[0].localPosition.y - 0.5f : -0.5f;
+        float topY = slotAnchors.Count > 0 ? slotAnchors[capacity - 1].localPosition.y + 0.8f : capacity * 1.0f;
+        float height = topY - bottomY;
+
+        bc.size = new Vector3(w, height, 0.2f);
+        bc.center = new Vector3(0, bottomY + (height / 2), 0);
+        
+        // Raycast 통과 방지를 위해 IsTrigger는 꺼둠 (GameManager에서 RaycastHit 사용)
+        bc.isTrigger = false;
     }
 
     public bool IsFull => _items.Count >= capacity;

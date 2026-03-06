@@ -193,13 +193,31 @@ public class SortingGameManager : MonoBehaviour
             return;
         }
 
-        float totalWidth = (data.tubes.Count - 1) * tubeSpacing;
-        Vector3 startPos = new Vector3(-totalWidth / 2, 0, 0);
+        int count = data.tubes.Count;
+        int maxPerRow = 3; // 세로 화면에 맞춰 한 줄에 최대 3개 배치
+        int rowCount = Mathf.CeilToInt((float)count / maxPerRow);
+        float verticalSpacing = 5.2f; // 행 사이의 간격
 
-        for (int i = 0; i < data.tubes.Count; i++)
+        // 카메라 중심(Y=5)을 기준으로 전체 그리드를 수직 중앙 정렬
+        float totalHeight = (rowCount - 1) * verticalSpacing;
+        float startY = 5.0f + (totalHeight / 2f);
+
+        for (int i = 0; i < count; i++)
         {
-            GameObject tubeObj = Instantiate(tubePrefab, startPos + Vector3.right * (i * tubeSpacing), Quaternion.identity, tubeParent);
-            tubeObj.transform.localScale = Vector3.one * tubeScale; // 튜브 스케일 일관성 유지
+            int row = i / maxPerRow;
+            int col = i % maxPerRow;
+
+            int tubesInThisRow = Mathf.Min(maxPerRow, count - (row * maxPerRow));
+            float rowWidth = (tubesInThisRow - 1) * tubeSpacing;
+
+            Vector3 spawnPos = new Vector3(
+                -rowWidth / 2f + (col * tubeSpacing),
+                startY - (row * verticalSpacing),
+                0
+            );
+
+            GameObject tubeObj = Instantiate(tubePrefab, spawnPos, Quaternion.identity, tubeParent);
+            tubeObj.transform.localScale = Vector3.one * tubeScale; 
             
             SortingTube tube = tubeObj.GetComponent<SortingTube>();
             
@@ -209,7 +227,7 @@ public class SortingGameManager : MonoBehaviour
                 continue;
             }
 
-            tube.InitializeSlots(); // 명시적으로 초기화 호출
+            tube.InitializeSlots();
             tube.capacity = data.tubeCapacity;
             _tubes.Add(tube);
 

@@ -11,6 +11,23 @@ public class SortingItem : MonoBehaviour
     private Tween _floatTween;
     private Vector3 _baseScale = Vector3.one;
 
+    private void Awake()
+    {
+        // 물리 충돌로 인해 아이템이 튕겨나가는 것을 방지
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = true;
+            rb.useGravity = false;
+        }
+
+        Collider col = GetComponent<Collider>();
+        if (col != null)
+        {
+            col.isTrigger = true; // 레이캐스트 감지는 되면서 물리적 충돌은 무시
+        }
+    }
+
     private void Start()
     {
         // 1. 유기적인 배치를 위해 랜덤 회전 추가
