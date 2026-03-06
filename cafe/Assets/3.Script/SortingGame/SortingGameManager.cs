@@ -36,42 +36,10 @@ public class SortingGameManager : MonoBehaviour
     private void Update()
     {
         if (_isBusy) return;
-
-        if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
-        {
-            HandleInput();
-        }
     }
 
-    private void HandleInput()
-    {
-        Vector2 pointerPos = Pointer.current.position.ReadValue();
-        Ray ray = Camera.main.ScreenPointToRay(pointerPos);
-        
-        // Scene 뷰에서 레이저가 어디로 날아가는지 2초간 빨간 선으로 보여줍니다.
-        Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red, 2f);
-        Debug.Log($"Raycasting at {pointerPos}");
 
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            Debug.Log($"Hit object: {hit.collider.name}");
-            SortingTube tube = hit.collider.GetComponentInParent<SortingTube>();
-            if (tube != null)
-            {
-                OnTubeClicked(tube);
-            }
-            else
-            {
-                Debug.LogWarning($"Hit object {hit.collider.name} has no SortingTube in parent!");
-            }
-        }
-        else
-        {
-            Debug.Log("Raycast hit nothing.");
-        }
-    }
-
-    private void OnTubeClicked(SortingTube tube)
+    public void OnTubeClicked(SortingTube tube)
     {
         if (_selectedTube == null)
         {

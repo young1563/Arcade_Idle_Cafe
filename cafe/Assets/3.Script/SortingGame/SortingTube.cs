@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class SortingTube : MonoBehaviour
+public class SortingTube : MonoBehaviour, IPointerDownHandler
 {
     public int capacity = 4;
     public List<Transform> slotAnchors = new List<Transform>();
@@ -68,21 +69,27 @@ public class SortingTube : MonoBehaviour
         lr.SetPosition(3, new Vector3(w, topY, 0));
     }
 
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (SortingGameManager.Instance != null)
+        {
+            SortingGameManager.Instance.OnTubeClicked(this);
+        }
+    }
+
     private void UpdateCollider()
     {
         BoxCollider bc = GetComponent<BoxCollider>();
         if (bc == null) bc = gameObject.AddComponent<BoxCollider>();
 
-        // 튜브 너비와 높이에 맞춰 콜라이더 크기 조정 (z축은 0.2로 얇게 설정)
-        float w = 1.4f; // 클릭 가능 너비
+        // 클릭 영역을 넉넉하게 설정
+        float w = 1.6f; 
         float bottomY = slotAnchors.Count > 0 ? slotAnchors[0].localPosition.y - 0.5f : -0.5f;
-        float topY = slotAnchors.Count > 0 ? slotAnchors[capacity - 1].localPosition.y + 0.8f : capacity * 1.0f;
+        float topY = slotAnchors.Count > 0 ? slotAnchors[capacity - 1].localPosition.y + 1.2f : capacity * 1.5f;
         float height = topY - bottomY;
 
-        bc.size = new Vector3(w, height, 0.2f);
+        bc.size = new Vector3(w, height, 1.0f);
         bc.center = new Vector3(0, bottomY + (height / 2), 0);
-        
-        // Raycast 통과 방지를 위해 IsTrigger는 꺼둠 (GameManager에서 RaycastHit 사용)
         bc.isTrigger = false;
     }
 

@@ -64,15 +64,17 @@ public class SortingHUDController : MonoBehaviour
 
     private void CheckTutorial()
     {
+        if (SortingGameManager.Instance == null) return;
+
         if (SortingGameManager.Instance.currentLevel == 1)
         {
-            _tutorialOverlay.style.display = DisplayStyle.Flex;
+            if (_tutorialOverlay != null) _tutorialOverlay.style.display = DisplayStyle.Flex;
             StartHandAnimation();
         }
         else
         {
-            _tutorialOverlay.style.display = DisplayStyle.None;
-            DOTween.Kill(_tutorialHand); // Ensure animation is stopped if tutorial is hidden
+            if (_tutorialOverlay != null) _tutorialOverlay.style.display = DisplayStyle.None;
+            DOTween.Kill(_tutorialHand); 
         }
     }
 

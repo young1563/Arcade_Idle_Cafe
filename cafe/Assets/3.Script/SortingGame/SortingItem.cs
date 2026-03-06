@@ -13,18 +13,17 @@ public class SortingItem : MonoBehaviour
 
     private void Awake()
     {
-        // 물리 충돌로 인해 아이템이 튕겨나가는 것을 방지
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null)
+        // 프리팹 내부의 모든 리지드바디 비활성화
+        foreach (var rb in GetComponentsInChildren<Rigidbody>())
         {
             rb.isKinematic = true;
             rb.useGravity = false;
         }
 
-        Collider col = GetComponent<Collider>();
-        if (col != null)
+        // 모든 콜라이더를 Trigger로 변경하여 충돌 폭발 방지
+        foreach (var col in GetComponentsInChildren<Collider>())
         {
-            col.isTrigger = true; // 레이캐스트 감지는 되면서 물리적 충돌은 무시
+            col.isTrigger = true;
         }
     }
 

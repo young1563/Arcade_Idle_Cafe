@@ -25,9 +25,35 @@ public class SortingGameSceneSetup : MonoBehaviour
             mainCam.orthographic = true;
             mainCam.orthographicSize = cameraSize;
             mainCam.transform.position = new Vector3(0, 5f, -10f); // 튜브들이 잘 보이게 약간 위로
+
+            // 이벤트 시스템을 위한 물리 레이캐스터 추가
+            if (mainCam.GetComponent<UnityEngine.EventSystems.PhysicsRaycaster>() == null)
+                mainCam.gameObject.AddComponent<UnityEngine.EventSystems.PhysicsRaycaster>();
         }
 
-        // 2. 배경 오브젝트 생성/찾기
+        // 2. 이벤트 시스템 확인/생성
+        UnityEngine.EventSystems.EventSystem es = UnityEngine.Object.FindObjectOfType<UnityEngine.EventSystems.EventSystem>();
+        if (es == null)
+        {
+            GameObject esObj = new GameObject("EventSystem");
+            es = esObj.AddComponent<UnityEngine.EventSystems.EventSystem>();
+        }
+
+        // 기존의 구형 StandaloneInputModule 제거 (새로운 Input System과 충돌)
+        var oldModule = es.GetComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+        if (oldModule != null)
+        {
+            if (Application.isPlaying) Object.Destroy(oldModule);
+            else Object.DestroyImmediate(oldModule);
+        }
+
+        // 새로운 Input System용 모듈 추가
+        if (es.GetComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>() == null)
+        {
+            es.gameObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+        }
+
+        // 3. 배경 오브젝트 생성/찾기
         if (_bgObject == null)
         {
             _bgObject = GameObject.Find("SortingGameBackground");
