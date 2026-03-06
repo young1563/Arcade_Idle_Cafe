@@ -11,6 +11,12 @@ public class SortingTube : MonoBehaviour, IPointerDownHandler
 
     private void Awake()
     {
+        // 최상위 오브젝트와 모든 자식의 레이어를 Default(0)로 설정하여 클릭 보장
+        gameObject.layer = 0;
+        foreach (Transform child in GetComponentsInChildren<Transform>(true))
+        {
+            child.gameObject.layer = 0;
+        }
         InitializeSlots();
     }
 
@@ -71,6 +77,13 @@ public class SortingTube : MonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        // 클릭 감지 즉시 로그 출력 (문제 해결 확인용)
+        Debug.Log($"[SortingTube] {gameObject.name} clicked!");
+
+        // 클릭 피드백: 살짝 눌리는 느낌
+        transform.DOKill();
+        transform.DOScale(transform.localScale * 0.95f, 0.1f).SetLoops(2, LoopType.Yoyo);
+
         if (SortingGameManager.Instance != null)
         {
             SortingGameManager.Instance.OnTubeClicked(this);

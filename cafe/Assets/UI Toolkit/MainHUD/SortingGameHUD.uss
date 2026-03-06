@@ -92,28 +92,74 @@
     margin-bottom: 20px;
 }
 
+/* Popup & Overlay Container */
+.popup-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    pointer-events: auto; /* 기본적으로는 클릭 차단 (팝업 시) */
+}
+
+/* 튜토리얼은 클릭을 통과시켜야 함 */
+#tutorial-overlay {
+    background-color: rgba(0, 0, 0, 0); /* 배경 투명하게 (pointer-events를 위해) */
+    pointer-events: none;
+    justify-content: flex-end; /* 아래로 배치 */
+    padding-bottom: 250px;    /* 하단 여백 */
+}
+
 .popup-panel {
-    width: 800px;
-    padding: 80px;
+    width: 850px;
+    padding: 100px 60px;
     align-items: center;
 }
 
-.btn-primary {
-    width: 450px;
-    height: 110px;
-    background-color: #ff9f89; /* Coral Pastel */
-    color: white;
-    font-size: 38px;
+.popup-title {
+    font-size: 84px; /* 크기 확대 */
+    color: #4ebfa5;
     -unity-font-style: bold;
-    border-radius: 55px;
+    margin-bottom: 40px;
+}
+
+.popup-msg {
+    font-size: 40px;
+    color: #666;
+    margin-bottom: 40px;
+}
+
+.btn-primary {
+    width: 550px;
+    height: 140px;
+    background-color: #ff9f89; 
+    color: white;
+    font-size: 52px; /* 크기 확대 */
+    -unity-font-style: bold;
+    border-radius: 70px;
     border-width: 0;
-    margin-top: 50px;
-    box-shadow: 0 10px 0 #e88d77;
+    margin-top: 20px;
+    box-shadow: 0 12px 0 #e88d77;
 }
 
 .btn-primary:active {
-    translate: 0 8px;
-    box-shadow: 0 2px 0 #e88d77;
+    translate: 0 12px;
+    box-shadow: 0 4px 0 #e88d77;
+}
+
+/* Tutorial Style Upgrade */
+.glass-label {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #222;
+    border-radius: 50px;
+    border-width: 3px;
+    border-color: white;
+    padding: 50px 80px;
+    font-size: 42px; /* 크기 확대 */
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
 }
 
 .icon-restart { 

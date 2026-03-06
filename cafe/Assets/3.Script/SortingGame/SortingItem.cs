@@ -25,17 +25,24 @@ public class SortingItem : MonoBehaviour
         {
             col.isTrigger = true;
         }
+
+        // 레이캐스트 감지 레이어(2: Ignore Raycast)로 설정하여 튜브 클릭을 방해하지 않음
+        gameObject.layer = 2;
+        foreach (Transform child in GetComponentsInChildren<Transform>(true))
+        {
+            child.gameObject.layer = 2;
+        }
     }
 
     private void Start()
     {
-        // 1. 유기적인 배치를 위해 랜덤 회전 추가
-        transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
+        // 모든 디저트가 정면을 바라보도록 통일 (랜덤 회전 제거)
+        transform.rotation = Quaternion.identity;
     }
 
     public void InitializeScale(float targetUnitSize)
     {
-        // 현재 스케일을 1로 리셋하고 실제 렌더러 크기 측정
+        // 모든 디저트를 동일한 스케일로 통일 (프리팹의 기본 비율 유지하면서 정규화)
         transform.localScale = Vector3.one;
         Renderer[] renderers = GetComponentsInChildren<Renderer>();
         
@@ -44,7 +51,8 @@ public class SortingItem : MonoBehaviour
             Bounds combinedBounds = renderers[0].bounds;
             foreach (var r in renderers) combinedBounds.Encapsulate(r.bounds);
 
-            float maxDim = Mathf.Max(combinedBounds.size.x, combinedBounds.size.y, combinedBounds.size.z);
+            // 가장 큰 축을 기준으로 타겟 사이즈에 맞춤 (편차 제거를 위해 소수점 보정)
+            float maxDim = Mathf.Max(combinedBounds.size.x, combinedBounds.size.z); // 평면 크기 기준
             if (maxDim > 0.01f)
             {
                 float factor = targetUnitSize / maxDim;
@@ -52,6 +60,7 @@ public class SortingItem : MonoBehaviour
             }
         }
         
+        // 최종 스케일 적용
         transform.localScale = _baseScale;
     }
 
@@ -86,12 +95,12 @@ public class SortingItem : MonoBehaviour
             _originalPosition = transform.position;
             
             transform.DOKill();
-            // 3. 선택 시 부유 연출 (정규화된 스케일 기준)
-            transform.DOMoveY(_originalPosition.y + 1.2f, 0.3f).SetEase(Ease.OutBack);
-            transform.DOScale(_baseScale * 1.2f, 0.3f);
+            // 3. 선택 시 부유 연출 (높이를 확실히 2.5f로 상향)
+            transform.DOMoveY(_originalPosition.y + 2.5f, 0.4f).SetEase(Ease.OutBack);
+            transform.DOScale(_baseScale * 1.3f, 0.4f);
             
             // 계속 떠 있는 느낌의 루프
-            _floatTween = transform.DOMoveY(_originalPosition.y + 1.4f, 0.6f)
+            _floatTween = transform.DOMoveY(_originalPosition.y + 2.7f, 0.6f)
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetEase(Ease.InOutSine);
         }

@@ -26,9 +26,13 @@ public class SortingGameSceneSetup : MonoBehaviour
             mainCam.orthographicSize = cameraSize;
             mainCam.transform.position = new Vector3(0, 5f, -10f); // 튜브들이 잘 보이게 약간 위로
 
-            // 이벤트 시스템을 위한 물리 레이캐스터 추가
-            if (mainCam.GetComponent<UnityEngine.EventSystems.PhysicsRaycaster>() == null)
-                mainCam.gameObject.AddComponent<UnityEngine.EventSystems.PhysicsRaycaster>();
+            // 이벤트 시스템을 위한 물리 레이캐스터 추가 및 설정 보강
+            var raycaster = mainCam.GetComponent<UnityEngine.EventSystems.PhysicsRaycaster>();
+            if (raycaster == null)
+                raycaster = mainCam.gameObject.AddComponent<UnityEngine.EventSystems.PhysicsRaycaster>();
+            
+            // 모든 레이어를 감지하도록 설정 (UI에 가려지지 않게)
+            raycaster.eventMask = ~0; 
         }
 
         // 2. 이벤트 시스템 확인/생성
@@ -39,15 +43,10 @@ public class SortingGameSceneSetup : MonoBehaviour
             es = esObj.AddComponent<UnityEngine.EventSystems.EventSystem>();
         }
 
-        // 기존의 구형 StandaloneInputModule 제거 (새로운 Input System과 충돌)
+        // 새로운 Input System용 모듈 강제 적용
         var oldModule = es.GetComponent<UnityEngine.EventSystems.StandaloneInputModule>();
-        if (oldModule != null)
-        {
-            if (Application.isPlaying) Object.Destroy(oldModule);
-            else Object.DestroyImmediate(oldModule);
-        }
+        if (oldModule != null) Object.DestroyImmediate(oldModule);
 
-        // 새로운 Input System용 모듈 추가
         if (es.GetComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>() == null)
         {
             es.gameObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();

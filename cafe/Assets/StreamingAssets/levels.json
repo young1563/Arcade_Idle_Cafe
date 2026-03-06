@@ -19,6 +19,31 @@
         { "dessertIds": [] },
         { "dessertIds": [] }
       ]
+    },
+    {
+      "levelId": 3,
+      "tubeCapacity": 4,
+      "tubes": [
+        { "dessertIds": [1, 2, 3, 4] },
+        { "dessertIds": [4, 3, 2, 1] },
+        { "dessertIds": [2, 4, 1, 3] },
+        { "dessertIds": [3, 1, 4, 2] },
+        { "dessertIds": [] },
+        { "dessertIds": [] }
+      ]
+    },
+    {
+      "levelId": 4,
+      "tubeCapacity": 4,
+      "tubes": [
+        { "dessertIds": [1, 5, 2, 3] },
+        { "dessertIds": [4, 1, 5, 2] },
+        { "dessertIds": [3, 4, 1, 5] },
+        { "dessertIds": [2, 3, 4, 1] },
+        { "dessertIds": [5, 2, 3, 4] },
+        { "dessertIds": [] },
+        { "dessertIds": [] }
+      ]
     }
   ]
 }

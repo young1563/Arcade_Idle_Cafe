@@ -25,8 +25,9 @@ public class SortingHUDController : MonoBehaviour
         if (_tutorialOverlay != null)
         {
             _tutorialOverlay.style.display = DisplayStyle.None;
-            DOTween.Kill(_tutorialHand);
+            _tutorialOverlay.RemoveFromClassList("active-tutorial"); // 클래스 제거로 확실히 처리
         }
+        DOTween.Kill(_tutorialHand);
     }
 
     private void OnEnable()

@@ -145,6 +145,15 @@ public class SortingGameManager : MonoBehaviour
         {
             SpawnTubes(data);
         }
+        else
+        {
+            // 레벨이 없을 경우 다시 1레벨로 루프하거나 기본 레벨 생성
+            Debug.LogWarning($"Level {levelId} not found, looping back to Level 1.");
+            currentLevel = 1;
+            data = levelList.levels.Find(l => l.levelId == 1);
+            if (data != null) SpawnTubes(data);
+            else CreateDefaultLevel();
+        }
     }
 
     private void SpawnTubes(DessertLevelData data)
@@ -162,13 +171,16 @@ public class SortingGameManager : MonoBehaviour
         }
 
         int count = data.tubes.Count;
-        int maxPerRow = 3; // 세로 화면에 맞춰 한 줄에 최대 3개 배치
+        int maxPerRow = 3; 
         int rowCount = Mathf.CeilToInt((float)count / maxPerRow);
-        float verticalSpacing = 5.2f; // 행 사이의 간격
+        
+        // 간격 조정: 더 오밀조밀하게 모이도록 축소
+        float currentTubeSpacing = 2.1f; 
+        float verticalSpacing = 4.8f; 
 
-        // 카메라 중심(Y=5)을 기준으로 전체 그리드를 수직 중앙 정렬
+        // 전체 높이 계산 및 시작점 설정 (전체적으로 1.0f 만큼 위로 시프트)
         float totalHeight = (rowCount - 1) * verticalSpacing;
-        float startY = 5.0f + (totalHeight / 2f);
+        float startY = 4.5f + (totalHeight / 2f); 
 
         for (int i = 0; i < count; i++)
         {
@@ -176,10 +188,10 @@ public class SortingGameManager : MonoBehaviour
             int col = i % maxPerRow;
 
             int tubesInThisRow = Mathf.Min(maxPerRow, count - (row * maxPerRow));
-            float rowWidth = (tubesInThisRow - 1) * tubeSpacing;
+            float rowWidth = (tubesInThisRow - 1) * currentTubeSpacing;
 
             Vector3 spawnPos = new Vector3(
-                -rowWidth / 2f + (col * tubeSpacing),
+                -rowWidth / 2f + (col * currentTubeSpacing),
                 startY - (row * verticalSpacing),
                 0
             );
