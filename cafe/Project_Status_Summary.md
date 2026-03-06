@@ -44,6 +44,7 @@
 - [x] Conveyor Belt flow logic.
 - [x] Sell Portal with "Portal Suck" effect and Money integration.
 - [x] Processor logic (e.g., Donut -> Waffle).
+- [x] **Sorting Game UX Polish**: Dynamic tutorial, Shake feedback for invalid moves, and selection logic refinement.
 
 ### 🛠 In Progress / Pending Issues
 1. **Merger Refinement**:

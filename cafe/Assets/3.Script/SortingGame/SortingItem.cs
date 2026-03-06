@@ -9,11 +9,34 @@ public class SortingItem : MonoBehaviour
     private Vector3 _originalPosition;
     private bool _isUp;
     private Tween _floatTween;
+    private Vector3 _baseScale = Vector3.one;
 
     private void Start()
     {
         // 1. 유기적인 배치를 위해 랜덤 회전 추가
         transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
+    }
+
+    public void InitializeScale(float targetUnitSize)
+    {
+        // 현재 스케일을 1로 리셋하고 실제 렌더러 크기 측정
+        transform.localScale = Vector3.one;
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        
+        if (renderers.Length > 0)
+        {
+            Bounds combinedBounds = renderers[0].bounds;
+            foreach (var r in renderers) combinedBounds.Encapsulate(r.bounds);
+
+            float maxDim = Mathf.Max(combinedBounds.size.x, combinedBounds.size.y, combinedBounds.size.z);
+            if (maxDim > 0.01f)
+            {
+                float factor = targetUnitSize / maxDim;
+                _baseScale = Vector3.one * factor;
+            }
+        }
+        
+        transform.localScale = _baseScale;
     }
 
     public void MoveTo(Vector3 targetPosition, System.Action onComplete = null)
@@ -31,9 +54,9 @@ public class SortingItem : MonoBehaviour
         seq.Append(transform.DOMove(targetPosition, 0.25f).SetEase(Ease.InQuad));
         
         // 2. 착지 탄성 (Squash & Stretch)
-        seq.Append(transform.DOScaleY(0.7f, 0.05f)); // 눌렸다가
-        seq.Append(transform.DOScaleY(1.1f, 0.1f));  // 튀어오르고
-        seq.Append(transform.DOScaleY(1.0f, 0.1f));  // 복구
+        seq.Append(transform.DOScaleY(_baseScale.y * 0.7f, 0.05f));
+        seq.Append(transform.DOScaleY(_baseScale.y * 1.1f, 0.1f));
+        seq.Append(transform.DOScaleY(_baseScale.y * 1.0f, 0.1f));
         
         seq.OnComplete(() => onComplete?.Invoke());
     }
@@ -47,9 +70,9 @@ public class SortingItem : MonoBehaviour
             _originalPosition = transform.position;
             
             transform.DOKill();
-            // 3. 선택 시 부유 연출
+            // 3. 선택 시 부유 연출 (정규화된 스케일 기준)
             transform.DOMoveY(_originalPosition.y + 1.2f, 0.3f).SetEase(Ease.OutBack);
-            transform.DOScale(1.15f, 0.3f);
+            transform.DOScale(_baseScale * 1.2f, 0.3f);
             
             // 계속 떠 있는 느낌의 루프
             _floatTween = transform.DOMoveY(_originalPosition.y + 1.4f, 0.6f)
@@ -63,7 +86,7 @@ public class SortingItem : MonoBehaviour
             _floatTween?.Kill();
 
             transform.DOKill();
-            transform.DOScale(1.0f, 0.2f);
+            transform.DOScale(_baseScale, 0.2f);
             transform.DOMove(_originalPosition, 0.25f).SetEase(Ease.OutQuad);
         }
     }
@@ -73,5 +96,22 @@ public class SortingItem : MonoBehaviour
         // 4. 완료 시 제자리 회전 연출
         transform.DOJump(transform.position, 1.5f, 1, 0.5f);
         transform.DORotate(new Vector3(0, 360f, 0), 0.5f, RotateMode.FastBeyond360);
+    }
+
+    public void Shake()
+    {
+        // 5. 잘못된 이동 시 흔들림 연출
+        transform.DOShakePosition(0.4f, new Vector3(0.3f, 0, 0), 10, 90, false, true);
+        
+        // 시각적으로 빨간색 피드백 (Shader가 _Color 속성을 지원하는 경우만)
+        var renderers = GetComponentsInChildren<Renderer>();
+        foreach(var r in renderers)
+        {
+            if (r.material.HasProperty("_Color"))
+            {
+                r.material.DOKill();
+                r.material.DOColor(Color.red, 0.2f).SetLoops(2, LoopType.Yoyo);
+            }
+        }
     }
 }

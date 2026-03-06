@@ -4,45 +4,28 @@
         <Style src="project://database/Assets/UI%20Toolkit/MainHUD/SortingGameHUD.uss?fileID=7433441132597879392&amp;guid=0f55b79d96ee41649b54c0844425fbb9&amp;type=3#SortingGameHUD" />
         <ui:VisualElement name="top-hud" class="hud-container-row mobile-top">
             <ui:VisualElement name="top-left-group" class="group-row">
-                <ui:Button name="btn-restart" class="btn-menu icon-restart">
-                    <ui:Label text="RESTART" class="lbl-btn-bottom" />
-                </ui:Button>
-            </ui:VisualElement>
-            <ui:VisualElement name="top-center-group" class="level-container">
                 <ui:VisualElement name="level-badge" class="badge-level-large">
                     <ui:Label text="1" name="lbl-level" />
                 </ui:VisualElement>
             </ui:VisualElement>
-        </ui:VisualElement>
-        <ui:VisualElement name="middle-hud" class="grow-1 row" style="pointer-events: none;" />
-        <ui:VisualElement name="bottom-hud" class="hud-container-column">
-            <ui:VisualElement class="row" style="margin-bottom: 20px;">
-                <ui:Button name="btn-hint" class="btn-menu icon-hint">
-                    <ui:Label text="HINT" class="lbl-btn-bottom" />
-                </ui:Button>
-                <ui:Button name="btn-undo" class="btn-menu icon-undo">
-                    <ui:Label text="UNDO" class="lbl-btn-bottom" />
+            <ui:VisualElement name="top-center-group" class="level-container">
+                <ui:Button name="btn-restart" class="btn-menu icon-restart">
+                    <ui:Label text="RESTART" class="lbl-btn-bottom" />
                 </ui:Button>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="win-popup" class="popup-container" style="display: none;">
-            <ui:VisualElement class="popup-panel">
+            <ui:VisualElement class="popup-panel glass-panel">
                 <ui:Label text="SWEET CLEAR!" class="popup-title" />
                 <ui:VisualElement class="popup-content">
                     <ui:Label text="Level Complete" class="popup-msg" />
-                    <ui:VisualElement class="reward-row">
-                        <ui:VisualElement class="icon-resource icon-money" />
-                        <ui:Label text="+100" class="reward-text" />
-                    </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:Button name="btn-next" text="NEXT LEVEL" class="btn-primary" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <!-- TUTORIAL OVERLAY (Initially Hidden) -->
-        <ui:VisualElement name="tutorial-overlay" class="popup-container" style="display: none; background-color: rgba(0, 0, 0, 0.4); pointer-events: none;">
-            <ui:Label text="모든 디저트를 종류별로 정리하세요!" class="tutorial-text" />
+        <ui:VisualElement name="tutorial-overlay" class="popup-container" style="display: none; background-color: rgba(0, 0, 0, 0.2); pointer-events: none;">
+            <ui:Label name="lbl-tutorial" text="모든 디저트를 종류별로 정리하세요!" class="tutorial-text glass-label" />
             <ui:VisualElement name="tutorial-hand" class="icon-hand" />
         </ui:VisualElement>
-
     </ui:VisualElement>
 </ui:UXML>

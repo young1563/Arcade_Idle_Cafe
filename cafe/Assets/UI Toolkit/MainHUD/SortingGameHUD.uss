@@ -7,103 +7,113 @@
 }
 
 .mobile-top {
-    height: 250px;
-    padding-top: 60px;
+    height: 300px;
+    padding-top: 80px;
+    justify-content: center; /* Center the group for a premium feel */
+    align-items: center;
+}
+
+.top-left-group, .top-center-group {
+    margin: 0 40px;
 }
 
 .badge-level-large {
-    width: 120px;
-    height: 120px;
-    border-radius: 60px;
-    background-color: #f1c40f;
-    border-width: 6px;
+    width: 140px;
+    height: 140px;
+    border-radius: 70px;
+    background-color: #63d4b5; /* Minty Green */
+    border-width: 4px;
     border-color: #ffffff;
     align-items: center;
     justify-content: center;
+    /* Soft shadow */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    margin-top: -10px; /* Slight lift */
 }
 
 .badge-level-large Label {
-    font-size: 50px;
-    color: #2d3436;
+    font-size: 60px;
+    color: white;
     -unity-font-style: bold;
 }
 
-/* Premium Button Theme */
+/* Premium Button Theme (Glassmorphism inspired) */
 .btn-menu {
     width: 160px;
     height: 160px;
     border-radius: 40px;
-    background-color: #e67e22; 
-    border-width: 6px;
-    border-color: #ffffff;
-    margin: 0 20px;
+    background-color: rgba(255, 255, 255, 0.4); 
+    border-width: 3px;
+    border-color: rgba(255, 255, 255, 0.6);
+    margin: 0 40px;
     justify-content: center;
     align-items: center;
+    transition-duration: 0.2s;
+}
+
+.btn-menu:active {
+    scale: 0.9;
+    background-color: rgba(255, 255, 255, 0.6);
 }
 
 .lbl-btn-bottom {
-    font-size: 24px;
-    color: white;
+    font-size: 26px;
+    color: #4a4a4a;
     -unity-font-style: bold;
-    margin-top: 80px; /* Push text below icon area */
+    margin-top: 90px;
 }
 
-/* Popup & Overlay */
-.popup-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    align-items: center;
-    justify-content: center;
-}
-
-.popup-panel {
-    width: 700px;
-    padding: 60px;
-    background-color: #fff9f0;
+/* Glassmorphism Panel */
+.glass-panel {
+    background-color: rgba(255, 255, 255, 0.8);
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 1);
+    border-width: 4px;
     border-radius: 60px;
-    border-width: 10px;
-    border-color: #e67e22;
-    align-items: center;
+    /* Soft glow */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.glass-label {
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #333333;
+    border-radius: 40px;
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.9);
+    padding: 30px 60px;
 }
 
 .popup-title {
-    font-size: 56px;
-    color: #d35400;
+    font-size: 64px;
+    color: #4ebfa5;
     -unity-font-style: bold;
-    margin-bottom: 40px;
-}
-
-.popup-msg {
-    font-size: 32px;
-    color: #7f8c8d;
     margin-bottom: 20px;
 }
 
+.popup-panel {
+    width: 800px;
+    padding: 80px;
+    align-items: center;
+}
+
 .btn-primary {
-    width: 400px;
-    height: 100px;
-    background-color: #e67e22;
+    width: 450px;
+    height: 110px;
+    background-color: #ff9f89; /* Coral Pastel */
     color: white;
-    font-size: 36px;
+    font-size: 38px;
     -unity-font-style: bold;
-    border-radius: 50px;
+    border-radius: 55px;
     border-width: 0;
-    margin-top: 40px;
+    margin-top: 50px;
+    box-shadow: 0 10px 0 #e88d77;
 }
 
-.tutorial-text {
-    font-size: 40px;
-    color: white;
-    -unity-font-style: bold;
-    -unity-text-align: middle-center;
-    background-color: rgba(0,0,0,0.6);
-    padding: 20px 40px;
-    border-radius: 30px;
-    margin-bottom: 600px;
+.btn-primary:active {
+    translate: 0 8px;
+    box-shadow: 0 2px 0 #e88d77;
 }
 
-.icon-restart { -unity-background-image-tint-color: white; }
-.icon-undo { -unity-background-image-tint-color: white; background-color: #a0a0a0; }
-.icon-hint { -unity-background-image-tint-color: white; background-color: #f1c40f; }
+.icon-restart { 
+    -unity-background-image-tint-color: #ff9f89; 
+}

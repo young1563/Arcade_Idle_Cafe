@@ -12,12 +12,15 @@ public class SortingGameManager : MonoBehaviour
     public GameObject tubePrefab;
     public GameObject[] dessertPrefabs; // Index matches DessertType enum
     public Transform tubeParent;
-    public float tubeSpacing = 2.5f;
+    public float tubeSpacing = 2.2f;   // 세로 화면에 맞춰 간격 축소
+    public float itemTargetSize = 1.0f; 
+    public float tubeScale = 0.85f;    // 세로 화면에 맞춰 튜브 크기 약간 축소
 
     [Header("Runtime")]
     public int currentLevel = 1;
     private List<SortingTube> _tubes = new List<SortingTube>();
     private SortingTube _selectedTube;
+    public SortingTube SelectedTube => _selectedTube;
     private bool _isBusy;
 
     private void Awake()
@@ -77,6 +80,12 @@ public class SortingGameManager : MonoBehaviour
             {
                 _selectedTube = tube;
                 _selectedTube.PeekItem().Select(true);
+                Debug.Log($"[Select] {tube.name} selected.");
+            }
+            else
+            {
+                tube.Shake();
+                Debug.Log("[Select] Clicked empty tube - nothing to select.");
             }
         }
         else
@@ -84,20 +93,26 @@ public class SortingGameManager : MonoBehaviour
             // Try Move
             if (_selectedTube == tube)
             {
-                // Deselect
+                // Same tube: Deselect
                 _selectedTube.PeekItem().Select(false);
                 _selectedTube = null;
+                Debug.Log("[Deselect] Same tube clicked.");
             }
             else if (tube.CanPush(_selectedTube.PeekItem()))
             {
+                Debug.Log($"[Move] Valid move from {_selectedTube.name} to {tube.name}.");
                 MoveItem(_selectedTube, tube);
                 _selectedTube = null;
             }
             else
             {
-                // Invalid move, shake or feedback?
-                _selectedTube.PeekItem().Select(false);
-                _selectedTube = null;
+                // Invalid move reason logging
+                if (tube.IsFull) 
+                    Debug.LogWarning($"[Move Invalid] {tube.name} is FULL.");
+                else 
+                    Debug.LogWarning($"[Move Invalid] Type mismatch ({_selectedTube.PeekItem().dessertType} vs {tube.PeekItem().dessertType}).");
+                
+                _selectedTube.PeekItem().Shake();
             }
         }
     }
@@ -113,6 +128,9 @@ public class SortingGameManager : MonoBehaviour
             to.Push(item);
             _isBusy = false;
             CheckWinCondition();
+            
+            // Hide tutorial on first move
+            if (SortingHUDController.Instance != null) SortingHUDController.Instance.HideTutorial();
         });
     }
 
@@ -181,6 +199,8 @@ public class SortingGameManager : MonoBehaviour
         for (int i = 0; i < data.tubes.Count; i++)
         {
             GameObject tubeObj = Instantiate(tubePrefab, startPos + Vector3.right * (i * tubeSpacing), Quaternion.identity, tubeParent);
+            tubeObj.transform.localScale = Vector3.one * tubeScale; // 튜브 스케일 일관성 유지
+            
             SortingTube tube = tubeObj.GetComponent<SortingTube>();
             
             if (tube == null)
@@ -212,6 +232,7 @@ public class SortingGameManager : MonoBehaviour
                 if (item == null) item = itemObj.AddComponent<SortingItem>();
                 
                 item.dessertType = type;
+                item.InitializeScale(itemTargetSize); // 아이템 크기 정규화 호출
                 tube.Push(item);
             }
         }

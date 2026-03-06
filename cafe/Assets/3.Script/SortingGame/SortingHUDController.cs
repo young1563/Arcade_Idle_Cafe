@@ -5,12 +5,29 @@ using UnityEngine.InputSystem;
 
 public class SortingHUDController : MonoBehaviour
 {
+    public static SortingHUDController Instance;
+
     private VisualElement _root;
     private Label _levelLabel;
     
     private VisualElement _winPopup;
     private VisualElement _tutorialOverlay;
     private VisualElement _tutorialHand;
+    private Label _tutorialLabel;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    public void HideTutorial()
+    {
+        if (_tutorialOverlay != null)
+        {
+            _tutorialOverlay.style.display = DisplayStyle.None;
+            DOTween.Kill(_tutorialHand);
+        }
+    }
 
     private void OnEnable()
     {
@@ -22,6 +39,7 @@ public class SortingHUDController : MonoBehaviour
         _winPopup = _root.Q<VisualElement>("win-popup");
         _tutorialOverlay = _root.Q<VisualElement>("tutorial-overlay");
         _tutorialHand = _root.Q<VisualElement>("tutorial-hand");
+        _tutorialLabel = _root.Q<Label>("lbl-tutorial");
 
         // Hook up buttons
         _root.Q<Button>("btn-restart")?.RegisterCallback<ClickEvent>(ev => {
@@ -92,14 +110,21 @@ public class SortingHUDController : MonoBehaviour
     {
         if (SortingGameManager.Instance == null) return;
 
-        // Hide tutorial on first interaction
+        // Dynamic Tutorial logic
         if (_tutorialOverlay != null && _tutorialOverlay.style.display == DisplayStyle.Flex)
         {
-            if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
+            if (SortingGameManager.Instance.SelectedTube == null)
             {
-                _tutorialOverlay.style.display = DisplayStyle.None;
-                DOTween.Kill(_tutorialHand);
+                if (_tutorialLabel != null) _tutorialLabel.text = "디저트가 든 튜브를 선택하세요!";
             }
+            else
+            {
+                if (_tutorialLabel != null) _tutorialLabel.text = "다른 튜브를 눌러서 옮기세요!";
+            }
+
+            // Hide tutorial once a level progress is made (e.g., first valid move)
+            // Or just hide it after they've clearly understood (handled in GameManager if we want, 
+            // but here we can just check if any tube has changed or just hide after first move)
         }
 
         if (_levelLabel != null)
