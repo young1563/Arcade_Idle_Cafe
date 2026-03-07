@@ -41,6 +41,8 @@ public class SortingGameManager : MonoBehaviour
 
     public void OnTubeClicked(SortingTube tube)
     {
+        if (_isBusy) return;
+
         if (_selectedTube == null)
         {
             // Select
@@ -89,7 +91,7 @@ public class SortingGameManager : MonoBehaviour
     {
         _isBusy = true;
         SortingItem item = from.Pop();
-        item.Select(false);
+        // item.Select(false); // MoveTo will handle the transition
         
         Vector3 targetPos = to.GetNextSlotPosition();
         item.MoveTo(targetPos, () => {

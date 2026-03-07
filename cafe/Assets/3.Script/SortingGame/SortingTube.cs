@@ -30,20 +30,23 @@ public class SortingTube : MonoBehaviour, IPointerDownHandler
         {
             foreach (Transform child in transform)
             {
-                if (child.name.ToLower().Contains("slot"))
+                if (child.name.ToLower().Contains("slot") || child.name.ToLower().Contains("anchor"))
                 {
                     slotAnchors.Add(child);
                 }
             }
         }
+
+        // 3. Y 좌표 기준으로 정렬 (바닥부터 위로)
+        slotAnchors.Sort((a, b) => a.localPosition.y.CompareTo(b.localPosition.y));
         
-        // 3. 외곽 경계선 생성
+        // 4. 외곽 경계선 생성
         CreateBoundaryVisuals();
 
-        // 4. 클릭 감지를 위한 콜라이더 업데이트
+        // 5. 클릭 감지를 위한 콜라이더 업데이트
         UpdateCollider();
 
-        // 5. 여전히 비어있다면 경고
+        // 6. 여전히 비어있다면 경고
         if (slotAnchors.Count == 0)
         {
             Debug.LogError($"{gameObject.name}: No slot anchors found! Items will stack at pivot.");
@@ -156,7 +159,8 @@ public class SortingTube : MonoBehaviour, IPointerDownHandler
         
         // Fallback: 인스펙터 설정이 잘못되었을 때를 대비한 자동 위치 계산
         Debug.LogWarning($"{gameObject.name}: Slot anchor at index {_items.Count} is missing, using fallback position.");
-        return transform.position + Vector3.up * (_items.Count * 1.0f + 0.5f);
+        float spacing = SortingGameManager.Instance != null ? SortingGameManager.Instance.itemTargetSize : 1.2f;
+        return transform.position + Vector3.up * (_items.Count * spacing + spacing * 0.5f);
     }
     
     public Vector3 GetTopItemPosition()

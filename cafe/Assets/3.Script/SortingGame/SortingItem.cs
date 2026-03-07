@@ -86,6 +86,7 @@ public class SortingItem : MonoBehaviour
     public void MoveTo(Vector3 targetPosition, System.Action onComplete = null)
     {
         _isUp = false;
+        _floatTween?.Kill(); 
         transform.DOKill();
         
         Sequence seq = DOTween.Sequence();
@@ -95,6 +96,7 @@ public class SortingItem : MonoBehaviour
         
         // 이동 애니메이션
         seq.Append(transform.DOMove(peak, 0.3f).SetEase(Ease.OutQuad));
+        seq.Join(transform.DOScale(_baseScale, 0.3f)); // 이동하는 동안 원래 크기로 복구
         seq.Append(transform.DOMove(targetPosition, 0.25f).SetEase(Ease.InQuad));
         
         // 2. 착지 탄성 (Squash & Stretch)
