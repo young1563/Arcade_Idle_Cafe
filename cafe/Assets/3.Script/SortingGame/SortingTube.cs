@@ -98,10 +98,10 @@ public class SortingTube : MonoBehaviour, IPointerDownHandler
         BoxCollider bc = GetComponent<BoxCollider>();
         if (bc == null) bc = gameObject.AddComponent<BoxCollider>();
 
-        // 클릭 영역을 넉넉하게 설정
-        float w = 1.6f; 
+        // 클릭 영역을 넉넉하게 설정 (더 키움)
+        float w = 2.6f; 
         float bottomY = slotAnchors.Count > 0 ? slotAnchors[0].localPosition.y - 0.5f : -0.5f;
-        float topY = slotAnchors.Count > 0 ? slotAnchors[capacity - 1].localPosition.y + 1.2f : capacity * 1.5f;
+        float topY = slotAnchors.Count > 0 ? slotAnchors[capacity - 1].localPosition.y + 2.0f : capacity * 2.0f;
         float height = topY - bottomY;
 
         bc.size = new Vector3(w, height, 1.0f);
