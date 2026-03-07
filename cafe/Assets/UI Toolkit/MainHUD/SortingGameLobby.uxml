@@ -1,0 +1,29 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/MainHUD/SortingGameHUD.uss?fileID=7433441132597879392&amp;guid=0f55b79d96ee41649b54c0844425fbb9&amp;type=3#SortingGameHUD" />
+    <Style src="project://database/Assets/UI%20Toolkit/MainHUD/SortingGameLobby.uss?fileID=7433441132597879392&amp;guid=46fc7f38156fdc04d919ca9a4e414bea&amp;type=3#SortingGameLobby" />
+    <ui:VisualElement name="lobby-root" class="full-screen lobby-bg" style="background-image: url(&quot;project://database/Assets/4.Sprite/StackGame/4.png?fileID=2800000&amp;guid=dbc3a768837d26e448c60436f7e41f57&amp;type=3#4&quot;);">
+        <ui:VisualElement class="dim-overlay" />
+        <ui:VisualElement name="lobby-container" class="lobby-content">
+            <ui:VisualElement class="lobby-header">
+                <ui:Label text="DESSERT" class="lobby-title main-title" style="-unity-font-definition: url(&quot;project://database/Assets/9.Font/public/static/alternative/Pretendard-SemiBold.ttf?fileID=12800000&amp;guid=340497a8d0584fb4aaf2259c7764efc2&amp;type=3#Pretendard-SemiBold&quot;);" />
+                <ui:Label text="SORTING" class="lobby-title sub-title" style="-unity-font-definition: url(&quot;project://database/Assets/9.Font/public/static/alternative/Pretendard-SemiBold.ttf?fileID=12800000&amp;guid=340497a8d0584fb4aaf2259c7764efc2&amp;type=3#Pretendard-SemiBold&quot;); color: rgb(255, 192, 188);" />
+            </ui:VisualElement>
+            <ui:VisualElement class="main-play-section">
+                <ui:Button name="btn-start-next" class="btn-play-large" style="background-image: url(&quot;project://database/Assets/4.Sprite/StackGame/play.png?fileID=21300000&amp;guid=5d35c359f3f089d47aeddea7dcd968dc&amp;type=3#play&quot;); width: 900px; height: 600px;">
+                    <ui:VisualElement class="btn-play-icon" />
+                    <ui:Label name="lbl-next-level" class="lbl-play-next" />
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:Button name="btn-stage-select" text="STAGES" class="btn-secondary" />
+        </ui:VisualElement>
+        <ui:VisualElement name="stage-popup" class="popup-container" style="display: none;">
+            <ui:VisualElement class="glass-panel popup-panel stage-panel">
+                <ui:Label text="SELECT LEVEL" class="popup-title" />
+                <ui:ScrollView name="level-scroll" class="level-grid-scroll">
+                    <ui:VisualElement name="level-grid" class="level-grid-container" />
+                </ui:ScrollView>
+                <ui:Button name="btn-close-stages" text="CLOSE" class="btn-primary" style="width: 300px; height: 100px; font-size: 32px; background-color: rgb(119, 119, 119);" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
