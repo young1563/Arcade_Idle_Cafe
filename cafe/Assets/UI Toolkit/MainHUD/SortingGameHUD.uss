@@ -19,38 +19,40 @@
 }
 
 .badge-level-large {
-    width: 140px;
-    height: 140px;
-    border-radius: 70px;
-    background-color: #63d4b5; /* Minty Green */
-    border-width: 4px;
-    border-color: #ffffff;
+    width: 240px; /* 크기 확대 및 통일 */
+    height: 240px;
+    background-image: url('project://database/Assets/4.Sprite/StackGame/1.png');
+    -unity-background-scale-mode: scale-to-fit;
     align-items: center;
     justify-content: center;
+    background-color: transparent;
+    border-width: 0;
     /* Soft shadow */
     box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-    margin-top: -10px; /* Slight lift */
+    margin-top: -30px; /* 약간 더 위로 조정 */
 }
 
 .badge-level-large Label {
-    font-size: 60px;
+    font-size: 100px; /* 더 크게 키워 시원하게 표시 */
     color: white;
     -unity-font-style: bold;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgba(0,0,0,0.3);
+    padding-top: 25px;
 }
 
 /* Premium Button Theme (Glassmorphism inspired) */
 .btn-menu {
-    width: 140px; /* 레벨 배지와 동일한 크기 */
-    height: 140px;
-    border-radius: 70px; /* 원형으로 통일 */
-    background-color: rgba(255, 255, 255, 0.4); 
-    border-width: 4px; /* 테두리 두께 통일 */
-    border-color: #ffffff;
+    width: 240px; /* 레벨 배지와 동일한 크기 */
+    height: 240px;
+    background-color: transparent;
+    border-width: 0;
     justify-content: center;
     align-items: center;
     transition-duration: 0.2s;
-    /* 레벨 배지와 동일한 그림자 효과 */
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    background-image: url('project://database/Assets/4.Sprite/StackGame/2.png');
+    -unity-background-scale-mode: scale-to-fit;
+    margin-top: -30px;
 }
 
 .btn-menu:active {
@@ -149,23 +151,29 @@
 }
 
 /* Tutorial Style Upgrade */
-.glass-label {
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #222;
-    border-radius: 50px;
-    border-width: 3px;
-    border-color: white;
-    padding: 50px 80px;
-    font-size: 42px; /* 크기 확대 */
+#lbl-tutorial {
+    color: #5d4037;
+    font-size: 52px; /* 가독성을 위해 폰트 크기 확대 */
     -unity-font-style: bold;
     -unity-text-align: middle-center;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    /* 텍스트를 위로 올려 이미지 안쪽으로 배치 */
+    margin-top: -80px; 
+}
+
+.tutorial-bg {
+    background-image: url('project://database/Assets/4.Sprite/StackGame/3.png');
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-repeat: no-repeat;
+    width: 1000px;
+    height: 400px; /* 높이를 충분히 주어 잘림 방지 */
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border-width: 0;
 }
 
 .icon-restart { 
-    background-image: url('project://database/Assets/4.Sprite/restart_icon.png');
-    -unity-background-scale-mode: scale-to-fit;
-    width: 90px; /* 버튼 크기에 맞춰 아이콘 크기 약간 확대 */
-    height: 90px;
-    -unity-background-image-tint-color: white; 
+    /* 이미지 중복 적용 방지 (btn-menu에서 처리) */
+    width: 140px; 
+    height: 140px;
 }
