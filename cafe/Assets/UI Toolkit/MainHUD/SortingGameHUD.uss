@@ -45,8 +45,8 @@
 .btn-menu {
     width: 240px; /* 레벨 배지와 동일한 크기 */
     height: 240px;
-    background-color: transparent;
-    border-width: 0;
+    background-color: rgba(0, 0, 0, 0) !important;
+    border-width: 0 !important;
     justify-content: center;
     align-items: center;
     transition-duration: 0.2s;

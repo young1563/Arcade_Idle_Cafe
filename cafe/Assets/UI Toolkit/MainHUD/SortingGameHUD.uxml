@@ -9,9 +9,7 @@
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="top-right-group" picking-mode="Ignore" class="top-group" />
-            <ui:Button name="btn-restart" class="btn-menu" style="height: 251px; width: 222px; -unity-text-align: lower-center; white-space: pre; margin-top: -2px; margin-right: -37px; margin-bottom: 107px;">
-                <ui:VisualElement name="restart-icon" class="icon-restart icon-overlay" picking-mode="Ignore" />
-            </ui:Button>
+            <ui:Button name="btn-restart" class="btn-menu" style="height: 194px; width: 182px; -unity-text-align: lower-center; white-space: pre; margin-top: -2px; margin-right: -42px; margin-bottom: 107px;" />
         </ui:VisualElement>
         <ui:VisualElement name="win-popup" picking-mode="Ignore" class="popup-container" style="display: none;">
             <ui:VisualElement class="popup-panel glass-panel">
