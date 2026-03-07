@@ -1,0 +1,93 @@
+.full-screen {
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.lobby-bg {
+    background-image: url('project://database/Assets/4.Sprite/StackGame/sorting_game_background_cafe_1772782277025.png');
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.center-container {
+    align-items: center;
+    justify-content: space-between;
+    height: 60%;
+    width: 80%;
+}
+
+.title-container {
+    align-items: center;
+    margin-top: 100px;
+}
+
+.title-sub {
+    font-size: 80px;
+    color: #ff9f89;
+    -unity-font-style: bold;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: white;
+    letter-spacing: 10px;
+}
+
+.title-main {
+    font-size: 140px;
+    color: #5d4037;
+    -unity-font-style: bold;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: white;
+    margin-top: -20px;
+}
+
+.button-container {
+    width: 100%;
+    align-items: center;
+    margin-bottom: 200px;
+}
+
+.btn-start-game {
+    width: 600px;
+    height: 180px;
+    background-color: #ff9f89;
+    color: white;
+    font-size: 64px;
+    -unity-font-style: bold;
+    border-radius: 90px;
+    border-width: 0;
+    box-shadow: 0 15px 0 #e88d77;
+    transition-duration: 0.1s;
+    margin-bottom: 40px;
+}
+
+.btn-start-game:active {
+    translate: 0 12px;
+    box-shadow: 0 3px 0 #e88d77;
+}
+
+.btn-secondary {
+    width: 400px;
+    height: 120px;
+    background-color: rgba(255, 255, 255, 0.6);
+    color: #5d4037;
+    font-size: 40px;
+    -unity-font-style: bold;
+    border-radius: 60px;
+    border-width: 4px;
+    border-color: white;
+}
+
+.btn-secondary:active {
+    scale: 0.95;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.footer {
+    position: absolute;
+    bottom: 50px;
+}
+
+.footer-text {
+    font-size: 24px;
+    color: rgba(0, 0, 0, 0.4);
+}

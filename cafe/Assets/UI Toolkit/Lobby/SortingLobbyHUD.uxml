@@ -1,0 +1,21 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="root" class="full-screen lobby-bg">
+        <Style src="project://database/Assets/UI%20Toolkit/Lobby/SortingLobbyHUD.uss" />
+        
+        <ui:VisualElement name="container" class="center-container">
+            <ui:VisualElement name="title-group" class="title-container">
+                <ui:Label text="DESSERT" class="title-sub" />
+                <ui:Label text="SORTING" class="title-main" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="button-group" class="button-container">
+                <ui:Button name="btn-start" text="START GAME" class="btn-start-game" />
+                <ui:Button name="btn-quit" text="QUIT" class="btn-secondary" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="footer" class="footer">
+            <ui:Label text="© 2026 Arcade Idle Cafe" class="footer-text" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

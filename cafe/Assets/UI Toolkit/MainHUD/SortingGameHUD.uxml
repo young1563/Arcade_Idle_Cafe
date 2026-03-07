@@ -20,9 +20,9 @@
                 <ui:Button name="btn-next" text="NEXT LEVEL" class="btn-primary" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="tutorial-overlay" picking-mode="Ignore" class="popup-container" style="display: none; background-color: rgba(0, 0, 0, 0);">
+        <ui:VisualElement name="tutorial-overlay" picking-mode="Ignore" class="popup-container" style="display: flex; background-color: rgba(0, 0, 0, 0); margin-bottom: -2px;">
             <ui:VisualElement name="tutorial-panel" picking-mode="Ignore" class="tutorial-bg">
-                <ui:Label name="lbl-tutorial" picking-mode="Ignore" text="모든 디저트를 종류별로 정리하세요!" />
+                <ui:Label name="lbl-tutorial" picking-mode="Ignore" text="모든 디저트를 종류별로 정리하세요!" style="font-size: 30px; -unity-text-align: lower-center; margin-top: -20px; margin-right: -17px; display: none; visibility: visible;" />
             </ui:VisualElement>
             <ui:VisualElement name="tutorial-hand" picking-mode="Ignore" class="icon-hand" />
         </ui:VisualElement>
