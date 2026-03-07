@@ -11,6 +11,7 @@
             <ui:VisualElement name="top-right-group" picking-mode="Ignore" class="top-group" />
             <ui:Button name="btn-restart" class="btn-menu" style="height: 194px; width: 182px; -unity-text-align: lower-center; white-space: pre; margin-top: -2px; margin-right: -42px; margin-bottom: 107px;" />
         </ui:VisualElement>
+        <ui:VisualElement name="game-board" picking-mode="Ignore" class="board-area" />
         <ui:VisualElement name="win-popup" picking-mode="Ignore" class="popup-container" style="display: none;">
             <ui:VisualElement class="popup-panel glass-panel">
                 <ui:Label text="SWEET CLEAR!" class="popup-title" />
@@ -20,7 +21,7 @@
                 <ui:Button name="btn-next" text="NEXT LEVEL" class="btn-primary" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="tutorial-overlay" picking-mode="Ignore" class="popup-container" style="display: flex; background-color: rgba(0, 0, 0, 0); margin-bottom: -2px;">
+        <ui:VisualElement name="tutorial-overlay" picking-mode="Ignore" class="popup-container" style="display: flex; background-color: rgba(0, 0, 0, 0); margin-bottom: -2px; padding-bottom: 1105px;">
             <ui:VisualElement name="tutorial-panel" picking-mode="Ignore" class="tutorial-bg">
                 <ui:Label name="lbl-tutorial" picking-mode="Ignore" text="모든 디저트를 종류별로 정리하세요!" style="font-size: 30px; -unity-text-align: middle-center; margin-top: -20px; margin-right: -17px;" />
             </ui:VisualElement>

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class SortingGameManager : MonoBehaviour
 {
@@ -123,39 +124,38 @@ public class SortingGameManager : MonoBehaviour
         LoadLevel(currentLevel);
     }
 
-    public void LoadLevel(int levelId)
+    [ContextMenu("Load Current Level")]
+    public void LoadLevel(int level)
     {
-        // Clear existing
-        foreach (var tube in _tubes) Destroy(tube.gameObject);
+        string path = Path.Combine(Application.streamingAssetsPath, "levels.json");
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            // Use DessertLevelList from SortingLevelData.cs instead of duplicated DessertGameData
+            DessertLevelList gameData = JsonUtility.FromJson<DessertLevelList>(json);
+
+            if (gameData != null && gameData.levels != null && level - 1 < gameData.levels.Count)
+            {
+                ClearLevel();
+                SpawnTubes(gameData.levels[level - 1]);
+                
+                if (SortingHUDController.Instance != null)
+                {
+                    SortingHUDController.Instance.SetLevelText(level);
+                    SortingHUDController.Instance.CheckTutorial();
+                }
+            }
+        }
+    }
+
+    private void ClearLevel()
+    {
+        foreach (var tube in _tubes)
+        {
+            if (tube != null) Destroy(tube.gameObject);
+        }
         _tubes.Clear();
         _selectedTube = null;
-
-        // Load JSON (Simplified for prototype: using Resources.Load or hardcoded path)
-        string path = Path.Combine(Application.streamingAssetsPath, levelDataFileName);
-        if (!File.Exists(path))
-        {
-            // Default level if file not found
-            CreateDefaultLevel();
-            return;
-        }
-
-        string json = File.ReadAllText(path);
-        DessertLevelList levelList = JsonUtility.FromJson<DessertLevelList>(json);
-        DessertLevelData data = levelList.levels.Find(l => l.levelId == levelId);
-
-        if (data != null)
-        {
-            SpawnTubes(data);
-        }
-        else
-        {
-            // 레벨이 없을 경우 다시 1레벨로 루프하거나 기본 레벨 생성
-            Debug.LogWarning($"Level {levelId} not found, looping back to Level 1.");
-            currentLevel = 1;
-            data = levelList.levels.Find(l => l.levelId == 1);
-            if (data != null) SpawnTubes(data);
-            else CreateDefaultLevel();
-        }
     }
 
     private void SpawnTubes(DessertLevelData data)
@@ -172,17 +172,72 @@ public class SortingGameManager : MonoBehaviour
             return;
         }
 
+        // 1. UI 보드 영역 계산
+        Vector3 boardWorldCenter = Vector3.zero;
+        Vector2 boardWorldSize = new Vector2(5f, 8f); // 기본값 (폴백)
+
+        if (SortingHUDController.Instance != null)
+        {
+            VisualElement board = SortingHUDController.Instance.GetGameBoard();
+            if (board != null)
+            {
+                // UI 좌표를 스크린 좌표로 변환
+                Rect worldRect = board.worldBound;
+                
+                // 스크린 좌표 -> 월드 좌표 변환 (Z축은 0으로 가정)
+                Camera cam = Camera.main;
+                Vector3 screenCenter = new Vector3(worldRect.center.x, Screen.height - worldRect.center.y, 10f);
+                boardWorldCenter = cam.ScreenToWorldPoint(screenCenter);
+                boardWorldCenter.z = 0;
+
+                Vector3 screenTopLeft = new Vector3(worldRect.xMin, Screen.height - worldRect.yMin, 10f);
+                Vector3 screenBottomRight = new Vector3(worldRect.xMax, Screen.height - worldRect.yMax, 10f);
+                
+                Vector3 worldTopLeft = cam.ScreenToWorldPoint(screenTopLeft);
+                Vector3 worldBottomRight = cam.ScreenToWorldPoint(screenBottomRight);
+                
+                boardWorldSize.x = Mathf.Abs(worldBottomRight.x - worldTopLeft.x);
+                boardWorldSize.y = Mathf.Abs(worldTopLeft.y - worldBottomRight.y);
+                
+                Debug.Log($"[Board] Calculated World Center: {boardWorldCenter}, Size: {boardWorldSize}");
+            }
+        }
+
+        // 2. 3D 보드 비주얼 생성 (디저트 뒤에 배치)
+        GameObject boardObj = GameObject.Find("3D_Board_Plate");
+        if (boardObj == null) boardObj = new GameObject("3D_Board_Plate");
+        
+        // Z값을 5정도로 뒤로 뺍니다 (디저트는 Z=0)
+        boardObj.transform.position = new Vector3(boardWorldCenter.x, boardWorldCenter.y, 5f);
+        boardObj.transform.localScale = new Vector3(boardWorldSize.x, boardWorldSize.y, 1f);
+
+        // 간단한 반투명 흰색 판 생성 (기존 Sprite가 없다면 흰색 기본 사용)
+        SpriteRenderer sr = boardObj.GetComponent<SpriteRenderer>();
+        if (sr == null) sr = boardObj.AddComponent<SpriteRenderer>();
+        
+        // 흰색 기본 스프라이트 (또는 적절한 UI 패널 스프라이트 연결 가능)
+        // 여기서는 은은한 흰색 판으로 설정
+        sr.color = new Color(1f, 1f, 1f, 0.4f); 
+        
+        // 3. 튜브 배치 로직
         int count = data.tubes.Count;
         int maxPerRow = 3; 
         int rowCount = Mathf.CeilToInt((float)count / maxPerRow);
         
-        // 간격 조정: 더 오밀조밀하게 모이도록 축소
-        float currentTubeSpacing = 2.1f; 
-        float verticalSpacing = 4.8f; 
+        // 보드판 영역의 80%만 사용하여 여유를 줌
+        float usableWidth = boardWorldSize.x * 0.85f;
+        float usableHeight = boardWorldSize.y * 0.85f;
 
-        // 전체 높이 계산 및 시작점 설정 (전체적으로 1.0f 만큼 위로 시프트)
+        float currentTubeSpacing = count > 1 ? usableWidth / (maxPerRow - 1) : 0;
+        float verticalSpacing = rowCount > 1 ? usableHeight / (rowCount - 1) : 0;
+
+        // 간격이 너무 벌어지지 않도록 최댓값 제한
+        currentTubeSpacing = Mathf.Min(currentTubeSpacing, 2.8f);
+        verticalSpacing = Mathf.Min(verticalSpacing, 5.5f);
+
+        // 시작점 설정 (보드판 중심으로부터 상대적 배치)
         float totalHeight = (rowCount - 1) * verticalSpacing;
-        float startY = 4.5f + (totalHeight / 2f); 
+        float startY = boardWorldCenter.y + (totalHeight / 2f); 
 
         for (int i = 0; i < count; i++)
         {
@@ -193,7 +248,7 @@ public class SortingGameManager : MonoBehaviour
             float rowWidth = (tubesInThisRow - 1) * currentTubeSpacing;
 
             Vector3 spawnPos = new Vector3(
-                -rowWidth / 2f + (col * currentTubeSpacing),
+                boardWorldCenter.x - (rowWidth / 2f) + (col * currentTubeSpacing),
                 startY - (row * verticalSpacing),
                 0
             );
@@ -202,38 +257,28 @@ public class SortingGameManager : MonoBehaviour
             tubeObj.transform.localScale = Vector3.one * tubeScale; 
             
             SortingTube tube = tubeObj.GetComponent<SortingTube>();
-            
-            if (tube == null)
+            if (tube != null)
             {
-                Debug.LogError($"Tube prefab at index {i} is missing the SortingTube component!");
-                continue;
-            }
+                tube.InitializeSlots();
+                tube.capacity = data.tubeCapacity;
+                _tubes.Add(tube);
 
-            tube.InitializeSlots();
-            tube.capacity = data.tubeCapacity;
-            _tubes.Add(tube);
-
-            // Spawn items
-            if (data.tubes[i].dessertIds == null) continue;
-
-            foreach (int typeId in data.tubes[i].dessertIds)
-            {
-                DessertType type = (DessertType)typeId;
-                if (type == DessertType.None) continue;
-
-                if (typeId - 1 >= dessertPrefabs.Length || dessertPrefabs[typeId - 1] == null)
+                // Spawn items
+                if (data.tubes[i].dessertIds != null)
                 {
-                    Debug.LogWarning($"Dessert prefab for type {type} (ID: {typeId}) is missing or index out of range!");
-                    continue;
+                    foreach (int typeId in data.tubes[i].dessertIds)
+                    {
+                        if (typeId - 1 >= dessertPrefabs.Length || dessertPrefabs[typeId - 1] == null) continue;
+                        
+                        GameObject itemObj = Instantiate(dessertPrefabs[typeId - 1], tube.GetNextSlotPosition(), Quaternion.identity);
+                        SortingItem item = itemObj.GetComponent<SortingItem>();
+                        if (item == null) item = itemObj.AddComponent<SortingItem>();
+                        
+                        item.dessertType = (DessertType)typeId; 
+                        item.InitializeScale(itemTargetSize);
+                        tube.Push(item);
+                    }
                 }
-                
-                GameObject itemObj = Instantiate(dessertPrefabs[typeId - 1], tube.GetNextSlotPosition(), Quaternion.identity);
-                SortingItem item = itemObj.GetComponent<SortingItem>();
-                if (item == null) item = itemObj.AddComponent<SortingItem>();
-                
-                item.dessertType = type;
-                item.InitializeScale(itemTargetSize); // 아이템 크기 정규화 호출
-                tube.Push(item);
             }
         }
     }

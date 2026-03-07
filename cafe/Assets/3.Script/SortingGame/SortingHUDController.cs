@@ -14,6 +14,9 @@ public class SortingHUDController : MonoBehaviour
     private VisualElement _tutorialOverlay;
     private VisualElement _tutorialHand;
     private Label _tutorialLabel;
+    private VisualElement _boardArea;
+
+    public VisualElement GetGameBoard() => _boardArea;
 
     private void Awake()
     {
@@ -41,6 +44,7 @@ public class SortingHUDController : MonoBehaviour
         _tutorialOverlay = _root.Q<VisualElement>("tutorial-overlay");
         _tutorialHand = _root.Q<VisualElement>("tutorial-hand");
         _tutorialLabel = _root.Q<Label>("lbl-tutorial");
+        _boardArea = _root.Q<VisualElement>("game-board");
 
         // Hook up buttons
         _root.Q<Button>("btn-restart")?.RegisterCallback<ClickEvent>(ev => {
@@ -63,7 +67,7 @@ public class SortingHUDController : MonoBehaviour
         CheckTutorial();
     }
 
-    private void CheckTutorial()
+    public void CheckTutorial()
     {
         if (SortingGameManager.Instance == null) return;
 
@@ -109,6 +113,12 @@ public class SortingHUDController : MonoBehaviour
             _winPopup.style.display = DisplayStyle.Flex;
     }
 
+    public void SetLevelText(int level)
+    {
+        if (_levelLabel != null)
+            _levelLabel.text = level.ToString();
+    }
+
     private void LateUpdate()
     {
         if (SortingGameManager.Instance == null) return;
@@ -129,8 +139,5 @@ public class SortingHUDController : MonoBehaviour
             // Or just hide it after they've clearly understood (handled in GameManager if we want, 
             // but here we can just check if any tube has changed or just hide after first move)
         }
-
-        if (_levelLabel != null)
-            _levelLabel.text = SortingGameManager.Instance.currentLevel.ToString();
     }
 }
