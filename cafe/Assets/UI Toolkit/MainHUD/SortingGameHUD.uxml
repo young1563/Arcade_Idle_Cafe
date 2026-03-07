@@ -9,7 +9,9 @@
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="top-right-group" picking-mode="Ignore" class="top-group" />
-            <ui:Button name="btn-restart" class="btn-menu icon-restart" style="height: 251px; width: 222px; -unity-text-align: lower-center; white-space: pre; margin-top: -2px; margin-right: -37px; margin-bottom: 107px;" />
+            <ui:Button name="btn-restart" class="btn-menu" style="height: 251px; width: 222px; -unity-text-align: lower-center; white-space: pre; margin-top: -2px; margin-right: -37px; margin-bottom: 107px;">
+                <ui:VisualElement name="restart-icon" class="icon-restart icon-overlay" picking-mode="Ignore" />
+            </ui:Button>
         </ui:VisualElement>
         <ui:VisualElement name="win-popup" picking-mode="Ignore" class="popup-container" style="display: none;">
             <ui:VisualElement class="popup-panel glass-panel">
@@ -22,7 +24,7 @@
         </ui:VisualElement>
         <ui:VisualElement name="tutorial-overlay" picking-mode="Ignore" class="popup-container" style="display: flex; background-color: rgba(0, 0, 0, 0); margin-bottom: -2px;">
             <ui:VisualElement name="tutorial-panel" picking-mode="Ignore" class="tutorial-bg">
-                <ui:Label name="lbl-tutorial" picking-mode="Ignore" text="모든 디저트를 종류별로 정리하세요!" style="font-size: 30px; -unity-text-align: lower-center; margin-top: -20px; margin-right: -17px; display: none; visibility: visible;" />
+                <ui:Label name="lbl-tutorial" picking-mode="Ignore" text="모든 디저트를 종류별로 정리하세요!" style="font-size: 30px; -unity-text-align: middle-center; margin-top: -20px; margin-right: -17px;" />
             </ui:VisualElement>
             <ui:VisualElement name="tutorial-hand" picking-mode="Ignore" class="icon-hand" />
         </ui:VisualElement>

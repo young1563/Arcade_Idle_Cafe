@@ -8,6 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/1.Scene/SortingLobby.unity
     guid: 687309cce70cc9a4cb900965f9c1d174
+  - enabled: 1
+    path: Assets/1.Scene/StackGame.unity
+    guid: 9de84dd4c4fb33448974ef62177c27cd
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 289c1b55c9541489481df5cc06664110, type: 3}
   m_UseUCBPForAssetBundles: 0

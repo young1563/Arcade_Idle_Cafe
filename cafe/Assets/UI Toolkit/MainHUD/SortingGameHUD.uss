@@ -173,7 +173,14 @@
 }
 
 .icon-restart { 
-    /* 이미지 중복 적용 방지 (btn-menu에서 처리) */
-    width: 140px; 
-    height: 140px;
+    background-image: url('project://database/Assets/4.Sprite/restart_icon.png');
+    -unity-background-scale-mode: scale-to-fit;
+    width: 100px; 
+    height: 100px;
+    -unity-background-image-tint-color: white; 
+}
+
+.icon-overlay {
+    pointer-events: none;
+    position: absolute;
 }
