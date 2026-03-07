@@ -10,6 +10,7 @@ public class SortingItem : MonoBehaviour
     private bool _isUp;
     private Tween _floatTween;
     private Vector3 _baseScale = Vector3.one;
+    public Vector3 BaseScale => _baseScale;
 
     private void Awake()
     {
@@ -45,14 +46,15 @@ public class SortingItem : MonoBehaviour
         // 1. 스케일을 1로 리셋하여 순수 월드 경계 측정 준비
         transform.localScale = Vector3.one;
         
-        // 2. 프리팹 내부의 가시적인 렌더러들만 추출하여 정확한 Bounds 계산
+        // 2. 정확한 Bounds 계산 (가시적인 렌더러 기준)
         Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+        if (renderers.Length == 0) return;
+
+        Bounds combinedBounds = new Bounds(transform.position, Vector3.zero);
         bool foundValidBounds = false;
-        Bounds combinedBounds = new Bounds();
 
         foreach (var r in renderers)
         {
-            // 파티클, 빈 렌더러, 트레일 등 시각적 크기와 무관한 것들은 제외
             if (r is ParticleSystemRenderer || r is TrailRenderer || !r.enabled) continue;
             
             if (!foundValidBounds)
@@ -68,18 +70,15 @@ public class SortingItem : MonoBehaviour
 
         if (foundValidBounds)
         {
-            // 3. 평면 크기(X, Z) 중 큰 쪽을 기준으로 맞춤
+            // 평면 너비/깊이 중 큰 값을 기준으로 스케일 결정
             float currentSize = Mathf.Max(combinedBounds.size.x, combinedBounds.size.z);
-            
             if (currentSize > 0.001f)
             {
-                // 타겟 크기에 맞추기 위한 배율 계산
                 float factor = targetUnitSize / currentSize;
                 _baseScale = Vector3.one * factor;
             }
         }
         
-        // 4. 최종 스케일 적용
         transform.localScale = _baseScale;
     }
 
@@ -90,18 +89,24 @@ public class SortingItem : MonoBehaviour
         transform.DOKill();
         
         Sequence seq = DOTween.Sequence();
-        Vector3 peak = new Vector3((transform.position.x + targetPosition.x) / 2, 
-                                   Mathf.Max(transform.position.y, targetPosition.y) + 2.5f, 
-                                   (transform.position.z + targetPosition.z) / 2);
         
-        // 이동 애니메이션
+        // 포물선의 정점 (두 지점의 중간 높이 + 3.0f 상공)
+        Vector3 startPos = transform.position;
+        Vector3 peak = new Vector3((startPos.x + targetPosition.x) / 2, 
+                                   Mathf.Max(startPos.y, targetPosition.y) + 3.0f, 
+                                   (startPos.z + targetPosition.z) / 2);
+        
+        // 1. 점프 & 스케일 업 (날아가는 느낌)
         seq.Append(transform.DOMove(peak, 0.3f).SetEase(Ease.OutQuad));
-        seq.Join(transform.DOScale(_baseScale, 0.3f)); // 이동하는 동안 원래 크기로 복구
-        seq.Append(transform.DOMove(targetPosition, 0.25f).SetEase(Ease.InQuad));
+        seq.Join(transform.DOScale(_baseScale * 1.5f, 0.3f).SetEase(Ease.OutQuad)); // 날아갈 때 사이즈 커짐
         
-        // 2. 착지 탄성 (Squash & Stretch)
+        // 2. 하강 & 스케일 복구
+        seq.Append(transform.DOMove(targetPosition, 0.25f).SetEase(Ease.InQuad));
+        seq.Join(transform.DOScale(_baseScale, 0.25f).SetEase(Ease.InQuad)); // 도착하며 사이즈 원복
+        
+        // 3. 착지 탄성 (Squash & Stretch)
         seq.Append(transform.DOScaleY(_baseScale.y * 0.7f, 0.05f));
-        seq.Append(transform.DOScaleY(_baseScale.y * 1.1f, 0.1f));
+        seq.Append(transform.DOScaleY(_baseScale.y * 1.15f, 0.1f));
         seq.Append(transform.DOScaleY(_baseScale.y * 1.0f, 0.1f));
         
         seq.OnComplete(() => onComplete?.Invoke());

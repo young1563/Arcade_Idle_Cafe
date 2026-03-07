@@ -3,6 +3,7 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+using DG.Tweening;
 
 public class SortingGameManager : MonoBehaviour
 {
@@ -14,8 +15,8 @@ public class SortingGameManager : MonoBehaviour
     public GameObject[] dessertPrefabs; // Index matches DessertType enum
     public Transform tubeParent;
     public float tubeSpacing = 2.2f;   // 세로 화면에 맞춰 간격 축소
-    public float itemTargetSize = 1.4f; 
-    public float tubeScale = 0.85f;    // 세로 화면에 맞춰 튜브 크기 약간 축소
+    public float itemTargetSize = 1.3f; 
+    public float tubeScale = 0.85f;    
 
     [Header("Runtime")]
     public int currentLevel = 1;
@@ -31,6 +32,13 @@ public class SortingGameManager : MonoBehaviour
 
     private void Start()
     {
+        // UI 레이아웃이 확정될 때까지 한 프레임 대기 후 레벨 로드
+        StartCoroutine(LoadLevelAfterLayout());
+    }
+
+    private System.Collections.IEnumerator LoadLevelAfterLayout()
+    {
+        yield return null; // 한 프레임 대기
         LoadLevel(currentLevel);
     }
 
@@ -179,28 +187,39 @@ public class SortingGameManager : MonoBehaviour
         if (SortingHUDController.Instance != null)
         {
             VisualElement board = SortingHUDController.Instance.GetGameBoard();
-            if (board != null)
-            {
                 // UI 좌표를 스크린 좌표로 변환
                 Rect worldRect = board.worldBound;
                 
-                // 스크린 좌표 -> 월드 좌표 변환 (Z축은 0으로 가정)
-                Camera cam = Camera.main;
-                Vector3 screenCenter = new Vector3(worldRect.center.x, Screen.height - worldRect.center.y, 10f);
-                boardWorldCenter = cam.ScreenToWorldPoint(screenCenter);
-                boardWorldCenter.z = 0;
+                // 아직 레이아웃이 잡히지 않아 NaN인 경우 스킵 (기본값 사용)
+                if (float.IsNaN(worldRect.x) || float.IsNaN(worldRect.width))
+                {
+                    Debug.LogWarning("[Board] UI Layout not ready, using defaults.");
+                }
+                else
+                {
+                    // 스크린 좌표 -> 월드 좌표 변환
+                    Camera cam = Camera.main;
+                    
+                    // [정밀 보정] 단순히 center만 쓰지 않고 상/하단을 각각 계산하여 중간을 잡음
+                    Vector3 screenTop = new Vector3(worldRect.center.x, Screen.height - worldRect.yMin, 10f);
+                    Vector3 screenBottom = new Vector3(worldRect.center.x, Screen.height - worldRect.yMax, 10f);
+                    
+                    float worldTopY = cam.ScreenToWorldPoint(screenTop).y;
+                    float worldBottomY = cam.ScreenToWorldPoint(screenBottom).y;
+                    
+                    boardWorldCenter.x = cam.ScreenToWorldPoint(new Vector3(worldRect.center.x, 0, 10f)).x;
+                    boardWorldCenter.y = (worldTopY + worldBottomY) / 2f - 0.7f; // 하단으로 약간의 시각적 보정 추가
+                    boardWorldCenter.z = 0;
 
-                Vector3 screenTopLeft = new Vector3(worldRect.xMin, Screen.height - worldRect.yMin, 10f);
-                Vector3 screenBottomRight = new Vector3(worldRect.xMax, Screen.height - worldRect.yMax, 10f);
-                
-                Vector3 worldTopLeft = cam.ScreenToWorldPoint(screenTopLeft);
-                Vector3 worldBottomRight = cam.ScreenToWorldPoint(screenBottomRight);
-                
-                boardWorldSize.x = Mathf.Abs(worldBottomRight.x - worldTopLeft.x);
-                boardWorldSize.y = Mathf.Abs(worldTopLeft.y - worldBottomRight.y);
-                
-                Debug.Log($"[Board] Calculated World Center: {boardWorldCenter}, Size: {boardWorldSize}");
-            }
+                    Vector3 screenTopLeft = new Vector3(worldRect.xMin, Screen.height - worldRect.yMin, 10f);
+                    Vector3 screenBottomRight = new Vector3(worldRect.xMax, Screen.height - worldRect.yMax, 10f);
+                    
+                    Vector3 worldTopLeft = cam.ScreenToWorldPoint(screenTopLeft);
+                    Vector3 worldBottomRight = cam.ScreenToWorldPoint(screenBottomRight);
+                    
+                    boardWorldSize.x = Mathf.Abs(worldBottomRight.x - worldTopLeft.x);
+                    boardWorldSize.y = Mathf.Abs(worldTopLeft.y - worldBottomRight.y);
+                }
         }
 
         // 2. 3D 보드 비주얼 생성 (디저트 뒤에 배치)
@@ -221,23 +240,38 @@ public class SortingGameManager : MonoBehaviour
         
         // 3. 튜브 배치 로직
         int count = data.tubes.Count;
-        int maxPerRow = 3; 
+        int maxPerRow = count >= 8 ? 4 : 3; // 튜브가 많으면 한 줄에 4개까지 배치 가능
         int rowCount = Mathf.CeilToInt((float)count / maxPerRow);
         
-        // 보드판 영역의 80%만 사용하여 여유를 줌
-        float usableWidth = boardWorldSize.x * 0.85f;
-        float usableHeight = boardWorldSize.y * 0.85f;
+        // [중요] 줄 수에 따른 동적 스케일 조절 (안 겹치도록)
+        float dynamicScale = tubeScale;
+        if (rowCount >= 3) dynamicScale *= 0.6f;     // 3줄 이상이면 60% 크기로
+        else if (rowCount == 2) dynamicScale *= 0.75f; // 2줄이면 75% 크기로
+        
+        // 튜브 실제 높이 추정 (스케일 반영)
+        float worldTubeHeight = 6.5f * dynamicScale;
+        float worldTubeWidth = 2.0f * dynamicScale;
 
-        float currentTubeSpacing = count > 1 ? usableWidth / (maxPerRow - 1) : 0;
-        float verticalSpacing = rowCount > 1 ? usableHeight / (rowCount - 1) : 0;
+        // 보드판 내 안쪽 여백 확보 (85% 영역 사용)
+        float marginFactor = 0.85f;
+        float usableWidth = boardWorldSize.x * marginFactor;
+        float usableHeight = boardWorldSize.y * marginFactor;
 
-        // 간격이 너무 벌어지지 않도록 최댓값 제한
+        // 수평/수직 간격 계산 (튜브 크기를 고려하여 전체가 보드 안에 들어오도록)
+        float currentTubeSpacing = maxPerRow > 1 ? (usableWidth - worldTubeWidth) / (maxPerRow - 1) : 0;
+        
+        // 수직 간격은 튜브 높이가 서로 겹치지 않게 '최소 튜브 높이'만큼을 확보
+        float safeVerticalArea = usableHeight - worldTubeHeight;
+        float verticalSpacing = rowCount > 1 ? safeVerticalArea / (rowCount - 1) : 0;
+
+        // 너무 벌어지거나 좁아지지 않게 제한 (수직 간격은 튜브 높이보다 크게 하여 겹침 방지)
         currentTubeSpacing = Mathf.Min(currentTubeSpacing, 2.8f);
-        verticalSpacing = Mathf.Min(verticalSpacing, 5.5f);
+        verticalSpacing = Mathf.Max(verticalSpacing, worldTubeHeight + 0.3f); 
 
-        // 시작점 설정 (보드판 중심으로부터 상대적 배치)
-        float totalHeight = (rowCount - 1) * verticalSpacing;
-        float startY = boardWorldCenter.y + (totalHeight / 2f); 
+        // [중요] 수직 중앙 정렬 보정
+        // 전체 높이는 (줄수-1)*간격 이지만, 실제 차지하는 시각적 높이는 여기에 튜브 높이 절반씩(위아래)이 더해진 것임
+        float totalVisualHeight = (rowCount - 1) * verticalSpacing;
+        float startY = boardWorldCenter.y + (totalVisualHeight / 2f); 
 
         for (int i = 0; i < count; i++)
         {
@@ -254,7 +288,7 @@ public class SortingGameManager : MonoBehaviour
             );
 
             GameObject tubeObj = Instantiate(tubePrefab, spawnPos, Quaternion.identity, tubeParent);
-            tubeObj.transform.localScale = Vector3.one * tubeScale; 
+            tubeObj.transform.localScale = Vector3.one * dynamicScale; 
             
             SortingTube tube = tubeObj.GetComponent<SortingTube>();
             if (tube != null)
@@ -275,7 +309,14 @@ public class SortingGameManager : MonoBehaviour
                         if (item == null) item = itemObj.AddComponent<SortingItem>();
                         
                         item.dessertType = (DessertType)typeId; 
-                        item.InitializeScale(itemTargetSize);
+                        
+                        // 현재 튜브 크기(dynamicScale)에 맞춰 디저트 크기 초기화
+                        item.InitializeScale(itemTargetSize * dynamicScale); 
+                        
+                        // 등장 애니메이션: 0에서 톡 튀어나오는 연출
+                        item.transform.localScale = Vector3.zero;
+                        item.transform.DOScale(item.BaseScale, 0.4f).SetEase(Ease.OutBack).SetDelay((i * 0.05f) + (tube.GetCount() * 0.03f));
+
                         tube.Push(item);
                     }
                 }

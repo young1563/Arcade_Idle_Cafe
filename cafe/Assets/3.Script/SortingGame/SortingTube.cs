@@ -22,10 +22,8 @@ public class SortingTube : MonoBehaviour, IPointerDownHandler
 
     public void InitializeSlots()
     {
-        // 1. null 항목 제거
         slotAnchors.RemoveAll(item => item == null);
 
-        // 2. 리스트가 비어있다면 자식들을 검색
         if (slotAnchors.Count == 0)
         {
             foreach (Transform child in transform)
@@ -37,20 +35,35 @@ public class SortingTube : MonoBehaviour, IPointerDownHandler
             }
         }
 
-        // 3. Y 좌표 기준으로 정렬 (바닥부터 위로)
+        // Y 좌표 기준으로 정렬
         slotAnchors.Sort((a, b) => a.localPosition.y.CompareTo(b.localPosition.y));
         
-        // 4. 외곽 경계선 생성
-        CreateBoundaryVisuals();
+        // [중요] 간격 통일 로직
+        float targetSpacing = 1.35f; // 기본 디저트 높이 간격
+        if (SortingGameManager.Instance != null) targetSpacing = SortingGameManager.Instance.itemTargetSize * 0.95f;
 
-        // 5. 클릭 감지를 위한 콜라이더 업데이트
-        UpdateCollider();
-
-        // 6. 여전히 비어있다면 경고
-        if (slotAnchors.Count == 0)
+        if (slotAnchors.Count > 0)
         {
-            Debug.LogError($"{gameObject.name}: No slot anchors found! Items will stack at pivot.");
+            Vector3 startPos = slotAnchors[0].localPosition;
+            for (int i = 0; i < slotAnchors.Count; i++)
+            {
+                // 모든 슬롯의 간격을 일정하게 재정렬
+                slotAnchors[i].localPosition = startPos + Vector3.up * (i * targetSpacing);
+            }
         }
+
+        // 부족한 슬롯 자동 생성
+        while (slotAnchors.Count < capacity)
+        {
+            GameObject newSlot = new GameObject($"Slot_{slotAnchors.Count}");
+            newSlot.transform.SetParent(transform);
+            float startY = slotAnchors.Count > 0 ? slotAnchors[0].localPosition.y : 0.5f;
+            newSlot.transform.localPosition = new Vector3(0, startY + (slotAnchors.Count * targetSpacing), 0);
+            slotAnchors.Add(newSlot.transform);
+        }
+
+        CreateBoundaryVisuals();
+        UpdateCollider();
     }
 
     private void CreateBoundaryVisuals()
@@ -99,7 +112,7 @@ public class SortingTube : MonoBehaviour, IPointerDownHandler
         if (bc == null) bc = gameObject.AddComponent<BoxCollider>();
 
         // 클릭 영역을 넉넉하게 설정 (더 키움)
-        float w = 2.6f; 
+        float w = 3f; 
         float bottomY = slotAnchors.Count > 0 ? slotAnchors[0].localPosition.y - 0.5f : -0.5f;
         float topY = slotAnchors.Count > 0 ? slotAnchors[capacity - 1].localPosition.y + 2.0f : capacity * 2.0f;
         float height = topY - bottomY;
@@ -122,6 +135,8 @@ public class SortingTube : MonoBehaviour, IPointerDownHandler
         // Rules: Must match the top item type
         return PeekItem().dessertType == item.dessertType;
     }
+
+    public int GetCount() => _items.Count;
 
     public void Push(SortingItem item)
     {

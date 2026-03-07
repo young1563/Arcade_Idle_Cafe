@@ -25,11 +25,15 @@ public class SortingHUDController : MonoBehaviour
 
     public void HideTutorial()
     {
-        if (_tutorialOverlay != null)
-        {
-            _tutorialOverlay.style.display = DisplayStyle.None;
-            _tutorialOverlay.RemoveFromClassList("active-tutorial"); // 클래스 제거로 확실히 처리
-        }
+        if (_tutorialOverlay == null || _tutorialOverlay.style.display == DisplayStyle.None) return;
+
+        // Fade out animation
+        DOTween.Kill(_tutorialOverlay);
+        DOTween.To(() => _tutorialOverlay.resolvedStyle.opacity, x => _tutorialOverlay.style.opacity = x, 0f, 0.3f)
+               .OnComplete(() => {
+                   _tutorialOverlay.style.display = DisplayStyle.None;
+               });
+        
         DOTween.Kill(_tutorialHand);
     }
 
@@ -45,6 +49,13 @@ public class SortingHUDController : MonoBehaviour
         _tutorialHand = _root.Q<VisualElement>("tutorial-hand");
         _tutorialLabel = _root.Q<Label>("lbl-tutorial");
         _boardArea = _root.Q<VisualElement>("game-board");
+
+        // Initial Tutorial State (Invisible)
+        if (_tutorialOverlay != null)
+        {
+            _tutorialOverlay.style.opacity = 0;
+            _tutorialOverlay.style.scale = new StyleScale(new Scale(new Vector3(0.8f, 0.8f, 1f)));
+        }
 
         // Hook up buttons
         _root.Q<Button>("btn-restart")?.RegisterCallback<ClickEvent>(ev => {
@@ -69,17 +80,37 @@ public class SortingHUDController : MonoBehaviour
 
     public void CheckTutorial()
     {
-        if (SortingGameManager.Instance == null) return;
+        if (SortingGameManager.Instance == null || _tutorialOverlay == null) return;
 
         if (SortingGameManager.Instance.currentLevel == 1)
         {
-            if (_tutorialOverlay != null) _tutorialOverlay.style.display = DisplayStyle.Flex;
+            _tutorialOverlay.style.display = DisplayStyle.Flex;
+            
+            // Initial state for animation
+            _tutorialOverlay.style.opacity = 0f;
+            _tutorialOverlay.style.scale = new StyleScale(new Scale(new Vector3(0.5f, 0.5f, 1f)));
+
+            // Clean show animation using local variables for reliability
+            float currentOpacity = 0f;
+            float currentScale = 0.5f;
+
+            DOTween.Kill(_tutorialOverlay);
+            
+            DOTween.To(() => currentOpacity, x => {
+                currentOpacity = x;
+                _tutorialOverlay.style.opacity = x;
+            }, 1f, 0.5f);
+
+            DOTween.To(() => currentScale, x => {
+                currentScale = x;
+                _tutorialOverlay.style.scale = new StyleScale(new Scale(new Vector3(x, x, 1f)));
+            }, 1f, 0.6f).SetEase(Ease.OutBack);
+
             StartHandAnimation();
         }
         else
         {
-            if (_tutorialOverlay != null) _tutorialOverlay.style.display = DisplayStyle.None;
-            DOTween.Kill(_tutorialHand); 
+            HideTutorial();
         }
     }
 
